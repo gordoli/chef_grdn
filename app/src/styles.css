@@ -153,6 +153,7 @@ button svg {
 .page-width {
   width: calc(100% - 96px);
   max-width: 1184px;
+  min-width: 0;
   margin: 0 auto;
 }
 .eyebrow {
@@ -177,6 +178,7 @@ button svg {
 .brand-mark {
   width: 33px;
   height: 37px;
+  flex-shrink: 0;
   display: grid;
   place-items: center;
   color: var(--accent-foreground);
@@ -185,12 +187,9 @@ button svg {
   width: 30px;
   height: 30px;
 }
-.brand-light {
-  font-weight: 400;
-  color: var(--muted-foreground);
-}
 .header-actions {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 16px;
 }
@@ -264,12 +263,14 @@ button svg {
 }
 .collection-toolbar {
   display: flex;
+  min-width: 0;
   gap: 20px;
   align-items: center;
 }
 .search-field {
   position: relative;
-  flex: 1;
+  flex: 1 1 0%;
+  min-width: 0;
 }
 .search-field > svg {
   position: absolute;
@@ -301,6 +302,7 @@ button svg {
 }
 .toolbar-actions {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 22px;
 }
@@ -639,6 +641,8 @@ button svg {
   display: flex;
   align-items: center;
   flex-direction: column;
+  min-width: 0;
+  overflow-wrap: anywhere;
   background: color-mix(in srgb, var(--card) 50%, transparent);
 }
 .empty-icon {
@@ -656,10 +660,14 @@ button svg {
   letter-spacing: -0.6px;
   margin-bottom: 10px;
 }
+.empty-state > div {
+  min-width: 0;
+  max-width: 100%;
+}
 .empty-state p {
   font-size: 12px;
   color: var(--muted-foreground);
-  max-width: 430px;
+  max-width: min(430px, 100%);
   line-height: 1.9;
   margin: 0 auto 20px;
 }
@@ -2125,6 +2133,8 @@ button svg {
     font-size: 8px;
   }
   .collection-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 12px;
   }
   .search-field input {
@@ -2833,9 +2843,6 @@ button svg {
 }
 
 /* A neutral content layer, with liquid-glass materials reserved for controls. */
-.brand-period {
-  color: var(--foreground);
-}
 .site-header {
   max-width: 1376px;
   margin: 0 auto;
@@ -2845,6 +2852,9 @@ button svg {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+}
+.site-header > a {
+  min-width: 0;
 }
 .brand {
   min-height: 44px;
