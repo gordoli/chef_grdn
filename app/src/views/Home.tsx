@@ -33,6 +33,7 @@ export function Home() {
   const { recipes, reviews, favorites, loading, error, refresh, isDemo, canEdit } = useRecipes();
   const pathname = usePathname();
   const favoritesOnly = pathname.endsWith('/favorites');
+  const CollectionHeading = favoritesOnly ? 'h2' : 'h1';
   const [search, setSearch] = useState('');
   const [type, setType] = useState('All');
   const [view, setView] = useState('grid');
@@ -82,24 +83,20 @@ export function Home() {
   );
   return (
     <div className="home-page page-width">
-      <section className="collection-hero">
-        <span className="eyebrow">
-          {favoritesOnly ? 'THE ONES I COME BACK TO' : 'GORDON’S PERSONAL RECIPE BOOK'}
-        </span>
-        <h1>{favoritesOnly ? 'A few favorites.' : 'Good food. Worth keeping.'}</h1>
-        <p>
-          {favoritesOnly
-            ? 'Tried, loved, and ready to make again.'
-            : 'From my kitchen, made to be shared.'}
-        </p>
-      </section>
+      {favoritesOnly && (
+        <section className="collection-hero">
+          <span className="eyebrow">THE ONES I COME BACK TO</span>
+          <h1>A few favorites.</h1>
+          <p>Tried, loved, and ready to make again.</p>
+        </section>
+      )}
       <section id="collection" className="collection-section">
         <div className="section-heading">
           <div>
             <span className="eyebrow">THE COLLECTION</span>
-            <h2>
+            <CollectionHeading>
               {favoritesOnly ? 'Your favorites' : 'All recipes'} <span>{base.length}</span>
-            </h2>
+            </CollectionHeading>
           </div>
         </div>
         <div className="collection-toolbar">

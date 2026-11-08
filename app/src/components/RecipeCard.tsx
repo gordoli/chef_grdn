@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowUpRight, Clock, Heart, Users, Star } from 'lucide-react';
+import { ArrowUpRight, Clock, Heart, Star } from 'lucide-react';
 import { useRecipes } from '@/hooks/useRecipes';
 import type { Recipe } from '@/lib/types';
 import { safeUrl, errorMessage } from '@/lib/utils';
@@ -41,6 +41,7 @@ export function RecipeCard({
           </div>
           <h3>{recipe.title}</h3>
           <div className="card-tags">
+            {recipe.servings && <span>Serves {recipe.servings}</span>}
             {recipe.tags.slice(0, 3).map((tag) => (
               <span key={tag}>{tag}</span>
             ))}
@@ -51,12 +52,6 @@ export function RecipeCard({
                 <span>
                   <Clock size={13} />
                   {recipe.time_label}
-                </span>
-              )}
-              {recipe.servings && (
-                <span>
-                  <Users size={13} />
-                  Serves {recipe.servings}
                 </span>
               )}
               {!recipe.time_label && !recipe.servings && (

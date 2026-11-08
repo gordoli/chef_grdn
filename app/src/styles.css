@@ -241,14 +241,14 @@ button svg {
   font-size: 8px;
   margin-bottom: 8px;
 }
-.section-heading h2 {
+.section-heading :is(h1, h2) {
   font-size: 25px;
   letter-spacing: -0.7px;
   display: flex;
   align-items: center;
   gap: 11px;
 }
-.section-heading h2 > span,
+.section-heading :is(h1, h2) > span,
 .gallery-section-heading h2 > span {
   display: inline-grid;
   place-items: center;
@@ -2068,7 +2068,12 @@ button svg {
     grid-template-columns: 70px 1fr 90px;
   }
   .list-card .card-tags {
-    display: none;
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .list-card .recipe-card-bottom {
+    grid-column: 3;
+    grid-row: 1 / span 2;
   }
   .photo-manager-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2123,11 +2128,11 @@ button svg {
     font-size: 7px;
     margin-bottom: 6px;
   }
-  .section-heading h2 {
+  .section-heading :is(h1, h2) {
     font-size: 23px;
     gap: 9px;
   }
-  .section-heading h2 > span {
+  .section-heading :is(h1, h2) > span {
     height: 21px;
     min-width: 21px;
     font-size: 8px;
@@ -2238,6 +2243,9 @@ button svg {
     line-height: 1.45;
     margin: 11px 0 14px;
     max-width: 100%;
+  }
+  .list-card .card-tags {
+    margin-bottom: 14px;
   }
   .list-card .recipe-card-bottom {
     padding: 0;
@@ -2778,7 +2786,7 @@ button svg {
   .recipe-card h3 {
     font-size: 18px;
   }
-  .section-heading h2 {
+  .section-heading :is(h1, h2) {
     font-size: 21px;
   }
   .search-field input {
@@ -3009,7 +3017,7 @@ button svg {
 .section-heading .eyebrow {
   display: none;
 }
-.section-heading h2 {
+.section-heading :is(h1, h2) {
   font-size: 22px;
 }
 .search-field input {
@@ -3209,7 +3217,7 @@ button svg {
   .section-heading {
     margin-bottom: 18px;
   }
-  .section-heading h2 {
+  .section-heading :is(h1, h2) {
     font-size: 21px;
   }
   .search-field input {
