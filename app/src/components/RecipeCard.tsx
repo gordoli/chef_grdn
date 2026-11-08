@@ -25,21 +25,23 @@ export function RecipeCard({
         className="recipe-card-link"
         aria-label={`Open ${recipe.title}`}
       >
-        {photo?.url && (
-          <div className="recipe-card-photo">
-            <img
-              src={safeUrl(photo.url) ?? (isDemo ? photo.url : undefined)}
-              alt={photo.caption ?? recipe.title}
-              loading="lazy"
-            />
-          </div>
-        )}
         <div className="recipe-card-content">
           <div className="card-topline">
             <span className="recipe-category">{recipe.type}</span>
             <span className="recipe-index">{String(index + 1).padStart(2, '0')}</span>
           </div>
-          <h3>{recipe.title}</h3>
+          <div className="recipe-card-title">
+            <h3>{recipe.title}</h3>
+            {photo?.url && (
+              <div className="recipe-card-photo">
+                <img
+                  src={safeUrl(photo.url) ?? (isDemo ? photo.url : undefined)}
+                  alt={photo.caption ?? recipe.title}
+                  loading="lazy"
+                />
+              </div>
+            )}
+          </div>
           <div className="card-tags">
             {recipe.servings && (
               <span>
