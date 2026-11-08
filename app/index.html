@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#e9eddb" />
+    <meta
+      name="description"
+      content="Chef GRDN — a little collection of things worth cooking again."
+    />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" href="/icons/icon-32.png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Chef GRDN · Recipe book</title>
+    <link rel="canonical" href="__PUBLIC_ORIGIN__/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Chef GRDN" />
+    <meta property="og:description" content="A little collection of things worth cooking again." />
+    <meta property="og:url" content="__PUBLIC_ORIGIN__/" />
+    <meta property="og:site_name" content="Chef GRDN" />
+    <meta property="og:image" content="__PUBLIC_ORIGIN__/og-image.png" />
+    <meta property="og:image:width" content="1600" />
+    <meta property="og:image:height" content="900" />
+    <meta
+      property="og:image:alt"
+      content="Smiling pixel Chef Gordon holding a spatula and kitchen knife above Chef GRDN."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Chef GRDN" />
+    <meta name="twitter:description" content="A little collection of things worth cooking again." />
+    <meta name="twitter:image" content="__PUBLIC_ORIGIN__/og-image.png" />
+    <script>
+      try {
+        const t = localStorage.getItem('grdn.theme');
+        document.documentElement.classList.toggle(
+          'dark',
+          t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches),
+        );
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

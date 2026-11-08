@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env*
+!.env.example
+.vercel/
+.openai/
+playwright-report/
+test-results/
+.DS_Store
+docs/portrait-reference.png

@@ -1,0 +1,7 @@
+node_modules
+dist
+.env*
+.openai
+reference
+seed/recipes.json
+package-lock.json
