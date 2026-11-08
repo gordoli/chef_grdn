@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowUpRight, Clock, Heart, Star } from 'lucide-react';
+import { Clock, Heart, Star, Users } from 'lucide-react';
 import { useRecipes } from '@/hooks/useRecipes';
 import type { Recipe } from '@/lib/types';
 import { safeUrl, errorMessage } from '@/lib/utils';
@@ -41,34 +41,30 @@ export function RecipeCard({
           </div>
           <h3>{recipe.title}</h3>
           <div className="card-tags">
-            {recipe.servings && <span>Serves {recipe.servings}</span>}
+            {recipe.servings && (
+              <span>
+                <Users size={13} aria-hidden="true" />
+                Serves {recipe.servings}
+              </span>
+            )}
+            {recipe.time_label && (
+              <span>
+                <Clock size={13} aria-hidden="true" />
+                {recipe.time_label}
+              </span>
+            )}
             {recipe.tags.slice(0, 3).map((tag) => (
               <span key={tag}>{tag}</span>
             ))}
-          </div>
-          <div className="recipe-card-bottom">
-            <div className="recipe-facts">
-              {recipe.time_label && (
-                <span>
-                  <Clock size={13} />
-                  {recipe.time_label}
-                </span>
-              )}
-              {!recipe.time_label && !recipe.servings && (
-                <span>
-                  {recipe.ingredients.reduce((n, s) => n + s.items.length, 0)} ingredients
-                </span>
-              )}
-              {rating.length > 0 && (
-                <span>
-                  <Star size={13} />
-                  {average.toFixed(1)}
-                </span>
-              )}
-            </div>
-            <span className="card-arrow">
-              <ArrowUpRight size={18} />
-            </span>
+            {!recipe.time_label && !recipe.servings && (
+              <span>{recipe.ingredients.reduce((n, s) => n + s.items.length, 0)} ingredients</span>
+            )}
+            {rating.length > 0 && (
+              <span>
+                <Star size={13} aria-hidden="true" />
+                {average.toFixed(1)}
+              </span>
+            )}
           </div>
         </div>
       </Link>
