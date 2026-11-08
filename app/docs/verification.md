@@ -7,6 +7,7 @@ Verified on November 8, 2026.
 - TypeScript strict typecheck: passed.
 - ESLint: passed with zero errors and zero warnings after splitting provider/hook exports.
 - Vitest: 108 passing tests across four files: quantity/text boundaries (41), recipe import (28), image import (32), authentication (7).
+- Native Node ESM integration smoke check: both emitted Vercel API functions load and return JSON 401 for unauthenticated requests. This catches extensionless imports that Vite would accept but Node rejects.
 - Production Vite build and PWA generation: passed.
 - Production dependency audit: zero reported vulnerabilities. Four low-severity findings remain in build/lint tooling; no forced incompatible downgrade was applied.
 - Brand generation: transparent master, PNG app sizes, PNG-backed ICO, Apple icon, separate maskable icon, and 1600×900 Poppins social preview generated and visually checked.

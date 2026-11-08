@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 type ApiRequest = IncomingMessage & { body?: unknown };
-import { authenticateOwner } from '../server/auth';
-import { handleImport } from '../server/import';
+import { authenticateOwner } from '../server/auth.js';
+import { handleImport } from '../server/import.js';
 
 export default async function importRecipe(
   request: ApiRequest,

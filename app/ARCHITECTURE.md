@@ -1,6 +1,6 @@
 # Architecture
 
-Vite + React 18 + strict TypeScript. Tailwind 4 supplies utilities; theme variables and component classes in `src/styles.css` define the visual language. Poppins is the single family. There is no framework-specific server rendering dependency.
+Vite + React 18 + React Router 7 + strict TypeScript. Tailwind 4 supplies utilities; theme variables and component classes in `src/styles.css` define the visual language. Poppins is the single family. There is no framework-specific server rendering dependency.
 
 ## Boundaries
 

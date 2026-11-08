@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 type ApiRequest = IncomingMessage & { body?: unknown };
-import { authenticateOwner } from '../server/auth';
-import { handleImportImage } from '../server/image';
+import { authenticateOwner } from '../server/auth.js';
+import { handleImportImage } from '../server/image.js';
 
 export default async function importImage(
   request: ApiRequest,

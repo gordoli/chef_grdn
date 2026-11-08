@@ -55,6 +55,7 @@ Regenerate brand sizes and social preview with `npm run brand` after replacing `
 npm run typecheck
 npm run lint
 npm test
+npm run test:api
 npm run build
 npm run format:check
 ```
