@@ -1,5 +1,7 @@
+'use client';
+
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ArrowUpRight, Camera, Instagram, Plus } from 'lucide-react';
 import { useRecipes } from '@/hooks/useRecipes';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
@@ -56,7 +58,7 @@ export function Gallery() {
           <p>Photos you add to your recipes will find a home here.</p>
           {canEdit && (
             <Button asChild variant="outline">
-              <Link to={`${isDemo ? '/demo' : ''}/`}>
+              <Link href={`${isDemo ? '/demo' : ''}/`}>
                 <Camera />
                 Add photos to a recipe
               </Link>
@@ -126,7 +128,7 @@ export function Gallery() {
                 {photo.caption || 'From the Chef GRDN kitchen.'}
               </DialogDescription>
               <Button asChild variant="outline">
-                <Link to={`${isDemo ? '/demo' : ''}/r/${photo.recipe.slug}`}>
+                <Link href={`${isDemo ? '/demo' : ''}/r/${photo.recipe.slug}`}>
                   View recipe
                   <ArrowUpRight />
                 </Link>

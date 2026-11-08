@@ -1,3 +1,5 @@
+> Historical audit of the initial Vite build. See verification.md for the current Next.js migration checks.
+
 # Chef GRDN audit
 
 Reviewed November 8, 2026. Scope: recipe browsing, search, favorites, owner editing, photos, reviews, import APIs, and Supabase authorization. This records completed checks and their limits; it is not a claim that every acceptance criterion has been exercised in a browser.

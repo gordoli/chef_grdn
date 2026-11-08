@@ -16,8 +16,26 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
-    "paths": { "@/*": ["./src/*"] },
-    "types": ["vite/client", "node"]
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["node"],
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "allowJs": true,
+    "esModuleInterop": true
   },
-  "include": ["src", "server", "api", "scripts", "vite.config.ts"]
+  "include": [
+    "next-env.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "server/**/*.ts",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
 }

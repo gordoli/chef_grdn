@@ -1,4 +1,7 @@
-import { NavLink, Outlet, Link, useLocation } from 'react-router-dom';
+'use client';
+import type { ReactNode } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ArrowUpRight, BookOpen, Heart, Image, Plus, Sun, Moon, LogOut, Leaf } from 'lucide-react';
 import { Button } from './ui/button';
 import { Brand } from './Brand';
@@ -10,14 +13,51 @@ import { toast } from 'sonner';
 const links = [
   { path: '/', label: 'Recipes', icon: BookOpen },
   { path: '/favorites', label: 'Favorites', icon: Heart },
-  { path: '/new', label: 'Add', icon: Plus },
   { path: '/gallery', label: 'Gallery', icon: Image },
 ];
-export function Layout() {
+function Navigation({
+  prefix,
+  pathname,
+  mobile = false,
+}: {
+  prefix: string;
+  pathname: string;
+  mobile?: boolean;
+}) {
+  const current = pathname.slice(prefix.length) || '/';
+  return (
+    <div className={mobile ? 'mobile-dock' : 'desktop-dock'}>
+      <nav
+        className={`glass-control ${mobile ? 'mobile-nav' : 'desktop-nav'}`}
+        aria-label={mobile ? 'Mobile navigation' : 'Main navigation'}
+      >
+        {links.map(({ path, label, icon: Icon }) => {
+          const active =
+            path === '/' ? current === '/' || current.startsWith('/r/') : current === path;
+          return (
+            <Link
+              key={path}
+              href={`${prefix}${path}`}
+              aria-current={active ? 'page' : undefined}
+              className={`${mobile ? 'mobile-nav-link' : 'nav-link'} ${active ? 'active' : ''}`}
+            >
+              <Icon size={mobile ? 20 : 17} />
+              <span>{label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+      <Link href={`${prefix}/new`} className="glass-control nav-add-bubble" aria-label="Add recipe">
+        <Plus strokeWidth={1.65} />
+      </Link>
+    </div>
+  );
+}
+export function Layout({ children }: { children: ReactNode }) {
   const { dark, toggleTheme } = useTheme();
   const { isDemo } = useRecipes();
   const { profile, session } = useSession();
-  const { pathname } = useLocation();
+  const pathname = usePathname();
   const prefix = isDemo ? '/demo' : '';
   return (
     <div className="app-shell">
@@ -25,24 +65,13 @@ export function Layout() {
         Skip to recipes
       </a>
       <header className="site-header">
-        <Link to={`${prefix}/`} aria-label="Chef GRDN home">
+        <Link href={`${prefix}/`} aria-label="Chef GRDN home">
           <Brand />
         </Link>
-        <nav className="desktop-nav" aria-label="Main navigation">
-          {links.map(({ path, label, icon: Icon }) => (
-            <NavLink
-              key={path}
-              to={`${prefix}${path}`}
-              end={path === '/'}
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-            >
-              <Icon size={17} />
-              {label}
-            </NavLink>
-          ))}
-        </nav>
+        <Navigation prefix={prefix} pathname={pathname} />
         <div className="header-actions">
           <Button
+            className="glass-control theme-toggle"
             variant="ghost"
             size="icon"
             aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -50,14 +79,17 @@ export function Layout() {
           >
             {dark ? <Sun /> : <Moon />}
           </Button>
-          <span className="header-divider" />
           {isDemo || !session ? (
-            <Link className="avatar" to="/sign-in" aria-label="Sign in to edit recipes">
+            <Link
+              className="avatar glass-control"
+              href="/sign-in"
+              aria-label="Sign in to edit recipes"
+            >
               G
             </Link>
           ) : (
             <details className="profile-menu">
-              <summary className="avatar" aria-label="Account menu">
+              <summary className="avatar glass-control" aria-label="Account menu">
                 {profile?.display_name.slice(0, 1).toUpperCase() ?? 'G'}
               </summary>
               <div className="account-dropdown">
@@ -78,36 +110,24 @@ export function Layout() {
           )}
         </div>
       </header>
-      <main id="main">
-        <Outlet />
-      </main>
+      <main id="main">{children}</main>
       <footer className="site-footer">
         <span>
           <Leaf size={14} /> A little collection. A lot of good food.
         </span>
         <a href="https://www.instagram.com/chef_grdn/" target="_blank" rel="noreferrer">
-          @chef_grdn <ArrowUpRight size={14} />
+          @chef_grdn
+          <ArrowUpRight size={14} />
         </a>
       </footer>
-      <nav className="mobile-nav" aria-label="Mobile navigation">
-        {links.map(({ path, label, icon: Icon }) => (
-          <NavLink
-            key={path}
-            to={`${prefix}${path}`}
-            end={path === '/'}
-            className={({ isActive }) => `mobile-nav-link ${isActive ? 'active' : ''}`}
-          >
-            <Icon size={20} />
-            <span>{label}</span>
-          </NavLink>
-        ))}
-      </nav>
+      <Navigation prefix={prefix} pathname={pathname} mobile />
       {isDemo && (
         <div className="preview-banner">
           <span className="preview-dot" />
           Preview · changes stay in this browser
-          <Link to="/sign-in">
-            Sign in <ArrowUpRight size={12} />
+          <Link href="/sign-in">
+            Sign in
+            <ArrowUpRight size={12} />
           </Link>
         </div>
       )}

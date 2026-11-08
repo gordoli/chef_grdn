@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
 import { signedPhotos, uploadRecipePhoto, resizePhoto, blobToDataUrl } from '@/lib/photos';
@@ -39,16 +39,23 @@ function readPreview(): Recipe[] {
     return seedRecipes();
   }
 }
-export function RecipeProvider({ children }: { children: ReactNode }) {
+export function RecipeProvider({
+  children,
+  initialRecipes = [],
+}: {
+  children: ReactNode;
+  initialRecipes?: Recipe[];
+}) {
   const { profile, session } = useSession();
-  const { pathname } = useLocation();
+  const pathname = usePathname();
   const isDemo = pathname.startsWith('/demo');
   const canEdit = isDemo || profile?.role === 'owner';
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>(() => (isDemo ? seedRecipes() : initialRecipes));
   const [reviews, setReviews] = useState<Review[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!isDemo && initialRecipes.length === 0);
   const [error, setError] = useState('');
+  const [hasLoadedClientData, setHasLoadedClientData] = useState(false);
   const refreshVersion = useRef(0);
   const favoriteRequests = useRef(new Set<string>());
   const [favoritePending, setFavoritePending] = useState<string[]>([]);
@@ -67,9 +74,10 @@ export function RecipeProvider({ children }: { children: ReactNode }) {
       }
       setReviews([]);
       setLoading(false);
+      setHasLoadedClientData(true);
       return;
     }
-    if (!supabase) return;
+    if (!supabase) throw new Error('The recipe book connection is not configured.');
     const [recipeResult, photoResult, reviewResult, favoriteResult, profileResult] =
       await Promise.all([
         supabase.from('recipes').select('*').order('sort_order'),
@@ -122,13 +130,13 @@ export function RecipeProvider({ children }: { children: ReactNode }) {
     setReviews(loadedReviews);
     setError('');
     setLoading(false);
+    setHasLoadedClientData(true);
   }, [isDemo, session]);
   function invalidateRefresh() {
     refreshVersion.current++;
   }
   useEffect(() => {
     let active = true;
-    setLoading(true);
     refresh().catch((failure) => {
       if (active) {
         setError(errorMessage(failure));
@@ -417,6 +425,7 @@ export function RecipeProvider({ children }: { children: ReactNode }) {
         reviews,
         favorites,
         loading,
+        hasLoadedClientData,
         error,
         isDemo,
         canEdit,

@@ -1,8 +1,10 @@
 # Chef GRDN
 
-Gordon’s personal recipe portfolio: a minimal, responsive recipe book with Poppins, light/dark themes, a shared shadcn-style component library, and Supabase persistence.
+Gordon’s personal recipe portfolio, built with Next.js App Router, React 19, Poppins, Tailwind/shadcn-style shared components, Supabase, and a neutral liquid-glass interface.
 
-The application lives in **`app/`**. Set **Root Directory = `app`** when importing this repository into Vercel.
+Live: [Chef GRDN](https://chef-grdn.vercel.app/).
+
+The application lives in **`app/`**. Set **Root Directory = `app`** and **Framework = Next.js** in Vercel.
 
 ```sh
 cd app

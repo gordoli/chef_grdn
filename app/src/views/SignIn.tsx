@@ -1,5 +1,9 @@
+'use client';
+
 import { useState, type FormEvent } from 'react';
-import { Link, Navigate, useSearchParams } from 'react-router-dom';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { Redirect } from '@/components/Redirect';
 import { ArrowLeft, ArrowRight, Check, Mail, Moon, Sun } from 'lucide-react';
 import { Brand } from '@/components/Brand';
 import { Input } from '@/components/ui/input';
@@ -10,7 +14,7 @@ import { useTheme } from '@/hooks/useTheme';
 export function SignIn() {
   const { session, loading } = useSession();
   const { dark, toggleTheme } = useTheme();
-  const [params] = useSearchParams();
+  const params = useSearchParams();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -48,11 +52,11 @@ export function SignIn() {
       setBusy(false);
     }
   }
-  if (session && !loading) return <Navigate to={next} replace />;
+  if (session && !loading) return <Redirect href={next} />;
   return (
     <div className="sign-in-page">
       <header>
-        <Link to="/">
+        <Link href="/">
           <Brand />
         </Link>
         <Button size="icon" variant="ghost" aria-label="Toggle color theme" onClick={toggleTheme}>
@@ -127,11 +131,11 @@ export function SignIn() {
             </>
           )}
           <div className="sign-in-divider" />
-          <Link to="/" className="preview-link">
+          <Link href="/" className="preview-link">
             Browse the recipe book
             <ArrowUpRightIcon />
           </Link>
-          <Link to="/demo" className="demo-link">
+          <Link href="/demo" className="demo-link">
             Explore an editable preview
           </Link>
         </div>

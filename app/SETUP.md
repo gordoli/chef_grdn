@@ -8,10 +8,10 @@ The local `app/.env.local` contains the provided credentials and is ignored by G
 
 ## Vercel
 
-1. Import `gordoli/chef_grdn` into Vercel. Framework: **Vite**. Root Directory: **`app`**. Node: **24.x**.
-2. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from your local file for Production and Preview. The publishable key belongs in the latter variable.
-3. Deploy. `vercel.json` builds `dist`, serves SPA routes, and leaves `/api/import` and `/api/import-image` as server functions.
-4. `VITE_SITE_URL` may specify a custom production origin for social metadata. Otherwise the build uses `VERCEL_PROJECT_PRODUCTION_URL`. Never set it to a URL with a trailing slash.
+1. Import `gordoli/chef_grdn` into Vercel. Framework: **Next.js**. Root Directory: **`app`**. Node: **24.x**.
+2. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` from your local file for Production and Preview. The publishable key belongs in the latter variable.
+3. Deploy. Next.js builds its native pages and `/api/import` and `/api/import-image` Route Handlers. The Vercel project uses the `nextjs` preset; there is no `dist` output override or SPA rewrite.
+4. `NEXT_PUBLIC_SITE_URL` may specify a custom production origin for social metadata. Otherwise metadata uses the canonical `https://chef-grdn.vercel.app` origin. Never set it to a URL with a trailing slash.
 
 ## Finish Supabase email configuration
 
@@ -32,7 +32,7 @@ npm ci
 npm run dev
 ```
 
-Open `http://localhost:5173`. Vite provides the same authenticated import handlers as Vercel. `npm run preview` serves the built static UI; the import API requires Vite dev or Vercel.
+Open `http://localhost:5173`. Next.js provides the same authenticated Route Handlers locally and on Vercel. `npm run preview` starts the built Next.js server, including both APIs.
 
 ## A fresh Supabase project
 
@@ -55,7 +55,6 @@ Regenerate brand sizes and social preview with `npm run brand` after replacing `
 npm run typecheck
 npm run lint
 npm test
-npm run test:api
 npm run build
 npm run format:check
 ```

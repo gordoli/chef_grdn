@@ -1,4 +1,4 @@
-import { isAllowedRecipeUrl } from './import.js';
+import { isAllowedRecipeUrl } from './import';
 
 // Vercel responses are limited to 4.5MB; stay below that limit before sending bytes.
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;

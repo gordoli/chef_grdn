@@ -5,3 +5,6 @@ dist
 reference
 seed/recipes.json
 package-lock.json
+
+.next
+next-env.d.ts

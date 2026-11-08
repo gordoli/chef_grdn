@@ -1,7 +1,9 @@
-import { useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+'use client';
+
+import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
-  ArrowDown,
   ArrowUpRight,
   Grid2X2,
   List,
@@ -29,11 +31,14 @@ const typeOrder = [
 ];
 export function Home() {
   const { recipes, reviews, favorites, loading, error, refresh, isDemo, canEdit } = useRecipes();
-  const location = useLocation();
-  const favoritesOnly = location.pathname.endsWith('/favorites');
+  const pathname = usePathname();
+  const favoritesOnly = pathname.endsWith('/favorites');
   const [search, setSearch] = useState('');
   const [type, setType] = useState('All');
-  const [view, setView] = useState(() => localStorage.getItem('grdn.view') ?? 'grid');
+  const [view, setView] = useState('grid');
+  useEffect(() => {
+    setView(localStorage.getItem('grdn.view') ?? 'grid');
+  }, []);
   const [sort, setSort] = useState('collection');
   const prefix = isDemo ? '/demo' : '';
   const base = useMemo(
@@ -77,75 +82,16 @@ export function Home() {
   );
   return (
     <div className="home-page page-width">
-      <section className={`collection-hero ${favoritesOnly ? 'favorites-hero' : ''}`}>
-        <div className="hero-copy">
-          <span className="eyebrow">
-            <span className="tiny-line" />
-            {favoritesOnly ? 'THE ONES I COME BACK TO' : 'GORDON’S PERSONAL RECIPE BOOK'}
-          </span>
-          <h1>
-            {favoritesOnly ? (
-              <>
-                A few
-                <br />
-                favorites<span>.</span>
-              </>
-            ) : (
-              <>
-                Good food.
-                <br />
-                Worth keeping<span>.</span>
-              </>
-            )}
-          </h1>
-          <p>
-            {favoritesOnly
-              ? 'Tried, loved, and ready to make again.'
-              : 'A little inspiration, a few happy accidents, and recipes to make again and again.'}
-          </p>
-          <div className="hero-bottom">
-            <span>
-              {String(base.length).padStart(2, '0')}{' '}
-              <span>{favoritesOnly ? 'saved favorites' : 'recipes & counting'}</span>
-            </span>
-            <a href="#collection" aria-label="Jump to recipe collection">
-              <ArrowDown size={18} />
-            </a>
-          </div>
-        </div>
-        <div className="hero-art" aria-hidden="true">
-          <svg viewBox="0 0 440 350" fill="none">
-            <ellipse cx="247" cy="204" rx="128" ry="115" stroke="currentColor" strokeWidth="1" />
-            <ellipse cx="247" cy="204" rx="100" ry="89" stroke="currentColor" strokeWidth="1" />
-            <path
-              d="M230 208c30-23 60-24 83-7-12 32-38 37-63 17m-14-3c-35 6-54-4-65-25 31-15 57-7 66 20m3-4c-9-37 1-61 29-71 20 30 7 55-22 74m-5 13c-4 18 4 34 19 47"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M99 131 62 275m44-142L70 277M89 127l17 5m-16-7 10-40m-1 42 10-40m-1 42 10-40M390 151l-28 119c-2 8-10 6-9-2l15-62c-15-5-21-12-16-32l13-41c8-23 30-18 25 18Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M122 58c13 22 35 19 48 5-21-14-37-16-48-5Zm27 17c15 20 31 14 44 1-20-13-35-13-44-1Zm-37-23c16 26 35 41 65 53"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            />
-            <circle cx="333" cy="73" r="17" stroke="currentColor" />
-            <path d="M328 58c4 8 7 8 11 1m-12 10 12 9m-16-1 18-9" stroke="currentColor" />
-            <circle cx="157" cy="304" r="3" fill="currentColor" />
-            <circle cx="170" cy="310" r="2" fill="currentColor" />
-          </svg>
-          <span className="hero-art-note">made with a little love</span>
-          <span className="hero-stamp">
-            FROM MY KITCHEN
-            <br />
-            <span>TO YOURS</span>
-          </span>
-        </div>
+      <section className="collection-hero">
+        <span className="eyebrow">
+          {favoritesOnly ? 'THE ONES I COME BACK TO' : 'GORDON’S PERSONAL RECIPE BOOK'}
+        </span>
+        <h1>{favoritesOnly ? 'A few favorites.' : 'Good food. Worth keeping.'}</h1>
+        <p>
+          {favoritesOnly
+            ? 'Tried, loved, and ready to make again.'
+            : 'From my kitchen, made to be shared.'}
+        </p>
       </section>
       <section id="collection" className="collection-section">
         <div className="section-heading">
@@ -155,14 +101,6 @@ export function Home() {
               {favoritesOnly ? 'Your favorites' : 'All recipes'} <span>{base.length}</span>
             </h2>
           </div>
-          {canEdit && (
-            <Button asChild variant="outline" className="add-recipe-button">
-              <Link to={`${prefix}/new`}>
-                <Plus />
-                Add recipe
-              </Link>
-            </Button>
-          )}
         </div>
         <div className="collection-toolbar">
           <div className="search-field">
@@ -270,7 +208,7 @@ export function Home() {
             </p>
             {favoritesOnly ? (
               <Button asChild variant="outline">
-                <Link to={`${prefix}/`}>
+                <Link href={`${prefix}/`}>
                   <Heart />
                   Browse recipes
                 </Link>
@@ -278,7 +216,7 @@ export function Home() {
             ) : (
               canEdit && (
                 <Button asChild>
-                  <Link to={`${prefix}/new`}>
+                  <Link href={`${prefix}/new`}>
                     <Plus />
                     Add a recipe
                     <ArrowUpRight />

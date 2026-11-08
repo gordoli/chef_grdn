@@ -1,5 +1,8 @@
+'use client';
+
 import { useRef, useState, type FormEvent, type ReactNode } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter, useParams } from 'next/navigation';
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -60,7 +63,7 @@ export function RecipeEditor() {
   const { slug } = useParams();
   const { recipes, saveRecipe, addPhotos, canEdit, isDemo, loading } = useRecipes();
   const { session } = useSession();
-  const navigate = useNavigate();
+  const router = useRouter();
   const prefix = isDemo ? '/demo' : '';
   const existing = recipes.find((r) => r.slug === slug);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -202,7 +205,7 @@ export function RecipeEditor() {
       }
       toast.success(existing ? 'Recipe updated.' : 'Added to your collection.');
       if (photoWarning) toast.error(`${photoWarning} You can upload it in Edit.`);
-      navigate(`${prefix}/r/${recipe.slug}`);
+      router.push(`${prefix}/r/${recipe.slug}`);
     } catch (failure) {
       setError(errorMessage(failure));
     } finally {
@@ -216,7 +219,7 @@ export function RecipeEditor() {
         <h1>Gordon’s kitchen</h1>
         <p>Only the owner can add and edit recipes.</p>
         <Button asChild>
-          <Link to={`${prefix}/`}>Back to recipes</Link>
+          <Link href={`${prefix}/`}>Back to recipes</Link>
         </Button>
       </div>
     );
@@ -224,12 +227,12 @@ export function RecipeEditor() {
     return (
       <div className="auth-state">
         <h1>Recipe not found</h1>
-        <Link to={`${prefix}/`}>Back to collection</Link>
+        <Link href={`${prefix}/`}>Back to collection</Link>
       </div>
     );
   return (
     <div className="editor-page page-width">
-      <Link to={existing ? `${prefix}/r/${existing.slug}` : `${prefix}/`} className="back-link">
+      <Link href={existing ? `${prefix}/r/${existing.slug}` : `${prefix}/`} className="back-link">
         <ArrowLeft size={16} />
         Back to {existing ? 'recipe' : 'collection'}
       </Link>
@@ -528,7 +531,7 @@ export function RecipeEditor() {
           </section>
           <div className="editor-save">
             <Button type="button" variant="ghost" asChild>
-              <Link to={existing ? `${prefix}/r/${existing.slug}` : `${prefix}/`}>Cancel</Link>
+              <Link href={existing ? `${prefix}/r/${existing.slug}` : `${prefix}/`}>Cancel</Link>
             </Button>
             <Button size="lg" disabled={saving}>
               {saving ? <Loader2 className="animate-spin" /> : <Check />}

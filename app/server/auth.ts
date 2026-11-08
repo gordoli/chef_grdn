@@ -13,8 +13,9 @@ function denied(message: string, status: number): OwnerAuthentication {
 export async function authenticateOwner(request: Request): Promise<OwnerAuthentication> {
   const token = /^Bearer\s+(\S+)$/i.exec(request.headers.get('authorization') ?? '')?.[1];
   if (!token) return denied('Sign in to import a recipe.', 401);
-  const projectUrl = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL;
-  const publishableKey = process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.VITE_SUPABASE_ANON_KEY;
+  const projectUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const publishableKey =
+    process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!projectUrl || !publishableKey) return denied('Recipe importing is not configured yet.', 503);
   try {
     const client = createClient(projectUrl, publishableKey, {

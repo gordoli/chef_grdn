@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ArrowUpRight, Clock, Heart, Users, Star } from 'lucide-react';
 import { useRecipes } from '@/hooks/useRecipes';
 import type { Recipe } from '@/lib/types';
@@ -21,7 +21,7 @@ export function RecipeCard({
   return (
     <article className={`recipe-card ${photo ? 'has-photo' : ''} ${list ? 'list-card' : ''}`}>
       <Link
-        to={`${isDemo ? '/demo' : ''}/r/${recipe.slug}`}
+        href={`${isDemo ? '/demo' : ''}/r/${recipe.slug}`}
         className="recipe-card-link"
         aria-label={`Open ${recipe.title}`}
       >

@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
-import { useLocation, Navigate } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
+import { Redirect } from '@/components/Redirect';
 import { supabase } from '@/lib/supabase';
 import { SessionContext, useSession } from './useSession';
 import type { Profile } from '@/lib/types';
@@ -81,14 +82,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 }
 export function AuthGate({ children }: { children: ReactNode }) {
   const { session, profile, loading, error, refreshProfile } = useSession();
-  const location = useLocation();
+  const pathname = usePathname();
   const [name, setName] = useState('');
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
-  if (
-    location.pathname.startsWith('/demo') ||
-    (!location.pathname.endsWith('/new') && !location.pathname.endsWith('/edit'))
-  )
+  if (pathname.startsWith('/demo') || (!pathname.endsWith('/new') && !pathname.endsWith('/edit')))
     return <>{children}</>;
   if (loading)
     return (
@@ -97,13 +95,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
         Opening your recipe book…
       </div>
     );
-  if (!session)
-    return (
-      <Navigate
-        to={`/sign-in?next=${encodeURIComponent(location.pathname + location.search)}`}
-        replace
-      />
-    );
+  if (!session) return <Redirect href={`/sign-in?next=${encodeURIComponent(pathname)}`} />;
   if (error || !profile)
     return (
       <div className="auth-state">

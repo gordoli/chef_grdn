@@ -1,5 +1,8 @@
+'use client';
+
 import { useState } from 'react';
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter, useParams, useSearchParams, usePathname } from 'next/navigation';
 import {
   ArrowUpRight,
   Check,
@@ -34,8 +37,9 @@ export function RecipeDetail() {
     loading,
     favoritePending,
   } = useRecipes();
-  const navigate = useNavigate();
-  const [params, setParams] = useSearchParams();
+  const router = useRouter();
+  const params = useSearchParams();
+  const pathname = usePathname();
   const [checked, setChecked] = useState<Set<string>>(new Set());
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -48,10 +52,10 @@ export function RecipeDetail() {
   const factor = amount / base;
   const isFavorite = recipe ? favorites.includes(recipe.id) : false;
   function portion(value: number) {
-    const next = new URLSearchParams(params);
+    const next = new URLSearchParams(params.toString());
     if (value === base) next.delete(recipe?.servings ? 'serves' : 'x');
     else next.set(recipe?.servings ? 'serves' : 'x', String(value));
-    setParams(next, { replace: true });
+    router.replace(`${pathname}${next.size ? `?${next.toString()}` : ''}`, { scroll: false });
   }
   async function remove() {
     if (!recipe) return;
@@ -59,7 +63,7 @@ export function RecipeDetail() {
     try {
       await deleteRecipe(recipe);
       toast.success('Recipe removed from your collection.');
-      navigate(`${prefix}/`);
+      router.push(`${prefix}/`);
     } catch (error) {
       toast.error(errorMessage(error));
     } finally {
@@ -78,7 +82,7 @@ export function RecipeDetail() {
     <Dialog
       open
       onOpenChange={(open) => {
-        if (!open) navigate(`${prefix}/`);
+        if (!open) router.push(`${prefix}/`);
       }}
     >
       <DialogContent className="recipe-sheet" aria-describedby="recipe-description">
@@ -91,7 +95,7 @@ export function RecipeDetail() {
             <DialogTitle>Recipe not found</DialogTitle>
             <DialogDescription>This recipe may have moved.</DialogDescription>
             <Button asChild>
-              <Link to={`${prefix}/`}>Back to collection</Link>
+              <Link href={`${prefix}/`}>Back to collection</Link>
             </Button>
           </div>
         ) : (
@@ -121,7 +125,7 @@ export function RecipeDetail() {
                 </Button>
                 {canEdit && (
                   <Button asChild variant="outline" size="sm">
-                    <Link to={`${prefix}/r/${recipe.slug}/edit`}>
+                    <Link href={`${prefix}/r/${recipe.slug}/edit`}>
                       <Pencil />
                       Edit
                     </Link>

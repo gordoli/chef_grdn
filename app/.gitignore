@@ -8,3 +8,7 @@ playwright-report/
 test-results/
 .DS_Store
 docs/portrait-reference.png
+
+.next/
+next-env.d.ts
+*.tsbuildinfo

@@ -1,12 +1,24 @@
-import { useEffect, useState } from 'react';
+'use client';
+import { useSyncExternalStore } from 'react';
+const themeEvent = 'grdn:theme';
+function subscribe(callback: () => void) {
+  window.addEventListener(themeEvent, callback);
+  window.addEventListener('storage', callback);
+  return () => {
+    window.removeEventListener(themeEvent, callback);
+    window.removeEventListener('storage', callback);
+  };
+}
+function getSnapshot() {
+  return document.documentElement.classList.contains('dark');
+}
 export function useTheme() {
-  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', dark);
-    localStorage.setItem('grdn.theme', dark ? 'dark' : 'light');
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', dark ? '#191c17' : '#fafaf7');
-  }, [dark]);
-  return { dark, toggleTheme: () => setDark((value) => !value) };
+  const dark = useSyncExternalStore(subscribe, getSnapshot, () => false);
+  function toggleTheme() {
+    const next = !getSnapshot();
+    document.documentElement.classList.toggle('dark', next);
+    localStorage.setItem('grdn.theme', next ? 'dark' : 'light');
+    window.dispatchEvent(new Event(themeEvent));
+  }
+  return { dark, toggleTheme };
 }

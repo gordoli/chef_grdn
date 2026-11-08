@@ -24,8 +24,8 @@ function icon(size, background, inset = 0) {
 for (const size of [32, 48, 64, 192, 512]) {
   await writeFile(new URL(`public/icons/icon-${size}.png`, project), icon(size));
 }
-await writeFile(new URL('public/icons/apple-touch-icon.png', project), icon(180, '#fafaf7', 12));
-await writeFile(new URL('public/icons/maskable-512.png', project), icon(512, '#fafaf7', 72));
+await writeFile(new URL('public/icons/apple-touch-icon.png', project), icon(180, '#ffffff', 12));
+await writeFile(new URL('public/icons/maskable-512.png', project), icon(512, '#ffffff', 72));
 const favicon = icon(48);
 const icoHeader = Buffer.alloc(22);
 icoHeader.writeUInt16LE(1, 2);

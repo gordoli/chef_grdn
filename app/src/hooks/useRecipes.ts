@@ -9,6 +9,7 @@ interface RecipeState {
   reviews: Review[];
   favorites: string[];
   loading: boolean;
+  hasLoadedClientData: boolean;
   error: string;
   isDemo: boolean;
   canEdit: boolean;
