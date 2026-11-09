@@ -18,22 +18,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RecipeCard } from '@/components/RecipeCard';
 import { EmptyState } from '@/components/EmptyState';
-const typeOrder = [
-  'Breakfast',
-  'Starters',
-  'Mains',
-  'Sides',
-  'Soups',
-  'Salads',
-  'Sauces',
-  'Desserts',
-  'Drinks',
-];
+import { compareRecipeTypes, groupRecipesByType, recipeTypeLabel } from '@/lib/recipeCollection';
 export function Home() {
   const { recipes, reviews, favorites, loading, error, refresh, isDemo, canEdit } = useRecipes();
   const pathname = usePathname();
-  const favoritesOnly = pathname.endsWith('/favorites');
-  const CollectionHeading = favoritesOnly ? 'h2' : 'h1';
+  const favoritesPage = pathname.endsWith('/favorites');
+  const [favoritesFilter, setFavoritesFilter] = useState(false);
+  const favoritesOnly = favoritesPage || favoritesFilter;
+  const CollectionHeading = favoritesPage ? 'h2' : 'h1';
   const [search, setSearch] = useState('');
   const [type, setType] = useState('All');
   const [view, setView] = useState('grid');
@@ -46,20 +38,17 @@ export function Home() {
     () => (favoritesOnly ? recipes.filter((r) => favorites.includes(r.id)) : recipes),
     [favoritesOnly, recipes, favorites],
   );
-  const types = [...new Set(base.map((r) => r.type))].sort((a, b) => {
-    const ai = typeOrder.indexOf(a),
-      bi = typeOrder.indexOf(b);
-    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi) || a.localeCompare(b);
-  });
+  const types = [...new Set(base.map((r) => recipeTypeLabel(r.type)))].sort(compareRecipeTypes);
   const filtered = useMemo(
     () =>
       base
         .filter(
           (r) =>
-            (type === 'All' || r.type === type) &&
+            (type === 'All' || recipeTypeLabel(r.type) === type) &&
             [
               r.title,
               r.type,
+              recipeTypeLabel(r.type),
               ...r.tags,
               ...r.ingredients.flatMap((s) => s.items.map((i) => i.raw)),
               ...reviews
@@ -81,9 +70,11 @@ export function Home() {
         ),
     [base, type, search, sort, reviews],
   );
+  const groups =
+    sort === 'collection' ? groupRecipesByType(filtered) : [{ type: null, recipes: filtered }];
   return (
     <div className="home-page page-width">
-      {favoritesOnly && (
+      {favoritesPage && (
         <section className="collection-hero">
           <span className="eyebrow">THE ONES I COME BACK TO</span>
           <h1>A few favorites.</h1>
@@ -95,7 +86,8 @@ export function Home() {
           <div>
             <span className="eyebrow">THE COLLECTION</span>
             <CollectionHeading>
-              {favoritesOnly ? 'Your favorites' : 'All recipes'} <span>{base.length}</span>
+              {favoritesPage ? 'Your favorites' : 'All recipes'}{' '}
+              <span>{favoritesPage ? base.length : recipes.length}</span>
             </CollectionHeading>
           </div>
         </div>
@@ -123,7 +115,7 @@ export function Home() {
                 onChange={(e) => setSort(e.target.value)}
                 aria-label="Sort recipes"
               >
-                <option value="collection">Collection order</option>
+                <option value="collection">Recipe type</option>
                 <option value="title">Title A–Z</option>
                 <option value="newest">Newest first</option>
                 <option value="rating">Highest rated</option>
@@ -149,13 +141,37 @@ export function Home() {
             </div>
           </div>
         </div>
-        <div className="category-chips" aria-label="Filter by recipe type">
-          {['All', ...types].map((label) => (
+        <div className="category-chips" aria-label="Recipe filters">
+          <button
+            onClick={() => {
+              setType('All');
+              setFavoritesFilter(false);
+            }}
+            aria-pressed={type === 'All' && !favoritesFilter}
+          >
+            Everything<span>{favoritesPage ? base.length : recipes.length}</span>
+          </button>
+          {!favoritesPage && (
+            <button
+              aria-pressed={favoritesFilter}
+              onClick={() => {
+                setFavoritesFilter(!favoritesFilter);
+                setType('All');
+              }}
+            >
+              <Heart
+                size={13}
+                aria-hidden="true"
+                fill={favoritesFilter ? 'currentColor' : 'none'}
+              />
+              Favorites
+              <span>{recipes.filter((recipe) => favorites.includes(recipe.id)).length}</span>
+            </button>
+          )}
+          {types.map((label) => (
             <button key={label} onClick={() => setType(label)} aria-pressed={type === label}>
-              {label === 'All' ? 'Everything' : label}
-              <span>
-                {label === 'All' ? base.length : base.filter((r) => r.type === label).length}
-              </span>
+              {label}
+              <span>{base.filter((recipe) => recipeTypeLabel(recipe.type) === label).length}</span>
             </button>
           ))}
         </div>
@@ -174,9 +190,30 @@ export function Home() {
           </div>
         ) : filtered.length ? (
           <>
-            <div className={view === 'list' ? 'recipe-list' : 'recipe-grid'}>
-              {filtered.map((recipe, index) => (
-                <RecipeCard key={recipe.id} recipe={recipe} index={index} list={view === 'list'} />
+            <div className="recipe-groups">
+              {groups.map((group) => (
+                <section
+                  key={group.type ?? 'all'}
+                  className="recipe-type-group"
+                  aria-label={group.type ?? 'Recipes'}
+                >
+                  {group.type && (
+                    <div className="recipe-type-heading">
+                      <h2>{group.type}</h2>
+                      <span>{group.recipes.length}</span>
+                    </div>
+                  )}
+                  <div className={view === 'list' ? 'recipe-list' : 'recipe-grid'}>
+                    {group.recipes.map((recipe, index) => (
+                      <RecipeCard
+                        key={recipe.id}
+                        recipe={recipe}
+                        index={index}
+                        list={view === 'list'}
+                      />
+                    ))}
+                  </div>
+                </section>
               ))}
             </div>
             <div className="collection-end">
@@ -205,7 +242,14 @@ export function Home() {
             </p>
             {favoritesOnly ? (
               <Button asChild variant="outline">
-                <Link href={`${prefix}/`}>
+                <Link
+                  href={`${prefix}/`}
+                  onClick={() => {
+                    setFavoritesFilter(false);
+                    setType('All');
+                    setSearch('');
+                  }}
+                >
                   <Heart />
                   Browse recipes
                 </Link>

@@ -28,6 +28,10 @@ Liquid-glass styling uses one shared `.glass-control` material for navigation an
 
 ## Intentional limits
 
+`/basics` and `/demo/basics` share a public kitchen reference with linked primary sources. Culinary steak doneness is distinguished from USDA minimum cooking temperatures. The converter uses US customary volume and avoirdupois weight; it never infers ingredient density. Favorites are a filter on Recipes; the former favorites URLs remain compatible. Mobile recipes always use the compact list presentation while desktop layout preferences remain independent.
+
+The default collection groups recipes by type: Mains, Appetizers, Soups, then the remaining categories. `lib/recipeCollection.ts` owns display names, ordering, and grouping; existing Starter/Appetizer aliases are grouped together without rewriting saved records. Search and favorites omit empty sections. Alternate sorts remain flat.
+
 Website scraping depends on publishers allowing requests and providing structured data. Unsupported sites and social video posts use the manual editor. The Instagram public profile embed is controlled by Instagram and has a direct link fallback; it is not a token-backed automatically refreshed media feed. Source images retain attribution. In-memory import quotas are best effort per function instance, suitable for a single-owner portfolio, not a shared abuse-prevention service.
 
 No meal planner, grocery list, nutrition system or additional infrastructure is introduced.

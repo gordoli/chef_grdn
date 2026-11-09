@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Clock, Heart, Star, Users } from 'lucide-react';
 import { useRecipes } from '@/hooks/useRecipes';
 import type { Recipe } from '@/lib/types';
+import { recipeTypeLabel } from '@/lib/recipeCollection';
 import { safeUrl, errorMessage } from '@/lib/utils';
 import { toast } from 'sonner';
 export function RecipeCard({
@@ -27,7 +28,7 @@ export function RecipeCard({
       >
         <div className="recipe-card-content">
           <div className="card-topline">
-            <span className="recipe-category">{recipe.type}</span>
+            <span className="recipe-category">{recipeTypeLabel(recipe.type)}</span>
             <span className="recipe-index">{String(index + 1).padStart(2, '0')}</span>
           </div>
           <div className="recipe-card-title">

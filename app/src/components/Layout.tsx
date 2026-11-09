@@ -2,9 +2,10 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ArrowUpRight, BookOpen, Heart, Image, Plus, Sun, Moon, LogOut, Leaf } from 'lucide-react';
+import { ArrowUpRight, BookOpen, Image, Plus, Sun, Moon, LogOut, Leaf } from 'lucide-react';
 import { Button } from './ui/button';
 import { Brand } from './Brand';
+import { KitchenToolsIcon } from './icons/KitchenToolsIcon';
 import { useTheme } from '@/hooks/useTheme';
 import { useRecipes } from '@/hooks/useRecipes';
 import { useSession } from '@/hooks/useSession';
@@ -12,8 +13,8 @@ import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 const links = [
   { path: '/', label: 'Recipes', icon: BookOpen },
-  { path: '/favorites', label: 'Favorites', icon: Heart },
   { path: '/gallery', label: 'Gallery', icon: Image },
+  { path: '/basics', label: 'Basics', icon: KitchenToolsIcon },
 ];
 function Navigation({
   prefix,
@@ -33,7 +34,9 @@ function Navigation({
       >
         {links.map(({ path, label, icon: Icon }) => {
           const active =
-            path === '/' ? current === '/' || current.startsWith('/r/') : current === path;
+            path === '/'
+              ? current === '/' || current === '/favorites' || current.startsWith('/r/')
+              : current === path;
           return (
             <Link
               key={path}
@@ -62,7 +65,7 @@ export function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="app-shell">
       <a href="#main" className="skip-link">
-        Skip to recipes
+        Skip to content
       </a>
       <header className="site-header">
         <Link href={`${prefix}/`} aria-label="Chef GRDN home">
@@ -136,7 +139,9 @@ export function Layout({ children }: { children: ReactNode }) {
           ? 'Favorites'
           : pathname.includes('gallery')
             ? 'Gallery'
-            : 'Recipe book'}
+            : pathname.includes('basics')
+              ? 'Kitchen basics'
+              : 'Recipe book'}
       </span>
     </div>
   );

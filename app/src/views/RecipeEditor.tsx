@@ -20,6 +20,7 @@ import { useSession } from '@/hooks/useSession';
 import { Button } from '@/components/ui/button';
 import { Input, Textarea } from '@/components/ui/input';
 import { PhotoManager } from '@/components/PhotoManager';
+import { recipeTypes, recipeTypeLabel } from '@/lib/recipeCollection';
 import { parseIngredientsText, toText } from '@/lib/quantity';
 import { parseStepsText, stepsToText } from '@/lib/recipeText';
 import { recipeFormSchema } from '@/lib/validation';
@@ -330,18 +331,7 @@ export function RecipeEditor() {
                 />
                 <datalist id="recipe-types">
                   {[
-                    ...new Set([
-                      'Breakfast',
-                      'Starters',
-                      'Mains',
-                      'Sides',
-                      'Soups',
-                      'Salads',
-                      'Sauces',
-                      'Desserts',
-                      'Drinks',
-                      ...recipes.map((r) => r.type),
-                    ]),
+                    ...new Set([...recipeTypes, ...recipes.map((r) => recipeTypeLabel(r.type))]),
                   ].map((t) => (
                     <option key={t}>{t}</option>
                   ))}
