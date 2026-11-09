@@ -5,6 +5,7 @@ import type { Recipe } from '@/lib/types';
 import { recipeTypeLabel } from '@/lib/recipeCollection';
 import { safeUrl, errorMessage } from '@/lib/utils';
 import { toast } from 'sonner';
+import { RecipeStatusControl } from '@/components/RecipeStatusControl';
 export function RecipeCard({
   recipe,
   index,
@@ -71,17 +72,20 @@ export function RecipeCard({
           </div>
         </div>
       </Link>
-      <button
-        className={`favorite-button ${isFavorite ? 'is-favorite' : ''}`}
-        aria-label={`${isFavorite ? 'Unfavorite' : 'Favorite'} ${recipe.title}`}
-        aria-pressed={isFavorite}
-        disabled={favoritePending.includes(recipe.id)}
-        onClick={() =>
-          void toggleFavorite(recipe.id).catch((error) => toast.error(errorMessage(error)))
-        }
-      >
-        <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} strokeWidth={1.6} />
-      </button>
+      <div className="recipe-card-actions">
+        <RecipeStatusControl recipe={recipe} />
+        <button
+          className={`favorite-button ${isFavorite ? 'is-favorite' : ''}`}
+          aria-label={`${isFavorite ? 'Unfavorite' : 'Favorite'} ${recipe.title}`}
+          aria-pressed={isFavorite}
+          disabled={favoritePending.includes(recipe.id)}
+          onClick={() =>
+            void toggleFavorite(recipe.id).catch((error) => toast.error(errorMessage(error)))
+          }
+        >
+          <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} strokeWidth={1.6} />
+        </button>
+      </div>
     </article>
   );
 }

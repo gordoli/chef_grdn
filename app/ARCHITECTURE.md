@@ -18,7 +18,7 @@ Next.js 16 App Router + React 19 + strict TypeScript. Tailwind 4 supplies utilit
 
 ## Data and access
 
-Anonymous visitors read recipes and recipe photos; Storage buckets remain private with explicit recipe-photo read policies. Review photos, profiles and reviews are visible only to signed-in users. Anonymous favorites stay in localStorage. Authenticated favorites are scoped by `auth.uid()`. Every recipe/photo mutation is owner-only under RLS. Invitees may write only their own reviews. Users may update their display name, never their role.
+Anonymous visitors read recipes and recipe photos; Storage buckets remain private with explicit recipe-photo read policies. Review photos, profiles and reviews are visible only to signed-in users. Anonymous favorites stay in localStorage. Authenticated favorites are scoped by `auth.uid()`. Every recipe/photo mutation is owner-only under RLS. Recipe cooking status (`made` / `to_try`) is shared across the book and owner-editable. Existing recipes and legacy preview JSON count as made; new recipes default to to-try. The Recipes page starts with made recipes, and its status filter composes with favorites, category and search. Status changes use a separate mutation so editor saves and `upsert_recipe` preserve them. Invitees may write only their own reviews. Users may update their display name, never their role.
 
 `/demo` is an explicitly labeled, isolated browser-only copy of the eight seed recipes. It cannot write to Supabase or invoke import APIs. Preview edits and favorites use distinct storage keys.
 

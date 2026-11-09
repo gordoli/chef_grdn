@@ -355,6 +355,33 @@ button svg {
   margin: 21px 0 27px;
   flex-wrap: wrap;
 }
+.cooking-status-toggle {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  padding: 4px;
+  margin-bottom: 20px;
+  border-radius: 100px;
+}
+.cooking-status-toggle > button {
+  min-height: 40px;
+  border-radius: 100px;
+  padding: 8px 16px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  gap: 8px;
+}
+.cooking-status-toggle > button[aria-pressed='true'] {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow:
+    0 2px 8px #00000012,
+    inset 0 1px 0 #ffffff30;
+}
+.cooking-status-toggle > button > span {
+  opacity: 0.65;
+  font-size: 9px;
+}
 .category-chips > button {
   min-height: 37px;
   padding: 7px 16px;
@@ -413,7 +440,8 @@ button svg {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-right: 35px;
+  padding-right: 78px;
+  min-height: 26px;
   gap: 10px;
 }
 .recipe-category {
@@ -429,10 +457,16 @@ button svg {
   opacity: 0.6;
   display: none;
 }
-.favorite-button {
+.recipe-card-actions {
   position: absolute;
   top: 13px;
   right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.favorite-button,
+.recipe-status-control {
   display: grid;
   place-items: center;
   width: 40px;
@@ -448,6 +482,12 @@ button svg {
 .favorite-button:hover {
   background: var(--secondary);
   color: var(--foreground);
+}
+.recipe-status-control.is-made {
+  color: var(--accent-foreground);
+}
+.recipe-status-control:not(button) {
+  cursor: default;
 }
 .favorite-button.is-favorite {
   color: #a16954;
@@ -514,7 +554,7 @@ button svg {
   flex-direction: row;
 }
 .list-card .recipe-card-content {
-  padding: 20px 54px 20px 24px;
+  padding: 20px 100px 20px 24px;
   display: grid;
   grid-template-columns: 90px minmax(0, 1.2fr) minmax(0, 1fr);
   align-items: center;
@@ -534,7 +574,7 @@ button svg {
 .list-card .card-tags {
   margin: 0;
 }
-.list-card .favorite-button {
+.list-card .recipe-card-actions {
   top: 50%;
   transform: translateY(-50%);
   right: 9px;
@@ -2158,9 +2198,12 @@ button svg {
     line-height: 1.45;
     letter-spacing: -0.6px;
   }
-  .favorite-button {
+  .recipe-card-actions {
     top: 11px;
     right: 12px;
+  }
+  .favorite-button,
+  .recipe-status-control {
     width: 42px;
     height: 42px;
   }
@@ -2168,14 +2211,14 @@ button svg {
   .home-page .recipe-card .recipe-card-content {
     display: flex;
     align-items: flex-start;
-    padding: 20px 52px 18px 19px;
+    padding: 20px 19px 18px;
     gap: 0;
   }
   .home-page .recipe-card h3 {
     font-size: 16px;
     line-height: 1.45;
   }
-  .home-page .recipe-card .favorite-button {
+  .home-page .recipe-card .recipe-card-actions {
     top: 15px;
     transform: none;
     right: 9px;
@@ -2185,6 +2228,19 @@ button svg {
   }
   .home-page .recipe-card .recipe-card-photo {
     width: 56px;
+  }
+  .home-page .recipe-card .card-topline {
+    min-height: 32px;
+    padding-right: 83px;
+  }
+  .cooking-status-toggle {
+    width: 100%;
+  }
+  .cooking-status-toggle > button {
+    flex: 1;
+    padding: 8px;
+    gap: 6px;
+    font-size: 10px;
   }
   .collection-end {
     font-size: 8px;

@@ -31,6 +31,7 @@ export const previewRecipesSchema = z.array(
     id: z.string(),
     slug: z.string(),
     title: z.string(),
+    cooking_status: z.enum(['made', 'to_try']).default('made'),
     type: z.string(),
     tags: z.array(z.string()),
     servings: z.number().nullable(),

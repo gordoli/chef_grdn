@@ -12,13 +12,21 @@ import {
   X,
   Heart,
   SlidersHorizontal,
+  CircleCheck,
+  CookingPot,
 } from 'lucide-react';
 import { useRecipes } from '@/hooks/useRecipes';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RecipeCard } from '@/components/RecipeCard';
 import { EmptyState } from '@/components/EmptyState';
-import { compareRecipeTypes, groupRecipesByType, recipeTypeLabel } from '@/lib/recipeCollection';
+import {
+  compareRecipeTypes,
+  groupRecipesByType,
+  recipeTypeLabel,
+  recipeCookingStatus,
+} from '@/lib/recipeCollection';
+import type { CookingStatus } from '@/lib/types';
 export function Home() {
   const { recipes, reviews, favorites, loading, error, refresh, isDemo, canEdit } = useRecipes();
   const pathname = usePathname();
@@ -28,15 +36,20 @@ export function Home() {
   const CollectionHeading = favoritesPage ? 'h2' : 'h1';
   const [search, setSearch] = useState('');
   const [type, setType] = useState('All');
+  const [cookingStatus, setCookingStatus] = useState<CookingStatus>('made');
   const [view, setView] = useState('grid');
   useEffect(() => {
     setView(localStorage.getItem('grdn.view') ?? 'grid');
   }, []);
   const [sort, setSort] = useState('collection');
   const prefix = isDemo ? '/demo' : '';
+  const statusRecipes = useMemo(
+    () => recipes.filter((recipe) => recipeCookingStatus(recipe) === cookingStatus),
+    [recipes, cookingStatus],
+  );
   const base = useMemo(
-    () => (favoritesOnly ? recipes.filter((r) => favorites.includes(r.id)) : recipes),
-    [favoritesOnly, recipes, favorites],
+    () => (favoritesOnly ? statusRecipes.filter((r) => favorites.includes(r.id)) : statusRecipes),
+    [favoritesOnly, statusRecipes, favorites],
   );
   const types = [...new Set(base.map((r) => recipeTypeLabel(r.type)))].sort(compareRecipeTypes);
   const filtered = useMemo(
@@ -90,6 +103,34 @@ export function Home() {
               <span>{favoritesPage ? base.length : recipes.length}</span>
             </CollectionHeading>
           </div>
+        </div>
+        <div
+          className="cooking-status-toggle glass-control"
+          role="group"
+          aria-label="Cooking status"
+        >
+          {(
+            [
+              { value: 'made', label: 'Recipes I’ve made', icon: CircleCheck },
+              { value: 'to_try', label: 'Recipes to try', icon: CookingPot },
+            ] as const
+          ).map(({ value, label, icon: Icon }) => (
+            <Button
+              key={value}
+              variant="ghost"
+              aria-pressed={cookingStatus === value}
+              onClick={() => {
+                setCookingStatus(value);
+                setType('All');
+              }}
+            >
+              <Icon size={16} aria-hidden="true" />
+              {label}
+              <span>
+                {recipes.filter((recipe) => recipeCookingStatus(recipe) === value).length}
+              </span>
+            </Button>
+          ))}
         </div>
         <div className="collection-toolbar">
           <div className="search-field">
@@ -149,7 +190,7 @@ export function Home() {
             }}
             aria-pressed={type === 'All' && !favoritesFilter}
           >
-            Everything<span>{favoritesPage ? base.length : recipes.length}</span>
+            Everything<span>{favoritesPage ? base.length : statusRecipes.length}</span>
           </button>
           {!favoritesPage && (
             <button
@@ -165,7 +206,7 @@ export function Home() {
                 fill={favoritesFilter ? 'currentColor' : 'none'}
               />
               Favorites
-              <span>{recipes.filter((recipe) => favorites.includes(recipe.id)).length}</span>
+              <span>{statusRecipes.filter((recipe) => favorites.includes(recipe.id)).length}</span>
             </button>
           )}
           {types.map((label) => (
@@ -230,7 +271,9 @@ export function Home() {
                 ? 'No matches'
                 : favoritesOnly
                   ? 'Save a little inspiration'
-                  : 'No recipes yet'
+                  : cookingStatus === 'made'
+                    ? 'No made recipes yet'
+                    : 'Nothing on the list yet'
             }
           >
             <p>
@@ -238,7 +281,9 @@ export function Home() {
                 ? `Nothing matches “${search || type}”. Try an ingredient like miso or rice.`
                 : favoritesOnly
                   ? 'Tap the heart on any recipe to keep it here.'
-                  : 'Every good collection starts with one recipe.'}
+                  : cookingStatus === 'made'
+                    ? 'Recipes marked as made will appear here.'
+                    : 'New recipes start here until they’ve been made.'}
             </p>
             {favoritesOnly ? (
               <Button asChild variant="outline">

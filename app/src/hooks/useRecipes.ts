@@ -1,8 +1,15 @@
 import { createContext, useContext } from 'react';
-import type { Recipe, RecipePhoto, Review } from '@/lib/types';
+import type { CookingStatus, Recipe, RecipePhoto, Review } from '@/lib/types';
 export type RecipeInput = Omit<
   Recipe,
-  'id' | 'slug' | 'created_at' | 'updated_at' | 'photos' | 'cover_photo_id' | 'sort_order'
+  | 'id'
+  | 'slug'
+  | 'created_at'
+  | 'updated_at'
+  | 'photos'
+  | 'cover_photo_id'
+  | 'sort_order'
+  | 'cooking_status'
 >;
 interface RecipeState {
   recipes: Recipe[];
@@ -17,6 +24,8 @@ interface RecipeState {
   saveRecipe: (input: RecipeInput, id?: string) => Promise<Recipe>;
   deleteRecipe: (recipe: Recipe) => Promise<void>;
   toggleFavorite: (id: string) => Promise<void>;
+  setCookingStatus: (id: string, status: CookingStatus) => Promise<void>;
+  cookingStatusPending: string[];
   addPhotos: (recipeId: string, files: File[]) => Promise<void>;
   updatePhoto: (
     photo: RecipePhoto,

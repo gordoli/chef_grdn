@@ -1,5 +1,5 @@
 // Handwritten from migrations 0001 and 0002; replace with Supabase-generated types after linking a project.
-import type { Profile, RecipePhoto, Review } from './types';
+import type { CookingStatus, Profile, RecipePhoto, Review } from './types';
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
@@ -7,6 +7,7 @@ type RecipeRow = {
   id: string;
   slug: string;
   title: string;
+  cooking_status: CookingStatus;
   type: string;
   tags: string[];
   servings: number | null;

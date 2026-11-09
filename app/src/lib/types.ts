@@ -30,10 +30,14 @@ export interface RecipePhoto {
   url?: string;
 }
 
+export type CookingStatus = 'made' | 'to_try';
+
 export interface Recipe {
   id: string;
   slug: string;
   title: string;
+  /** Absent only in legacy seed/preview JSON, which represents made recipes. */
+  cooking_status?: CookingStatus;
   type: string;
   tags: string[];
   servings: number | null;

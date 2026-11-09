@@ -13,7 +13,8 @@ import {
   favoriteIdsSchema,
 } from '@/lib/validation';
 import { errorMessage, slugify } from '@/lib/utils';
-import type { Recipe, RecipePhoto, Review } from '@/lib/types';
+import type { CookingStatus, Recipe, RecipePhoto, Review } from '@/lib/types';
+import { recipeCookingStatus } from '@/lib/recipeCollection';
 import seed from '../../seed/recipes.json';
 import { useSession } from './useSession';
 import { RecipeContext, type RecipeInput } from './useRecipes';
@@ -59,6 +60,8 @@ export function RecipeProvider({
   const refreshVersion = useRef(0);
   const favoriteRequests = useRef(new Set<string>());
   const [favoritePending, setFavoritePending] = useState<string[]>([]);
+  const statusRequests = useRef(new Set<string>());
+  const [cookingStatusPending, setCookingStatusPending] = useState<string[]>([]);
   const refresh = useCallback(async () => {
     const version = ++refreshVersion.current;
     if (isDemo) {
@@ -170,6 +173,7 @@ export function RecipeProvider({
         ...input,
         id: id ?? crypto.randomUUID(),
         slug,
+        cooking_status: existing ? recipeCookingStatus(existing) : 'to_try',
         photos: existing?.photos ?? [],
         cover_photo_id: existing?.cover_photo_id ?? null,
         sort_order: existing?.sort_order ?? recipes.length + 1,
@@ -226,6 +230,40 @@ export function RecipeProvider({
     const { error: failure } = await supabase.from('recipes').delete().eq('id', recipe.id);
     if (failure) throw failure;
     await refresh();
+  }
+  async function setCookingStatus(id: string, status: CookingStatus) {
+    if (!canEdit) throw new Error('Only Gordon can change recipe status.');
+    if (status !== 'made' && status !== 'to_try') throw new Error('Invalid recipe status.');
+    if (statusRequests.current.has(id)) return;
+    if (!recipes.some((recipe) => recipe.id === id)) throw new Error('Recipe not found.');
+    statusRequests.current.add(id);
+    setCookingStatusPending([...statusRequests.current]);
+    try {
+      const updated_at = new Date().toISOString();
+      if (isDemo) {
+        persistPreview(
+          readPreview().map((recipe) =>
+            recipe.id === id ? { ...recipe, cooking_status: status, updated_at } : recipe,
+          ),
+        );
+      } else {
+        if (!supabase) throw new Error('Supabase is not configured.');
+        const { data, error: failure } = await supabase
+          .from('recipes')
+          .update({ cooking_status: status, updated_at })
+          .eq('id', id)
+          .select('cooking_status,updated_at')
+          .single();
+        if (failure) throw failure;
+        invalidateRefresh();
+        setRecipes((current) =>
+          current.map((recipe) => (recipe.id === id ? { ...recipe, ...data } : recipe)),
+        );
+      }
+    } finally {
+      statusRequests.current.delete(id);
+      setCookingStatusPending([...statusRequests.current]);
+    }
   }
   async function toggleFavorite(id: string) {
     if (favoriteRequests.current.has(id)) return;
@@ -433,6 +471,8 @@ export function RecipeProvider({
         saveRecipe,
         deleteRecipe,
         toggleFavorite,
+        setCookingStatus,
+        cookingStatusPending,
         addPhotos,
         updatePhoto,
         removePhoto,

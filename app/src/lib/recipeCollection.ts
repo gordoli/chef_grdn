@@ -1,3 +1,5 @@
+import type { CookingStatus, Recipe } from './types';
+
 export const recipeTypes = [
   'Mains',
   'Appetizers',
@@ -42,4 +44,8 @@ export function groupRecipesByType<T extends { type: string }>(
   return [...groups]
     .sort(([a], [b]) => compareRecipeTypes(a, b))
     .map(([type, items]) => ({ type, recipes: items }));
+}
+
+export function recipeCookingStatus(recipe: Pick<Recipe, 'cooking_status'>): CookingStatus {
+  return recipe.cooking_status ?? 'made';
 }

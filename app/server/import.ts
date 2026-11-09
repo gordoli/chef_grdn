@@ -50,6 +50,7 @@ const RECIPE_HOSTS = new Set([
   'skinnytaste.com',
   'smittenkitchen.com',
   'spendwithpennies.com',
+  'spoonforkbacon.com',
   'tastesbetterfromscratch.com',
   'thekitchn.com',
   'thewoksoflife.com',

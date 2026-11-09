@@ -1,5 +1,7 @@
 'use client';
 
+import { RecipeStatusControl } from '@/components/RecipeStatusControl';
+
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams, useSearchParams, usePathname } from 'next/navigation';
@@ -111,6 +113,7 @@ export function RecipeDetail() {
                 >
                   <Share2 />
                 </Button>
+                <RecipeStatusControl recipe={recipe} />
                 <Button
                   variant="ghost"
                   size="icon"
