@@ -6,6 +6,7 @@ const MAX_REQUEST_BYTES = 4096;
 const IMAGE_TIMEOUT_MS = 12_000;
 const IMAGE_HOSTS = new Set([
   'images.immediate.co.uk',
+  'cdn.loveandlemons.com',
   'food.fnr.sndimg.com',
   'assets.bonappetit.com',
   'assets.epicurious.com',

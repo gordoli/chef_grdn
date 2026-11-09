@@ -47,6 +47,9 @@ afterEach(() => vi.useRealTimers());
 describe('recipe URL boundary', () => {
   it('permits exact trusted publisher hosts with their www variant', () => {
     expect(isAllowedRecipeUrl(sourceUrl)).toBe(true);
+    expect(
+      isAllowedRecipeUrl('https://rainbowplantlife.com/vegan-miso-butter-mushroom-risotto/'),
+    ).toBe(true);
     expect(isAllowedRecipeUrl('https://tastesbetterfromscratch.com/lasagna-soup/')).toBe(true);
     expect(isAllowedRecipeUrl('https://maddysavenue.com/authentic-thai-yellow-curry-recipe/')).toBe(
       true,
@@ -60,6 +63,7 @@ describe('recipe URL boundary', () => {
     'https://169.254.169.254/latest/meta-data',
     'https://recipetineats.com.evil.example/recipe',
     'https://evil.recipetineats.com/recipe',
+    'https://rainbowplantlife.com.evil.example/recipe',
     'https://maddysavenue.com.evil.example/recipe',
     'https://recipetineats.com@evil.example/recipe',
     'https://user:pass@recipetineats.com/recipe',

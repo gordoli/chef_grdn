@@ -25,6 +25,9 @@ afterEach(() => vi.useRealTimers());
 describe('source image URL boundaries', () => {
   it('permits exact recipe publishers and known image CDNs', () => {
     expect(isAllowedImageUrl(imageUrl)).toBe(true);
+    expect(isAllowedImageUrl('https://cdn.loveandlemons.com/wp-content/uploads/soup.jpg')).toBe(
+      true,
+    );
     expect(isAllowedImageUrl('https://images.immediate.co.uk/image.jpg')).toBe(true);
     expect(isAllowedImageUrl('https://food.fnr.sndimg.com/image.jpg')).toBe(true);
   });
@@ -39,6 +42,7 @@ describe('source image URL boundaries', () => {
     'https://192.168.1.1/image',
     'https://tastesbetterfromscratch.com.evil.example/image',
     'https://evil.images.immediate.co.uk/image',
+    'https://cdn.loveandlemons.com.evil.example/image',
     'https://user:password@tastesbetterfromscratch.com/image',
     'https://images.immediate.co.uk:8080/image',
     'https://images.immediate.co.uk/image#fragment',
