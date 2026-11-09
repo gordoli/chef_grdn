@@ -37,6 +37,7 @@ const RECIPE_HOSTS = new Set([
   'justonecookbook.com',
   'loveandlemons.com',
   'maangchi.com',
+  'maddysavenue.com',
   'minimalistbaker.com',
   'natashaskitchen.com',
   'onceuponachef.com',

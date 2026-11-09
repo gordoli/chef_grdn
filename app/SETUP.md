@@ -13,16 +13,16 @@ The local `app/.env.local` contains the provided credentials and is ignored by G
 3. Deploy. Next.js builds its native pages and `/api/import` and `/api/import-image` Route Handlers. The Vercel project uses the `nextjs` preset; there is no `dist` output override or SPA rewrite.
 4. `NEXT_PUBLIC_SITE_URL` may specify a custom production origin for social metadata. Otherwise metadata uses the canonical `https://chef-grdn.vercel.app` origin. Never set it to a URL with a trailing slash.
 
-## Finish Supabase email configuration
+## Password sign-in and setup
 
 In your Supabase dashboard:
 
 1. **Authentication → URL Configuration:** set Site URL to the deployed production origin. Add `https://<your-production-domain>/**` and `http://localhost:5173/**` to Redirect URLs. Add trusted preview origins explicitly if you need editing there.
 2. **Authentication → Sign In / Providers → Email:** keep email enabled, turn off “Allow new users to sign up.” The app already passes `shouldCreateUser: false`.
-3. Visit the site, choose Add (or the account icon), and request your magic sign-in link with your owner email. The collection and gallery are public; editing/importing require your owner session.
+3. Open `/sign-in` and choose **Set or reset password** with your owner email (`gordonyli@gmail.com`). The setup email returns to `/sign-in?mode=reset-password`, where you choose and confirm your password. Then use email/password for normal sign-in; it does not require an email or redirect. The collection and gallery are public; editing/importing require your owner session.
 4. To invite reviewers, use **Authentication → Users → Invite user**. They are friends by default. Do not give them the owner role.
 
-Email delivery and production redirect configuration need a live sign-in check after deployment. No email delivery is assumed from a database-only test.
+Set Site URL to `https://chefgrdn.vercel.app` and allow `https://chefgrdn.vercel.app/**` for password setup/recovery. Setup and recovery emails use Supabase’s Reset Password template. No public sign-up is exposed; existing account roles and RLS remain unchanged. Email delivery and password selection are completed by the account owner. Never send a password to the developer or store it in `.env`.
 
 ## Local development
 

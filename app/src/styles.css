@@ -1914,6 +1914,11 @@ button svg {
   margin-top: 6px;
   justify-content: space-between;
 }
+.auth-secondary-action {
+  width: 100%;
+  margin-top: 12px;
+  font-size: 11px;
+}
 .sign-in-card > small {
   font-size: 8px;
   text-align: center;

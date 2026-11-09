@@ -4,55 +4,70 @@ import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Redirect } from '@/components/Redirect';
-import { ArrowLeft, ArrowRight, Check, Mail, Moon, Sun } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, LockKeyhole, Moon, Sun } from 'lucide-react';
 import { Brand } from '@/components/Brand';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
 import { useSession } from '@/hooks/useSession';
 import { useTheme } from '@/hooks/useTheme';
+import { safeAuthDestination, passwordError } from '@/lib/auth';
 export function SignIn() {
   const { session, loading } = useSession();
   const { dark, toggleTheme } = useTheme();
   const params = useSearchParams();
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmation, setConfirmation] = useState('');
+  const [requestReset, setRequestReset] = useState(false);
   const [sent, setSent] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const resetPassword = params.get('mode') === 'reset-password';
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const requested = params.get('next') ?? '/';
-  const next =
-    requested.startsWith('/') && !requested.startsWith('//') && !requested.includes('\\')
-      ? requested
-      : '/';
+  const next = safeAuthDestination(params.get('next'));
   async function submit(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
     setError('');
     try {
-      if (!supabase) throw new Error('Supabase is not configured yet. Explore the preview below.');
-      const { error: failure } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          shouldCreateUser: false,
-          emailRedirectTo: `${window.location.origin}/sign-in?next=${encodeURIComponent(next)}`,
-        },
-      });
-      if (failure)
-        throw new Error(
-          failure.status === 400
-            ? 'That email isn’t on the invite list. Ask Gordon to invite you.'
-            : failure.message,
-        );
-      setSent(true);
+      if (!supabase) throw new Error('The recipe book connection is not configured.');
+      if (resetPassword) {
+        const validation = passwordError(password, confirmation);
+        if (validation) throw new Error(validation);
+        if (!session) throw new Error('Request a fresh password email to continue.');
+        const { error: failure } = await supabase.auth.updateUser({ password });
+        if (failure) throw failure;
+        setPassword('');
+        setConfirmation('');
+        setSaved(true);
+      } else if (requestReset) {
+        const redirect = new URL('/sign-in', window.location.origin);
+        redirect.searchParams.set('mode', 'reset-password');
+        redirect.searchParams.set('next', next);
+        const { error: failure } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+          redirectTo: redirect.href,
+        });
+        if (failure) throw failure;
+        setSent(true);
+      } else {
+        const { error: failure } = await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password,
+        });
+        if (failure)
+          throw new Error(
+            'Email or password is incorrect. You can set or reset your password below.',
+          );
+        setPassword('');
+      }
     } catch (failure) {
-      setError(
-        failure instanceof Error ? failure.message : 'Could not send the link. Please try again.',
-      );
+      setError(failure instanceof Error ? failure.message : 'Could not sign in. Please try again.');
     } finally {
       setBusy(false);
     }
   }
-  if (session && !loading) return <Redirect href={next} />;
+  if (session && !loading && !resetPassword) return <Redirect href={next} />;
   return (
     <div className="sign-in-page">
       <header>
@@ -80,54 +95,157 @@ export function SignIn() {
           </span>
         </div>
         <div className="sign-in-card">
-          {sent ? (
+          {saved ? (
+            <>
+              <span className="sign-in-icon">
+                <Check />
+              </span>
+              <h2>Password saved.</h2>
+              <p>You can now sign in with your email and password.</p>
+              <Button asChild>
+                <Link href={next}>
+                  Open recipe book
+                  <ArrowRight />
+                </Link>
+              </Button>
+            </>
+          ) : sent ? (
             <>
               <span className="sign-in-icon">
                 <Check />
               </span>
               <h2>Check your inbox.</h2>
               <p>
-                We sent a sign-in link to <strong>{email}</strong>. Open it on this device to get
-                cooking.
+                If {email} has an account, you’ll receive an email to set a password. Open it on
+                this device.
               </p>
-              <Button variant="outline" onClick={() => setSent(false)}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSent(false);
+                  setRequestReset(false);
+                  setError('');
+                }}
+              >
                 <ArrowLeft />
-                Use another email
+                Back to sign in
               </Button>
+            </>
+          ) : resetPassword && !session ? (
+            <>
+              <span className="sign-in-icon">
+                <LockKeyhole />
+              </span>
+              <h2>{loading ? 'Checking your link…' : 'Open your password email.'}</h2>
+              <p>
+                {loading
+                  ? 'One moment while we verify your session.'
+                  : 'Use the link in your password email to continue. If it has expired, request a new one.'}
+              </p>
+              {!loading && (
+                <Button asChild variant="outline">
+                  <Link href="/sign-in">Back to sign in</Link>
+                </Button>
+              )}
             </>
           ) : (
             <>
               <span className="sign-in-icon">
-                <Mail strokeWidth={1.5} />
+                <LockKeyhole strokeWidth={1.5} />
               </span>
               <span className="eyebrow">KITCHEN ACCESS</span>
-              <h2>Welcome back.</h2>
+              <h2>
+                {resetPassword
+                  ? 'Choose your password.'
+                  : requestReset
+                    ? 'Set your password.'
+                    : 'Welcome back.'}
+              </h2>
               <p>
-                Sign in to add recipes, edit the collection, or leave a note about something you’ve
-                made.
+                {resetPassword
+                  ? 'Choose a password with at least 8 characters.'
+                  : requestReset
+                    ? 'Enter your account email to create your first password or reset an existing one.'
+                    : 'Sign in with your email and password to add recipes, edit the collection, and upload photos.'}
               </p>
               <form onSubmit={(event) => void submit(event)}>
-                <label htmlFor="email">Email address</label>
-                <Input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+                {!resetPassword && (
+                  <>
+                    <label htmlFor="email">Email address</label>
+                    <Input
+                      id="email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={busy}
+                    />
+                  </>
+                )}
+                {!requestReset && (
+                  <>
+                    <label htmlFor="password">{resetPassword ? 'New password' : 'Password'}</label>
+                    <Input
+                      id="password"
+                      type="password"
+                      autoComplete={resetPassword ? 'new-password' : 'current-password'}
+                      required
+                      minLength={resetPassword ? 8 : undefined}
+                      maxLength={128}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={busy}
+                    />
+                  </>
+                )}
+                {resetPassword && (
+                  <>
+                    <label htmlFor="confirmation">Confirm password</label>
+                    <Input
+                      id="confirmation"
+                      type="password"
+                      autoComplete="new-password"
+                      required
+                      minLength={8}
+                      maxLength={128}
+                      value={confirmation}
+                      onChange={(e) => setConfirmation(e.target.value)}
+                      disabled={busy}
+                    />
+                  </>
+                )}
                 {error && (
                   <p className="form-error" role="alert">
                     {error}
                   </p>
                 )}
                 <Button disabled={busy} size="lg">
-                  {busy ? 'Sending your link…' : 'Send a sign-in link'}
+                  {busy
+                    ? 'Please wait…'
+                    : resetPassword
+                      ? 'Save password'
+                      : requestReset
+                        ? 'Send password setup email'
+                        : 'Sign in'}
                   <ArrowRight />
                 </Button>
               </form>
-              <small>No password to remember. Just a little link.</small>
+              {!resetPassword && (
+                <Button
+                  className="auth-secondary-action"
+                  variant="ghost"
+                  disabled={busy}
+                  onClick={() => {
+                    setRequestReset(!requestReset);
+                    setPassword('');
+                    setError('');
+                  }}
+                >
+                  {requestReset ? 'Back to sign in' : 'Set or reset password'}
+                </Button>
+              )}
             </>
           )}
           <div className="sign-in-divider" />

@@ -6,7 +6,7 @@ Next.js 16 App Router + React 19 + strict TypeScript. Tailwind 4 supplies utilit
 
 - `components/ui`: locally owned shadcn-style Button, Input/Textarea, and Radix Dialog primitives. `cn` combines variants and merges utility classes. Domain components reuse these accessible primitives.
 - `src/app`: native Next.js pages, layouts, metadata, manifest, and API Route Handlers.
-- `views`: client-side collection, editor, gallery, recipe sheet, and magic-link sign-in.
+- `views`: client-side collection, editor, gallery, recipe sheet, and email/password sign-in and password recovery.
 - `lib/publicRecipes.ts`: cached, anonymous-only Supabase reads for the server-rendered collection. No private profiles, reviews or sessions enter this cache.
 - `hooks/RecipeProvider.tsx`: recipe queries/mutations and preview persistence. `useRecipes.ts` holds the context contract/hook; presentation does not query the database directly.
 - `hooks/SessionProvider.tsx`: session lifecycle and editing gate; browsing does not require a session. Profiles and RLS enforce owner access. Session and recipe refreshes guard stale responses.
