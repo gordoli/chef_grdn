@@ -3627,7 +3627,7 @@ button svg {
   margin-left: 7px;
 }
 .recipe-groups .recipe-grid .recipe-card {
-  min-height: 210px;
+  min-height: 240px;
 }
 @media (max-width: 640px) {
   .recipe-groups {
