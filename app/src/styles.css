@@ -1919,6 +1919,9 @@ button svg {
   margin-top: 12px;
   font-size: 11px;
 }
+.auth-primary-action {
+  color: var(--primary-foreground);
+}
 .sign-in-card > small {
   font-size: 8px;
   text-align: center;

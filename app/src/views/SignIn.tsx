@@ -102,7 +102,7 @@ export function SignIn() {
               </span>
               <h2>Password saved.</h2>
               <p>You can now sign in with your email and password.</p>
-              <Button asChild>
+              <Button asChild className="auth-primary-action">
                 <Link href={next}>
                   Open recipe book
                   <ArrowRight />
@@ -221,7 +221,7 @@ export function SignIn() {
                     {error}
                   </p>
                 )}
-                <Button disabled={busy} size="lg">
+                <Button className="auth-primary-action" disabled={busy} size="lg">
                   {busy
                     ? 'Please wait…'
                     : resetPassword
