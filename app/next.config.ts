@@ -2,6 +2,8 @@ import type { NextConfig } from 'next';
 const config: NextConfig = {
   poweredByHeader: false,
   devIndicators: false,
+  // Messaging clients need the recipe's metadata in the initial HTML head.
+  htmlLimitedBots: /.*/,
   async headers() {
     return [
       {

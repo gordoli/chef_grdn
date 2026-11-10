@@ -11,7 +11,7 @@ const poppins = localFont({
   variable: '--font-poppins',
   display: 'swap',
 });
-const origin = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://chef-grdn.vercel.app';
+const origin = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://grdn.recipes';
 export const metadata: Metadata = {
   metadataBase: new URL(origin),
   title: { default: 'Chef GRDN · Recipe book', template: '%s · Chef GRDN' },

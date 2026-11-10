@@ -1,6 +1,7 @@
 'use client';
 
 import { RecipeStatusControl } from '@/components/RecipeStatusControl';
+import { recipeIntro } from '@/lib/recipeSharing';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -48,6 +49,7 @@ export function RecipeDetail() {
   const [lightbox, setLightbox] = useState<string | null>(null);
   const prefix = isDemo ? '/demo' : '';
   const recipe = recipes.find((r) => r.slug === slug);
+  const intro = recipe ? recipeIntro(recipe) : null;
   const base = recipe?.servings ?? 1;
   const query = Number(params.get(recipe?.servings ? 'serves' : 'x') ?? base);
   const amount = Number.isFinite(query) && query > 0 ? Math.min(query, 1000) : base;
@@ -87,7 +89,10 @@ export function RecipeDetail() {
         if (!open) router.push(`${prefix}/`);
       }}
     >
-      <DialogContent className="recipe-sheet" aria-describedby="recipe-description">
+      <DialogContent
+        className="recipe-sheet"
+        aria-describedby={intro ? 'recipe-description' : undefined}
+      >
         {loading ? (
           <div className="page-loader">
             <DialogTitle>Opening recipe…</DialogTitle>
@@ -158,9 +163,11 @@ export function RecipeDetail() {
                   )}
                 </div>
                 <DialogTitle className="detail-title">{recipe.title}</DialogTitle>
-                <DialogDescription id="recipe-description" className="recipe-intro">
-                  {recipe.intro ?? 'A recipe worth making again.'}
-                </DialogDescription>
+                {intro && (
+                  <DialogDescription id="recipe-description" className="recipe-intro">
+                    {intro}
+                  </DialogDescription>
+                )}
                 <div className="detail-facts">
                   {recipe.time_label && (
                     <span>

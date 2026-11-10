@@ -24,6 +24,8 @@ Anonymous visitors read recipes and recipe photos; Storage buckets remain privat
 
 The installable manifest keeps the existing pixel-chef icons. The service worker retires the previous Vite app-shell cache; it does not cache Supabase records, signed photos or Next.js navigation responses. Next.js owns page and asset delivery.
 
+Recipe pages publish their own title, canonical URL and Open Graph/Twitter preview. `/r/[slug]/share-image` renders a square cover photo beside the recipe title using local Poppins and pixel-chef assets; missing photos use the mascot. Only anonymous portfolio data and bounded, validated recipe-photo storage images enter previews. Image URLs include the recipe revision and cover ID, so edits get a fresh URL. Metadata is included in the initial HTML head for messaging clients. Empty or generic filler introductions are omitted from the recipe sheet.
+
 Liquid-glass styling uses one shared `.glass-control` material for navigation and floating controls: neutral translucent fills, backdrop blur, edge highlights and inset/ambient shadows. Content surfaces stay black/white. Green is reserved for primary actions and meaningful ingredient states. Reduced-motion and reduced-transparency preferences have fallbacks.
 
 ## Intentional limits
