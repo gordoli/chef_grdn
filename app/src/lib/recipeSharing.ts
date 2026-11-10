@@ -13,7 +13,7 @@ export function recipeCover(recipe: Pick<Recipe, 'photos' | 'cover_photo_id'>) {
 
 export function recipeMetadata(recipe: Recipe): Metadata {
   const path = `/r/${encodeURIComponent(recipe.slug)}`;
-  const version = `${recipe.updated_at}-${recipeCover(recipe)?.id ?? 'no-photo'}`;
+  const version = `2-${recipe.updated_at}-${recipeCover(recipe)?.id ?? 'no-photo'}`;
   const description =
     recipeIntro(recipe) ??
     [

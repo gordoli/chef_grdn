@@ -37,34 +37,30 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
         fontFamily: 'Poppins',
       }}
     >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: 440,
-          height: 440,
-          flexShrink: 0,
-          borderRadius: 32,
-          background: '#f2f2f4',
-          overflow: 'hidden',
-        }}
-      >
-        <img
-          src={photo ?? mascotSrc}
-          alt=""
-          width={photo ? 440 : 240}
-          height={photo ? 440 : 240}
-          style={{ objectFit: photo ? 'cover' : 'contain' }}
-        />
-      </div>
+      {photo && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 440,
+            height: 440,
+            flexShrink: 0,
+            borderRadius: 32,
+            background: '#f2f2f4',
+            overflow: 'hidden',
+          }}
+        >
+          <img src={photo} alt="" width={440} height={440} style={{ objectFit: 'cover' }} />
+        </div>
+      )}
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          width: 584,
-          marginLeft: 48,
+          width: photo ? 584 : 1072,
+          marginLeft: photo ? 48 : 0,
         }}
       >
         <div
