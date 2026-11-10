@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import seed from '../../seed/recipes.json';
 import { previewRecipesSchema } from './validation';
-import { recipeCover, recipeIntro, recipeMetadata } from './recipeSharing';
+import { recipeCover, recipeIntro, recipeMetadata, recipeShareUrl } from './recipeSharing';
 
 const recipe = previewRecipesSchema.parse([
   {
@@ -17,6 +17,41 @@ const recipe = previewRecipesSchema.parse([
 ])[0];
 
 describe('recipe sharing', () => {
+  it('copies a stable revision link, preserving portions and replacing stale share revisions', () => {
+    const url = new URL(
+      recipeShareUrl(
+        recipe,
+        `https://www.grdn.recipes/r/${recipe.slug}?serves=4&share=old#ingredients`,
+      ),
+    );
+    expect(url.origin).toBe('https://www.grdn.recipes');
+    expect(url.pathname).toBe(`/r/${recipe.slug}`);
+    expect(url.searchParams.get('serves')).toBe('4');
+    expect(url.searchParams.getAll('share')).toHaveLength(1);
+    expect(url.searchParams.get('share')).not.toBe('old');
+    expect(url.hash).toBe('');
+    expect(recipeShareUrl(recipe, url.href)).toBe(url.href);
+    expect(recipeShareUrl({ ...recipe, updated_at: 'edited' }, url.href)).not.toBe(url.href);
+    expect(
+      recipeShareUrl(
+        {
+          ...recipe,
+          photos: [
+            {
+              id: 'cover',
+              recipe_id: recipe.id,
+              storage_path: 'private-path',
+              position: 0,
+              caption: null,
+              url: 'https://storage.example/?token=secret',
+            },
+          ],
+        },
+        url.href,
+      ),
+    ).not.toBe(url.href);
+    expect(url.href).not.toContain('token=');
+  });
   it('omits absent and filler introductions while keeping real recipe notes', () => {
     for (const intro of [
       null,

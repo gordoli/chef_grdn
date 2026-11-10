@@ -11,9 +11,21 @@ export function recipeCover(recipe: Pick<Recipe, 'photos' | 'cover_photo_id'>) {
   return recipe.photos.find((photo) => photo.id === recipe.cover_photo_id) ?? recipe.photos[0];
 }
 
+function recipeShareVersion(recipe: Recipe): string {
+  return `3-${recipe.updated_at}-${recipeCover(recipe)?.id ?? 'no-photo'}`;
+}
+
+/** A new URL lets messaging clients fetch fresh metadata after recipe/photo edits. */
+export function recipeShareUrl(recipe: Recipe, currentUrl: string): string {
+  const url = new URL(currentUrl);
+  url.searchParams.set('share', recipeShareVersion(recipe));
+  url.hash = '';
+  return url.href;
+}
+
 export function recipeMetadata(recipe: Recipe): Metadata {
   const path = `/r/${encodeURIComponent(recipe.slug)}`;
-  const version = `2-${recipe.updated_at}-${recipeCover(recipe)?.id ?? 'no-photo'}`;
+  const version = recipeShareVersion(recipe);
   const description =
     recipeIntro(recipe) ??
     [
@@ -27,6 +39,7 @@ export function recipeMetadata(recipe: Recipe): Metadata {
     url: `${path}/share-image?v=${encodeURIComponent(version)}`,
     width: 1200,
     height: 630,
+    type: 'image/png',
     alt: `${recipe.title} · Chef GRDN`,
   };
   return {

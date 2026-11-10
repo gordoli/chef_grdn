@@ -1,7 +1,7 @@
 'use client';
 
 import { RecipeStatusControl } from '@/components/RecipeStatusControl';
-import { recipeIntro } from '@/lib/recipeSharing';
+import { recipeIntro, recipeShareUrl } from '@/lib/recipeSharing';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -75,8 +75,9 @@ export function RecipeDetail() {
     }
   }
   async function share() {
+    if (!recipe) return;
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(recipeShareUrl(recipe, window.location.href));
       toast.success('Recipe link copied.');
     } catch {
       toast.error('Could not copy the link. Copy it from your address bar.');

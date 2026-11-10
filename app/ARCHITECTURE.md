@@ -26,6 +26,8 @@ The installable manifest keeps the existing pixel-chef icons. The service worker
 
 Recipe pages publish their own title, canonical URL and Open Graph/Twitter preview. `/r/[slug]/share-image` renders a square cover photo beside the recipe title using local Poppins and pixel-chef assets; without a photo, the text uses the full width and aligns left. Only anonymous portfolio data and bounded, validated recipe-photo storage images enter previews. Image URLs include the preview layout version, recipe revision and cover ID, so edits get a fresh URL. Metadata is included in the initial HTML head for messaging clients. Empty or generic filler introductions are omitted from the recipe sheet.
 
+Copy recipe link includes the same revision in a `share` query parameter, while canonical URLs stay clean. This gives messaging clients a fresh page URL after edits instead of repeatedly using an earlier icon-only preview; existing messages remain controlled by the messaging app's cache. Portion parameters are preserved.
+
 Liquid-glass styling uses one shared `.glass-control` material for navigation and floating controls: neutral translucent fills, backdrop blur, edge highlights and inset/ambient shadows. Content surfaces stay black/white. Green is reserved for primary actions and meaningful ingredient states. Reduced-motion and reduced-transparency preferences have fallbacks.
 
 ## Intentional limits
