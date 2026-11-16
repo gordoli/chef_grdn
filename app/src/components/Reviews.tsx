@@ -1,3 +1,4 @@
+import { isOwnerSession } from '@/lib/auth';
 import { useId, useState, type FormEvent } from 'react';
 import { Camera, Star, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -278,7 +279,7 @@ export function Reviews({ recipeId }: { recipeId: string }) {
       !supabase ||
       isDemo ||
       !session ||
-      (profile?.role !== 'owner' && review.author_id !== session.user.id)
+      (!isOwnerSession(session, profile) && review.author_id !== session.user.id)
     )
       return;
     setDeleting(review.id);
@@ -341,7 +342,7 @@ export function Reviews({ recipeId }: { recipeId: string }) {
       <div className="reviews-list">
         {recipeReviews.map((review) => {
           const canDelete =
-            !isDemo && (profile?.role === 'owner' || review.author_id === session?.user.id);
+            !isDemo && (isOwnerSession(session, profile) || review.author_id === session?.user.id);
           const madeOn = madeOnLabel(review.made_on);
           return (
             <article className="review-card" key={review.id}>

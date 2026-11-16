@@ -1,3 +1,4 @@
+import { collectionLoading } from '@/config/loading';
 import { supabase } from './supabase';
 import type { RecipePhoto } from './types';
 export async function resizePhoto(file: File): Promise<Blob> {
@@ -46,11 +47,14 @@ export async function signedPhotos(photos: RecipePhoto[]): Promise<RecipePhoto[]
   if (paths.length) {
     const { data, error } = await supabase.storage
       .from('recipe-photos')
-      .createSignedUrls([...new Set(paths)], 3600);
+      .createSignedUrls([...new Set(paths)], collectionLoading.signedPhotoLifetimeSeconds);
     if (error) throw error;
     for (const item of data ?? []) {
       if (item.path && item.signedUrl)
-        signedCache.set(item.path, { url: item.signedUrl, expires: Date.now() + 2700_000 });
+        signedCache.set(item.path, {
+          url: item.signedUrl,
+          expires: Date.now() + collectionLoading.signedPhotoRefreshMs,
+        });
     }
   }
   return photos.map((p) => ({ ...p, url: signedCache.get(p.storage_path)?.url }));

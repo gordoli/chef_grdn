@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { shouldDismissRecipe } from '@/lib/recipeSwipe';
+import { motionDurationMs } from '@/theme/motion';
+import { recipeSwipeGesture } from '@/theme/gestures';
 
 type Gesture = { id: number; x: number; y: number; started: number; dragging: boolean };
 
@@ -25,7 +27,8 @@ export function useRecipePanel(collectionPath: string) {
       return;
     }
     // Also complete navigation if an animation is interrupted or disabled externally.
-    const timer = window.setTimeout(finish, 300);
+    const duration = motionDurationMs(document.documentElement, '--motion-standard');
+    const timer = window.setTimeout(() => requestAnimationFrame(finish), duration);
     return () => window.clearTimeout(timer);
   }, [open, finish]);
 
@@ -62,11 +65,18 @@ export function useRecipePanel(collectionPath: string) {
     const dx = event.clientX - current.x,
       dy = event.clientY - current.y;
     if (!current.dragging) {
-      if ((Math.abs(dy) > 12 && Math.abs(dy) >= Math.abs(dx)) || dx < -12) {
+      if (
+        (Math.abs(dy) > recipeSwipeGesture.activationPx && Math.abs(dy) >= Math.abs(dx)) ||
+        dx < -recipeSwipeGesture.activationPx
+      ) {
         resetDrag();
         return;
       }
-      if (dx < 12 || dx < Math.abs(dy) * 1.5) return;
+      if (
+        dx < recipeSwipeGesture.activationPx ||
+        dx < Math.abs(dy) * recipeSwipeGesture.horizontalIntentRatio
+      )
+        return;
       current.dragging = true;
       event.currentTarget.setPointerCapture(event.pointerId);
       event.currentTarget.setAttribute('data-dragging', 'true');

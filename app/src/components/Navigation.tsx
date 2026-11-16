@@ -2,7 +2,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Plus, type LucideIcon } from 'lucide-react';
-import '@/styles/navigation.css';
 export type NavigationItem = { path: string; label: string; icon: LucideIcon };
 export function Navigation({
   prefix,
@@ -28,7 +27,10 @@ export function Navigation({
     if (!element) return;
     const measure = () => {
       const active = element.querySelector<HTMLElement>('[aria-current="page"]');
-      if (!active || !active.offsetWidth) return;
+      if (!active || !active.offsetWidth) {
+        setHighlight(null);
+        return;
+      }
       const next = {
         x: active.offsetLeft,
         y: active.offsetTop,
@@ -56,7 +58,7 @@ export function Navigation({
         ref={nav}
         className={`glass-control ${mobile ? 'mobile-nav' : 'desktop-nav'}`}
         aria-label={mobile ? 'Mobile navigation' : 'Main navigation'}
-        data-sliding="true"
+        data-sliding={highlight ? 'true' : 'false'}
       >
         {highlight && (
           <span

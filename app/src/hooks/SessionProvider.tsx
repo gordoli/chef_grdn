@@ -37,7 +37,14 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, current) => {
-      if (active) setSession(current);
+      if (active) {
+        setSession(current);
+        if (!current) {
+          setProfile(null);
+          setError('');
+          setLoading(false);
+        }
+      }
     });
     supabase.auth.getSession().then(({ data, error: failure }) => {
       if (!active) return;
@@ -75,7 +82,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     };
   }, [session]);
   return (
-    <SessionContext.Provider value={{ session, profile, loading, error, refreshProfile }}>
+    <SessionContext.Provider
+      value={{
+        session,
+        profile,
+        loading: loading || Boolean(session && profile?.id !== session.user.id && !error),
+        error,
+        refreshProfile,
+      }}
+    >
       {children}
     </SessionContext.Provider>
   );

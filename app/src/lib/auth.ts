@@ -18,3 +18,10 @@ export function passwordError(password: string, confirmation: string): string | 
   if (password !== confirmation) return 'The passwords do not match.';
   return null;
 }
+/** A previous account's profile must never grant controls to a new or signed-out session. */
+export function isOwnerSession(
+  session: { user: { id: string } } | null,
+  profile: { id: string; role: string } | null,
+): boolean {
+  return Boolean(session && profile?.id === session.user.id && profile.role === 'owner');
+}

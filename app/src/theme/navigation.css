@@ -7,15 +7,15 @@
   left: 0;
   top: 0;
   pointer-events: none;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(255, 255, 255, 0.88);
   box-shadow:
     0 2px 6px rgba(0, 0, 0, 0.065),
     inset 0 1px 1px white;
   transition:
-    transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
-    width 300ms cubic-bezier(0.22, 1, 0.36, 1),
-    height 300ms cubic-bezier(0.22, 1, 0.36, 1);
+    transform var(--motion-standard) var(--ease-enter),
+    width var(--motion-standard) var(--ease-enter),
+    height var(--motion-standard) var(--ease-enter);
 }
 .dark .navigation-highlight {
   background: rgba(255, 255, 255, 0.13);
@@ -28,14 +28,14 @@
   position: relative;
   z-index: 1;
 }
-.desktop-nav[data-sliding] .nav-link.active,
-.mobile-nav[data-sliding] .mobile-nav-link.active {
+.desktop-nav[data-sliding='true'] .nav-link.active,
+.mobile-nav[data-sliding='true'] .mobile-nav-link.active {
   background: transparent;
   box-shadow: none;
 }
 .app-shell[data-detail='true'] .restaurant-detail-page {
-  padding-top: 24px;
-  animation: restaurant-screen-enter 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  padding-top: var(--space-24);
+  animation: restaurant-screen-enter var(--motion-standard) var(--ease-enter);
 }
 @keyframes restaurant-screen-enter {
   from {

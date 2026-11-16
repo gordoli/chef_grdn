@@ -1,3 +1,5 @@
+import { collectionLoading } from '@/config/loading';
+import { isOwnerSession } from '@/lib/auth';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { toast } from 'sonner';
@@ -50,7 +52,7 @@ export function RecipeProvider({
   const { profile, session } = useSession();
   const pathname = usePathname();
   const isDemo = pathname.startsWith('/demo');
-  const canEdit = isDemo || profile?.role === 'owner';
+  const canEdit = isDemo || isOwnerSession(session, profile);
   const [recipes, setRecipes] = useState<Recipe[]>(() => (isDemo ? seedRecipes() : initialRecipes));
   const [reviews, setReviews] = useState<Review[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -126,7 +128,7 @@ export function RecipeProvider({
     if (paths.length) {
       const { data, error: signError } = await supabase.storage
         .from('review-photos')
-        .createSignedUrls(paths, 3600);
+        .createSignedUrls(paths, collectionLoading.signedPhotoLifetimeSeconds);
       if (signError) throw signError;
       const urls = new Map((data ?? []).map((p) => [p.path, p.signedUrl]));
       loadedReviews = loadedReviews.map((r) => ({
@@ -168,11 +170,11 @@ export function RecipeProvider({
         }
       });
     const onFocus = () => {
-      if (Date.now() - lastRefreshAt.current >= 60_000)
+      if (Date.now() - lastRefreshAt.current >= collectionLoading.freshnessMs)
         void refresh().catch((failure) => setError(errorMessage(failure)));
     };
     window.addEventListener('focus', onFocus);
-    const timer = setInterval(onFocus, 50 * 60 * 1000);
+    const timer = setInterval(onFocus, collectionLoading.backgroundRefreshMs);
     return () => {
       active = false;
       invalidateRefresh();

@@ -1,3 +1,4 @@
+import { collectionLoading } from '@/config/loading';
 import type { Restaurant } from '@/lib/restaurants';
 
 // Public portfolio data only. This survives tab-provider remounts, not browser sessions.
@@ -9,7 +10,7 @@ export function restaurantSnapshot(): Restaurant[] | null {
   return snapshot;
 }
 export function freshRestaurants(now = Date.now()): Restaurant[] | null {
-  return snapshot && now - savedAt < 60_000 ? snapshot : null;
+  return snapshot && now - savedAt < collectionLoading.freshnessMs ? snapshot : null;
 }
 export function cacheRestaurants(records: Restaurant[], now = Date.now()): Restaurant[] {
   snapshot = records;

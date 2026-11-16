@@ -39,11 +39,23 @@ export const safeTemperatures = [
 
 // Culinary finish temperatures, separate from USDA minimum cooking guidance.
 export const steakDoneness = [
-  { name: 'Rare', fahrenheit: 125, center: 'Cool red center', color: '#b75862' },
-  { name: 'Medium rare', fahrenheit: 130, center: 'Warm red center', color: '#ca7c82' },
-  { name: 'Medium', fahrenheit: 140, center: 'Warm pink center', color: '#d8a099' },
-  { name: 'Medium well', fahrenheit: 150, center: 'A little pink', color: '#ba9681' },
-  { name: 'Well done', fahrenheit: 160, center: 'Little or no pink', color: '#907a69' },
+  { name: 'Rare', fahrenheit: 125, center: 'Cool red center' },
+  {
+    name: 'Medium rare',
+    fahrenheit: 130,
+    center: 'Warm red center',
+  },
+  { name: 'Medium', fahrenheit: 140, center: 'Warm pink center' },
+  {
+    name: 'Medium well',
+    fahrenheit: 150,
+    center: 'A little pink',
+  },
+  {
+    name: 'Well done',
+    fahrenheit: 160,
+    center: 'Little or no pink',
+  },
 ] as const;
 
 // US customary volume in mL; avoirdupois weight in grams. Never mix dimensions.

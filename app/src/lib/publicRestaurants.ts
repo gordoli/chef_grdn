@@ -1,3 +1,4 @@
+import { collectionLoading } from '@/config/loading';
 import 'server-only';
 import { cache } from 'react';
 import { unstable_cache } from 'next/cache';
@@ -23,8 +24,9 @@ const readPublicRestaurants = unstable_cache(
     if (error) throw new Error('Restaurants could not be loaded. Check the database setup.');
     return (data ?? []).map((row) => restaurantRecord.parse(row));
   },
-  ['public-restaurant-portfolio'],
-  { revalidate: 60, tags: ['public-restaurant-portfolio'] },
+  // Version the parsed row shape so a deployment cannot reuse pre-Yelp cached objects.
+  ['public-restaurant-portfolio-v4-thumbnail'],
+  { revalidate: collectionLoading.freshnessSeconds, tags: ['public-restaurant-portfolio'] },
 );
 
 // Deduplicate layout, metadata and page reads within the same request as well.

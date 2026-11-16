@@ -1,4 +1,6 @@
+import { collectionLoading } from '@/config/loading';
 import 'server-only';
+import { cache } from 'react';
 import { unstable_cache } from 'next/cache';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './database.types';
@@ -6,13 +8,14 @@ import type { Recipe } from './types';
 import { ingredientSections, stepSections } from './validation';
 
 // Only public recipe data enters the server-rendered portfolio. Sessions stay client-side.
-export const getPublicRecipes = unstable_cache(
+const readPublicRecipes = unstable_cache(
   async (): Promise<Recipe[]> => {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if (!url || !key) return [];
     const client = createClient<Database>(url, key, {
       auth: { persistSession: false, autoRefreshToken: false },
+      global: { fetch: (input, init) => fetch(input, { ...init, cache: 'no-store' }) },
     });
     const [recipes, photos] = await Promise.all([
       client.from('recipes').select('*').order('sort_order'),
@@ -22,7 +25,9 @@ export const getPublicRecipes = unstable_cache(
     if (photos.error) throw photos.error;
     const paths = (photos.data ?? []).map((photo) => photo.storage_path);
     const signed = paths.length
-      ? await client.storage.from('recipe-photos').createSignedUrls(paths, 3600)
+      ? await client.storage
+          .from('recipe-photos')
+          .createSignedUrls(paths, collectionLoading.signedPhotoLifetimeSeconds)
       : { data: [], error: null };
     if (signed.error) throw signed.error;
     const urls = new Map((signed.data ?? []).map((photo) => [photo.path, photo.signedUrl]));
@@ -36,5 +41,7 @@ export const getPublicRecipes = unstable_cache(
     }));
   },
   ['public-recipe-portfolio'],
-  { revalidate: 60 },
+  { revalidate: collectionLoading.freshnessSeconds },
 );
+// Layout, metadata and page reads share one request without adding a second fetch cache.
+export const getPublicRecipes = cache(readPublicRecipes);

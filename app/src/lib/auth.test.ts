@@ -1,5 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { passwordError, safeAuthDestination } from './auth';
+import { isOwnerSession, passwordError, safeAuthDestination } from './auth';
+describe('session-scoped editing controls', () => {
+  const owner = { id: 'owner', role: 'owner' };
+  it('requires a live session matching the owner profile', () => {
+    expect(isOwnerSession({ user: { id: 'owner' } }, owner)).toBe(true);
+    expect(isOwnerSession(null, owner)).toBe(false);
+    expect(isOwnerSession({ user: { id: 'friend' } }, owner)).toBe(false);
+    expect(isOwnerSession({ user: { id: 'friend' } }, { id: 'friend', role: 'friend' })).toBe(
+      false,
+    );
+    expect(isOwnerSession({ user: { id: 'owner' } }, null)).toBe(false);
+  });
+});
 
 describe('post-auth navigation', () => {
   it('preserves a local editor destination', () => {

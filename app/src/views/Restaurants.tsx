@@ -1,11 +1,11 @@
 'use client';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { Heart, List, Map, Plus, Search, Star, X } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { CircleCheck, Heart, List, Map, MapPin, Search, Star, Utensils, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSession } from '@/hooks/useSession';
-import { useCollectionSearch } from '@/hooks/useCollectionSearch';
+import { useCollectionSearchDisclosure } from '@/hooks/useCollectionSearchDisclosure';
 import { useRestaurants } from '@/hooks/useRestaurants';
 import {
   restaurantInTab,
@@ -17,35 +17,39 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { RestaurantEditor } from '@/components/restaurants/RestaurantEditor';
 import { RestaurantMap } from '@/components/restaurants/RestaurantMap';
+import { RestaurantRoll } from '@/components/restaurants/RestaurantRoll';
+import styles from './Restaurants.module.css';
+import { RestaurantSocialPills } from '@/components/restaurants/RestaurantSocialPills';
+import { RestaurantPhoto } from '@/components/restaurants/RestaurantPhoto';
+import { restaurantPhotoUrls } from '@/lib/restaurantYelp';
 export function Restaurants() {
   const { restaurants, error, refresh, canEdit, isDemo, setFavorite } = useRestaurants();
   const [tab, setTab] = useState<RestaurantTab>('visited');
-  const { search, setSearch, searchOpen, setSearchOpen, searchToggle } = useCollectionSearch();
-  const searchRegion = useRef<HTMLDivElement>(null);
-  const searchInput = useRef<HTMLInputElement>(null);
+  const { search, setSearch, searchOpen, setSearchOpen, searchToggle, searchRegion, searchInput } =
+    useCollectionSearchDisclosure();
   const [cuisine, setCuisine] = useState('all');
   const [view, setView] = useState('list');
   const [adding, setAdding] = useState(false);
+  const [rollOpen, setRollOpen] = useState(false);
   const [pendingFavorite, setPendingFavorite] = useState<string | null>(null);
   const params = useSearchParams();
+  const router = useRouter();
+  const prefix = isDemo ? '/demo' : '';
   const { loading: sessionLoading } = useSession();
   useEffect(() => {
-    if (params.get('add') === '1' && canEdit) setAdding(true);
-  }, [params, canEdit]);
+    if (params.get('roll') !== '1') return;
+    setRollOpen(true);
+    const query = new URLSearchParams(params.toString());
+    query.delete('roll');
+    router.replace(`${prefix}/restaurants${query.size ? `?${query}` : ''}`, { scroll: false });
+  }, [params, prefix, router]);
   useEffect(() => {
-    if (!searchOpen) return;
-    searchInput.current?.focus({ preventScroll: true });
-    const outside = (event: MouseEvent) => {
-      const target = event.target as Node;
-      if (!searchRegion.current?.contains(target) && !searchToggle.current?.contains(target)) {
-        setSearchOpen(false);
-        setSearch('');
-      }
-    };
-    document.addEventListener('click', outside);
-    return () => document.removeEventListener('click', outside);
-  }, [searchOpen, searchToggle, setSearch, setSearchOpen]);
-  const prefix = isDemo ? '/demo' : '';
+    if (params.get('add') !== '1' || !canEdit) return;
+    setAdding(true);
+    const query = new URLSearchParams(params.toString());
+    query.delete('add');
+    router.replace(`${prefix}/restaurants${query.size ? `?${query}` : ''}`, { scroll: false });
+  }, [params, canEdit, prefix, router]);
   const tabRestaurants = useMemo(
     () => restaurants.filter((r) => restaurantInTab(r, tab)),
     [restaurants, tab],
@@ -84,30 +88,50 @@ export function Restaurants() {
     }
   };
   return (
-    <div className="page-width restaurants-page">
-      <div className="restaurant-heading">
+    <div className={`page-width ${styles.page}`}>
+      <div className="section-heading">
         <h1>
           Restaurants <span>{restaurants.length}</span>
         </h1>
-        {canEdit && (
-          <Button onClick={() => setAdding(true)}>
-            <Plus /> Add restaurant
-          </Button>
-        )}
-      </div>
-      <div className="restaurant-filter-row">
         <div
-          className="glass-control restaurant-status"
+          className="glass-control restaurant-view-toggle"
+          role="group"
+          aria-label="Restaurant views and suggestions"
+        >
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="List view"
+            aria-pressed={view === 'list'}
+            onClick={() => setView('list')}
+          >
+            <List />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Map view"
+            aria-pressed={view === 'map'}
+            onClick={() => setView('map')}
+          >
+            <Map />
+          </Button>
+          <RestaurantRoll open={rollOpen} onOpenChange={setRollOpen} />
+        </div>
+      </div>
+      <div className="collection-control-row">
+        <div
+          className={`cooking-status-toggle glass-control ${styles.tabs}`}
           role="group"
           aria-label="Restaurant collection"
         >
           {(
             [
-              ['visited', 'Been to'],
-              ['want_to_go', 'Want to go'],
-              ['favorites', 'Favorites'],
+              { value: 'visited', label: 'Been to', icon: CircleCheck },
+              { value: 'want_to_go', label: 'Want to go', icon: MapPin },
+              { value: 'favorites', label: 'Favorites', icon: Heart },
             ] as const
-          ).map(([value, label]) => (
+          ).map(({ value, label, icon: Icon }) => (
             <Button
               key={value}
               variant="ghost"
@@ -117,59 +141,28 @@ export function Restaurants() {
                 setCuisine('all');
               }}
             >
+              <Icon size={16} aria-hidden="true" />
               {label}
               <span>{restaurants.filter((r) => restaurantInTab(r, value)).length}</span>
             </Button>
           ))}
         </div>
       </div>
-      <div className="restaurant-cuisine-row">
-        <div
-          className="category-chips restaurant-cuisine-pills"
-          role="group"
-          aria-label="Filter restaurants by cuisine"
-        >
-          <button aria-pressed={cuisine === 'all'} onClick={() => setCuisine('all')}>
-            All <span>{tabRestaurants.length}</span>
+      <div className="category-chips" role="group" aria-label="Filter restaurants by cuisine">
+        <button aria-pressed={cuisine === 'all'} onClick={() => setCuisine('all')}>
+          All <span>{tabRestaurants.length}</span>
+        </button>
+        {cuisines.map((value) => (
+          <button key={value} aria-pressed={cuisine === value} onClick={() => setCuisine(value)}>
+            {value}
+            <span>
+              {
+                tabRestaurants.filter((r) => restaurantCuisineRegions(r.cuisine).includes(value))
+                  .length
+              }
+            </span>
           </button>
-          {cuisines.map((value) => (
-            <button key={value} aria-pressed={cuisine === value} onClick={() => setCuisine(value)}>
-              {value}
-              <span>
-                {
-                  tabRestaurants.filter((r) => restaurantCuisineRegions(r.cuisine).includes(value))
-                    .length
-                }
-              </span>
-            </button>
-          ))}
-        </div>
-        <div className="restaurant-toolbar">
-          <div
-            className="glass-control restaurant-view-toggle"
-            role="group"
-            aria-label="Restaurant view"
-          >
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="List view"
-              aria-pressed={view === 'list'}
-              onClick={() => setView('list')}
-            >
-              <List />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Map view"
-              aria-pressed={view === 'map'}
-              onClick={() => setView('map')}
-            >
-              <Map />
-            </Button>
-          </div>
-        </div>
+        ))}
       </div>
       <div
         ref={searchRegion}
@@ -239,40 +232,62 @@ export function Restaurants() {
       ) : view === 'map' ? (
         <RestaurantMap restaurants={filtered} prefix={prefix} />
       ) : (
-        <div className="restaurant-list">
-          <div className="restaurant-list-labels" aria-hidden="true">
-            <span>Restaurant</span>
-            <span>Cuisine</span>
-            <span>My rating</span>
-            <span>Price / person</span>
-          </div>
+        <div className={styles.list}>
           {filtered.map((restaurant) => (
-            <article key={restaurant.id} className="restaurant-list-item">
-              <Link
-                href={`${prefix}/restaurants/${restaurant.slug}`}
-                className="restaurant-list-card"
-              >
-                <div className="restaurant-list-name">
-                  <div>
-                    <strong>{restaurant.name}</strong>
-                    <span className="restaurant-list-status">
-                      {restaurantNeighborhoods(restaurant)}
-                    </span>
+            <article key={restaurant.id} className={styles.item}>
+              <Link href={`${prefix}/restaurants/${restaurant.slug}`} className={styles.card}>
+                <RestaurantPhoto
+                  src={restaurantPhotoUrls(restaurant)[0]}
+                  name=""
+                  variant="thumbnail"
+                  className={styles.thumbnail}
+                />
+                <div className={styles.content}>
+                  <h2>{restaurant.name}</h2>
+                  {restaurantNeighborhoods(restaurant) && (
+                    <p className={styles.neighborhood}>{restaurantNeighborhoods(restaurant)}</p>
+                  )}
+                  <div className={styles.metadata}>
+                    {restaurant.cuisine && (
+                      <span className={`${styles.pill} ${styles.cuisine}`}>
+                        <Utensils size={11} aria-hidden="true" />
+                        {restaurantCuisineRegions(restaurant.cuisine).join(' / ')}
+                      </span>
+                    )}
+                    {(restaurant.price_range || restaurant.yelp_data[0]?.price_tier) && (
+                      <span className={`${styles.pill} ${styles.price}`}>
+                        <span className="sr-only">
+                          {restaurant.price_range ? 'Price per person: ' : 'Yelp price level: '}
+                        </span>
+                        {restaurant.price_range || restaurant.yelp_data[0]?.price_tier}
+                      </span>
+                    )}
+                    <RestaurantSocialPills urls={restaurant.video_urls} />
                   </div>
+                  {restaurant.rating !== null && (
+                    <span
+                      className={styles.rating}
+                      role="img"
+                      aria-label={`My rating: ${restaurant.rating} out of 5 stars`}
+                    >
+                      {Array.from({ length: 5 }, (_, index) => (
+                        <span key={index} className={styles.star} aria-hidden="true">
+                          <Star className={styles.emptyStar} />
+                          <Star
+                            fill="currentColor"
+                            className={styles.filledStar}
+                            style={{
+                              clipPath: `inset(0 ${100 - Math.min(1, Math.max(0, (restaurant.rating ?? 0) - index)) * 100}% 0 0)`,
+                            }}
+                          />
+                        </span>
+                      ))}
+                    </span>
+                  )}
                 </div>
-                <span className="restaurant-card-cuisine">
-                  {restaurantCuisineRegions(restaurant.cuisine).join(' / ') || '—'}
-                </span>
-                <span className="restaurant-card-rating">
-                  <Star size={14} fill={restaurant.rating !== null ? 'currentColor' : 'none'} />{' '}
-                  {restaurant.rating !== null ? `${restaurant.rating.toFixed(1)} / 5` : 'Not rated'}
-                </span>
-                <span className="restaurant-card-price">
-                  {restaurant.price_range || 'Price not added'}
-                </span>
               </Link>
               <Button
-                className="restaurant-favorite"
+                className={styles.favorite}
                 variant="ghost"
                 size="icon"
                 aria-label={`${restaurant.is_favorite ? 'Unfavorite' : 'Favorite'} ${restaurant.name}`}

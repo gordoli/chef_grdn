@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import { Providers } from '@/components/Providers';
+import { surfacePalette } from '@/theme/palette';
+import { themeBootstrapScript } from '@/theme/theme';
 import 'leaflet/dist/leaflet.css';
 import '../styles.css';
 const poppins = localFont({
@@ -48,17 +50,15 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: 'cover',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#090909' },
+    { media: '(prefers-color-scheme: light)', color: surfacePalette.light.background },
+    { media: '(prefers-color-scheme: dark)', color: surfacePalette.dark.background },
   ],
 };
-const themeScript =
-  "try{const theme=localStorage.getItem('grdn.theme');document.documentElement.classList.toggle('dark',theme==='dark'||(!theme&&matchMedia('(prefers-color-scheme: dark)').matches))}catch{}";
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
       </head>
       <body className={poppins.variable}>
         <Providers>{children}</Providers>

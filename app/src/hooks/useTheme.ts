@@ -1,12 +1,21 @@
 'use client';
 import { useSyncExternalStore } from 'react';
-const themeEvent = 'grdn:theme';
+import { themeChangeEvent, themeStorageKey } from '@/theme/theme';
 function subscribe(callback: () => void) {
-  window.addEventListener(themeEvent, callback);
-  window.addEventListener('storage', callback);
+  const syncStorage = (event: StorageEvent) => {
+    if (event.key !== themeStorageKey && event.key !== null) return;
+    const preference = event.newValue;
+    document.documentElement.classList.toggle(
+      'dark',
+      preference === 'dark' || (!preference && matchMedia('(prefers-color-scheme: dark)').matches),
+    );
+    callback();
+  };
+  window.addEventListener(themeChangeEvent, callback);
+  window.addEventListener('storage', syncStorage);
   return () => {
-    window.removeEventListener(themeEvent, callback);
-    window.removeEventListener('storage', callback);
+    window.removeEventListener(themeChangeEvent, callback);
+    window.removeEventListener('storage', syncStorage);
   };
 }
 function getSnapshot() {
@@ -17,8 +26,12 @@ export function useTheme() {
   function toggleTheme() {
     const next = !getSnapshot();
     document.documentElement.classList.toggle('dark', next);
-    localStorage.setItem('grdn.theme', next ? 'dark' : 'light');
-    window.dispatchEvent(new Event(themeEvent));
+    try {
+      localStorage.setItem(themeStorageKey, next ? 'dark' : 'light');
+    } catch {
+      /* The theme still works when browser storage is unavailable. */
+    }
+    window.dispatchEvent(new Event(themeChangeEvent));
   }
   return { dark, toggleTheme };
 }

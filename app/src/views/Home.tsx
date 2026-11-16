@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -15,7 +15,7 @@ import {
   CircleCheck,
   CookingPot,
 } from 'lucide-react';
-import { useCollectionSearch } from '@/hooks/useCollectionSearch';
+import { useCollectionSearchDisclosure } from '@/hooks/useCollectionSearchDisclosure';
 import { useRecipes } from '@/hooks/useRecipes';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,26 +35,12 @@ export function Home() {
   const [favoritesFilter, setFavoritesFilter] = useState(false);
   const favoritesOnly = favoritesPage || favoritesFilter;
   const CollectionHeading = favoritesPage ? 'h2' : 'h1';
-  const { search, setSearch, searchOpen, setSearchOpen, searchToggle } = useCollectionSearch();
-  const searchRegion = useRef<HTMLDivElement>(null);
-  const searchInput = useRef<HTMLInputElement>(null);
+  const { search, setSearch, searchOpen, setSearchOpen, searchToggle, searchRegion, searchInput } =
+    useCollectionSearchDisclosure();
   function closeSearch() {
     setSearchOpen(false);
     setSearch('');
   }
-  useEffect(() => {
-    if (!searchOpen) return;
-    searchInput.current?.focus({ preventScroll: true });
-    const onOutsideClick = (event: MouseEvent) => {
-      const target = event.target as Node;
-      if (!searchRegion.current?.contains(target) && !searchToggle.current?.contains(target)) {
-        setSearchOpen(false);
-        setSearch('');
-      }
-    };
-    document.addEventListener('click', onOutsideClick);
-    return () => document.removeEventListener('click', onOutsideClick);
-  }, [searchOpen, searchToggle, setSearch, setSearchOpen]);
   const [type, setType] = useState('All');
   const [cookingStatus, setCookingStatus] = useState<CookingStatus>('made');
   const [view, setView] = useState('grid');
@@ -119,7 +105,7 @@ export function Home() {
           <div>
             <span className="eyebrow">THE COLLECTION</span>
             <CollectionHeading>
-              {favoritesPage ? 'Your favorites' : 'All recipes'}{' '}
+              {favoritesPage ? 'Your favorites' : 'My Recipes'}{' '}
               <span>{favoritesPage ? base.length : recipes.length}</span>
             </CollectionHeading>
           </div>

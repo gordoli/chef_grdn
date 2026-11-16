@@ -1,4 +1,5 @@
 'use client';
+import { steakChartColors } from '@/theme/palette';
 
 import { useState } from 'react';
 import { ArrowLeftRight, ArrowUpRight, BookOpen, Scissors, Thermometer } from 'lucide-react';
@@ -262,7 +263,10 @@ export function Basics() {
                     <tr key={row.name}>
                       <th scope="row">
                         <span className="basics-doneness">
-                          <i style={{ background: row.color }} aria-hidden="true" />
+                          <i
+                            style={{ background: steakChartColors[row.name] }}
+                            aria-hidden="true"
+                          />
                           {row.name}
                         </span>
                       </th>

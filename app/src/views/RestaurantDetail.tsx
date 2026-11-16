@@ -24,6 +24,8 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { RestaurantEditor } from '@/components/restaurants/RestaurantEditor';
 import { RestaurantPhoto } from '@/components/restaurants/RestaurantPhoto';
 import { RestaurantReviews } from '@/components/restaurants/RestaurantReviews';
+import { RestaurantYelpDetails } from '@/components/restaurants/RestaurantYelpDetails';
+import { restaurantPhotoUrls } from '@/lib/restaurantYelp';
 import { useRestaurants } from '@/hooks/useRestaurants';
 import {
   restaurantDate,
@@ -53,6 +55,12 @@ export function RestaurantDetail({ slug }: { slug: string }) {
         <h1>Restaurant not found</h1>
       </div>
     );
+  const photoUrls = restaurantPhotoUrls(restaurant);
+  const photoCredit = restaurant.yelp_data
+    .flatMap((business) =>
+      business.reviews.map((review) => ({ ...review, business_url: business.url })),
+    )
+    .find((review) => photo !== null && review.photos.includes(photoUrls[photo]));
   const change = async (patch: Partial<typeof restaurant>) => {
     setBusy(true);
     try {
@@ -149,25 +157,25 @@ export function RestaurantDetail({ slug }: { slug: string }) {
           <Input readOnly value={shareLink} onFocus={(event) => event.target.select()} />
         </label>
       )}
-      {restaurant.photo_urls.length > 0 && (
+      {photoUrls.length > 0 && (
         <div className="restaurant-hero-gallery">
-          {restaurant.photo_urls.slice(0, 3).map((src, index) => (
+          {photoUrls.slice(0, 3).map((src, index) => (
             <button
               key={src}
               className={index === 0 ? 'restaurant-hero-main' : ''}
               onClick={() => setPhoto(index)}
-              aria-label={`Open photo ${index + 1} of ${restaurant.photo_urls.length}`}
+              aria-label={`Open photo ${index + 1} of ${photoUrls.length}`}
             >
               <RestaurantPhoto src={src} name={`${restaurant.name} photo ${index + 1}`} />
             </button>
           ))}
-          {restaurant.photo_urls.length > 3 && (
+          {photoUrls.length > 3 && (
             <Button
               variant="secondary"
               className="restaurant-all-photos"
               onClick={() => setTab('photos')}
             >
-              All {restaurant.photo_urls.length} photos
+              All {photoUrls.length} photos
             </Button>
           )}
         </div>
@@ -217,6 +225,13 @@ export function RestaurantDetail({ slug }: { slug: string }) {
             </a>
           </Button>
         )}
+        {restaurant.yelp_url && (
+          <Button asChild variant="outline">
+            <a href={restaurant.yelp_url} target="_blank" rel="noreferrer">
+              Yelp <ArrowUpRight />
+            </a>
+          </Button>
+        )}
         <Button asChild variant="outline">
           <a href={restaurantMapsUrl(restaurant)} target="_blank" rel="noreferrer">
             <MapPin /> Directions
@@ -233,7 +248,7 @@ export function RestaurantDetail({ slug }: { slug: string }) {
       <div className="restaurant-tabs" role="tablist" aria-label="Restaurant details">
         {[
           ['details', 'Details'],
-          ['photos', `Photos (${restaurant.photo_urls.length})`],
+          ['photos', `Photos (${photoUrls.length})`],
           ['videos', `Videos (${restaurant.video_urls.length})`],
         ].map(([value, label]) => (
           <Button
@@ -274,6 +289,7 @@ export function RestaurantDetail({ slug }: { slug: string }) {
                 )}
               </section>
               <RestaurantReviews restaurantId={restaurant.id} />
+              <RestaurantYelpDetails businesses={restaurant.yelp_data} />
             </div>
             <aside className="restaurant-facts">
               {restaurantLocations(restaurant).map((location, index) => (
@@ -334,9 +350,9 @@ export function RestaurantDetail({ slug }: { slug: string }) {
         )}
         {tab === 'photos' && (
           <>
-            {restaurant.photo_urls.length ? (
+            {photoUrls.length ? (
               <div className="restaurant-photo-grid">
-                {restaurant.photo_urls.map((src, index) => (
+                {photoUrls.map((src, index) => (
                   <button
                     key={src}
                     onClick={() => setPhoto(index)}
@@ -356,9 +372,22 @@ export function RestaurantDetail({ slug }: { slug: string }) {
                 )}
               </p>
             )}
+            {restaurant.yelp_data.length > 0 && (
+              <p className="restaurant-photo-credit">
+                Review photos from{' '}
+                {restaurant.yelp_data.map((business, index) => (
+                  <span key={business.url}>
+                    {index > 0 ? ' · ' : ''}
+                    <a href={business.url} target="_blank" rel="noreferrer">
+                      Yelp · {business.address || business.name} ↗
+                    </a>
+                  </span>
+                ))}
+              </p>
+            )}
             {restaurant.website && (
               <p className="restaurant-photo-credit">
-                Photos from the restaurant website and saved links ·{' '}
+                Photos from saved links and restaurant websites ·{' '}
                 <a href={restaurant.website} target="_blank" rel="noreferrer">
                   {new URL(restaurant.website).hostname.replace(/^www\./, '')} ↗
                 </a>
@@ -497,15 +526,23 @@ export function RestaurantDetail({ slug }: { slug: string }) {
         <DialogContent className="restaurant-lightbox">
           <DialogTitle className="sr-only">{restaurant.name} photos</DialogTitle>
           <DialogDescription className="sr-only">
-            Restaurant website photo gallery
+            Restaurant photo gallery with saved links and credited Yelp review photos
           </DialogDescription>
           {photo !== null && (
             <>
               <RestaurantPhoto
-                key={restaurant.photo_urls[photo]}
-                src={restaurant.photo_urls[photo]}
+                key={photoUrls[photo]}
+                src={photoUrls[photo]}
                 name={`${restaurant.name} photo ${photo + 1}`}
               />
+              {photoCredit && (
+                <p className="restaurant-photo-credit">
+                  Photo by {photoCredit.author} ·{' '}
+                  <a href={photoCredit.url} target="_blank" rel="noreferrer">
+                    View review on Yelp ↗
+                  </a>
+                </p>
+              )}
               <div className="restaurant-actions">
                 <Button
                   variant="secondary"
@@ -515,11 +552,11 @@ export function RestaurantDetail({ slug }: { slug: string }) {
                   Previous
                 </Button>
                 <span>
-                  {photo + 1} / {restaurant.photo_urls.length}
+                  {photo + 1} / {photoUrls.length}
                 </span>
                 <Button
                   variant="secondary"
-                  disabled={photo === restaurant.photo_urls.length - 1}
+                  disabled={photo === photoUrls.length - 1}
                   onClick={() => setPhoto(photo + 1)}
                 >
                   Next

@@ -1,7 +1,6 @@
+import { shareCardTheme as theme, recipeShareTitleSize } from '@/theme/shareCard';
+import { shareFont as font, shareMascot as mascot } from '../../../../../../server/shareAssets';
 import { ImageResponse } from 'next/og';
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import sharp from 'sharp';
 import { getPublicRecipes } from '@/lib/publicRecipes';
 import { recipeCover } from '@/lib/recipeSharing';
 import { recipeTypeLabel } from '@/lib/recipeCollection';
@@ -9,11 +8,6 @@ import { recipeSharePhoto } from '../../../../../../server/recipeSharePhoto';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-const font = readFile(join(process.cwd(), 'scripts/assets/Poppins-SemiBold.ttf'));
-const mascot = readFile(join(process.cwd(), 'public/brand/chef-grdn-mascot.png'))
-  .then((bytes) => sharp(bytes).resize(240, 240, { fit: 'inside' }).png().toBuffer())
-  .then((bytes) => `data:image/png;base64,${bytes.toString('base64')}`);
 
 export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -27,14 +21,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
   return new ImageResponse(
     <div
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        width: '100%',
-        height: '100%',
-        padding: 64,
-        background: '#ffffff',
-        color: '#171719',
-        fontFamily: 'Poppins',
+        ...theme.canvas,
       }}
     >
       {photo && (
@@ -43,15 +30,21 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            width: 440,
-            height: 440,
+            width: theme.coverSize,
+            height: theme.coverSize,
             flexShrink: 0,
-            borderRadius: 32,
-            background: '#f2f2f4',
+            borderRadius: theme.coverRadius,
+            background: theme.imageBackground,
             overflow: 'hidden',
           }}
         >
-          <img src={photo} alt="" width={440} height={440} style={{ objectFit: 'cover' }} />
+          <img
+            src={photo}
+            alt=""
+            width={theme.coverSize}
+            height={theme.coverSize}
+            style={{ objectFit: 'cover' }}
+          />
         </div>
       )}
       <div
@@ -59,16 +52,16 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          width: photo ? 584 : 1072,
-          marginLeft: photo ? 48 : 0,
+          width: photo ? theme.contentWithPhoto : theme.contentWithoutPhoto,
+          marginLeft: photo ? theme.contentGap : 0,
         }}
       >
         <div
           style={{
             display: 'flex',
-            fontSize: 18,
+            fontSize: theme.type.category,
             letterSpacing: 3,
-            color: '#747477',
+            color: theme.muted,
             textTransform: 'uppercase',
             marginBottom: 20,
           }}
@@ -78,7 +71,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
         <div
           style={{
             display: 'flex',
-            fontSize: recipe.title.length > 85 ? 40 : recipe.title.length > 55 ? 48 : 58,
+            fontSize: recipeShareTitleSize(recipe.title),
             fontWeight: 600,
             lineHeight: 1.18,
             letterSpacing: -1.8,
@@ -87,12 +80,19 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
         >
           {recipe.title}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: 36, fontSize: 24 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginTop: 36,
+            fontSize: theme.type.brand,
+          }}
+        >
           <img
             src={mascotSrc}
             alt=""
-            width={38}
-            height={38}
+            width={theme.brandIconSize}
+            height={theme.brandIconSize}
             style={{ objectFit: 'contain', marginRight: 12 }}
           />
           Chef GRDN
@@ -100,8 +100,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       </div>
     </div>,
     {
-      width: 1200,
-      height: 630,
+      width: theme.width,
+      height: theme.height,
       fonts: [{ name: 'Poppins', data: fontData, weight: 600, style: 'normal' }],
       headers: {
         'Cache-Control': 'public, max-age=300, s-maxage=300, stale-while-revalidate=3600',

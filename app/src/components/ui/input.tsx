@@ -5,7 +5,7 @@ export const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<'in
     <input
       ref={ref}
       className={cn(
-        'flex h-12 w-full min-w-0 rounded-xl border border-input bg-background px-4 py-2 text-base outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50',
+        'flex h-12 w-full min-w-0 rounded-md border border-input bg-background px-4 py-2 text-base outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50',
         className,
       )}
       {...props}
@@ -18,7 +18,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentPro
     <textarea
       ref={ref}
       className={cn(
-        'flex min-h-28 w-full rounded-xl border border-input bg-background px-4 py-3 text-sm leading-7 outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring',
+        'flex min-h-28 w-full rounded-md border border-input bg-background px-4 py-3 text-sm leading-7 outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring',
         className,
       )}
       {...props}

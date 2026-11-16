@@ -1,24 +1,22 @@
+import { shareCardTheme as theme, restaurantShareTitleSize } from '@/theme/shareCard';
+import { shareFont as font, shareMascot as mascot } from '../../../../../../server/shareAssets';
 import { ImageResponse } from 'next/og';
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import sharp from 'sharp';
 import { restaurantNeighborhoods, restaurantCanonicalSlug } from '@/lib/restaurants';
 import { getPublicRestaurants } from '@/lib/publicRestaurants';
+import { restaurantPhotoUrls } from '@/lib/restaurantYelp';
 import { fetchRestaurantResource } from '../../../../../../server/restaurantFetch';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-const font = readFile(join(process.cwd(), 'scripts/assets/Poppins-SemiBold.ttf'));
-const mascot = readFile(join(process.cwd(), 'public/brand/chef-grdn-mascot.png'))
-  .then((bytes) => sharp(bytes).resize(80, 80).png().toBuffer())
-  .then((bytes) => `data:image/png;base64,${bytes.toString('base64')}`);
 export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const restaurant = (await getPublicRestaurants()).find(
     (item) => item.slug === restaurantCanonicalSlug(slug),
   );
   if (!restaurant) return new Response('Restaurant not found', { status: 404 });
-  const photo = restaurant.photo_urls[0]
-    ? await fetchRestaurantResource(restaurant.photo_urls[0], 'image')
+  const cover = restaurantPhotoUrls(restaurant)[0];
+  const photo = cover
+    ? await fetchRestaurantResource(cover, 'image')
         .then(async ({ bytes }) => {
           const image = await sharp(bytes, { limitInputPixels: 40000000 })
             .rotate()
@@ -33,23 +31,16 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
   return new ImageResponse(
     <div
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        width: '100%',
-        height: '100%',
-        padding: 64,
-        background: '#ffffff',
-        color: '#171719',
-        fontFamily: 'Poppins',
+        ...theme.canvas,
       }}
     >
       {photo && (
         <img
           src={photo}
           alt=""
-          width={440}
-          height={440}
-          style={{ borderRadius: 32, objectFit: 'cover', flexShrink: 0 }}
+          width={theme.coverSize}
+          height={theme.coverSize}
+          style={{ borderRadius: theme.coverRadius, objectFit: 'cover', flexShrink: 0 }}
         />
       )}
       <div
@@ -57,25 +48,39 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          marginLeft: photo ? 48 : 0,
-          width: photo ? 584 : 1072,
+          marginLeft: photo ? theme.contentGap : 0,
+          width: photo ? theme.contentWithPhoto : theme.contentWithoutPhoto,
         }}
       >
-        <div style={{ display: 'flex', fontSize: 20, color: '#77777d', marginBottom: 22 }}>
+        <div
+          style={{
+            display: 'flex',
+            fontSize: theme.type.context,
+            color: theme.muted,
+            marginBottom: 22,
+          }}
+        >
           {[restaurant.cuisine, restaurantNeighborhoods(restaurant)].filter(Boolean).join(' · ')}
         </div>
         <div
           style={{
             display: 'flex',
             fontWeight: 600,
-            fontSize: restaurant.name.length > 45 ? 42 : 56,
+            fontSize: restaurantShareTitleSize(restaurant.name),
             lineHeight: 1.2,
             letterSpacing: -1.5,
           }}
         >
           {restaurant.name}
         </div>
-        <div style={{ display: 'flex', fontSize: 25, marginTop: 26, color: '#56565b' }}>
+        <div
+          style={{
+            display: 'flex',
+            fontSize: theme.type.detail,
+            marginTop: 26,
+            color: theme.secondary,
+          }}
+        >
           {[
             restaurant.rating !== null
               ? `${restaurant.rating.toFixed(1)} / 5`
@@ -87,15 +92,28 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
             .filter(Boolean)
             .join('  ·  ')}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', fontSize: 22, marginTop: 38 }}>
-          <img src={mascotSrc} alt="" width={38} height={38} style={{ marginRight: 12 }} />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            fontSize: theme.type.restaurantBrand,
+            marginTop: 38,
+          }}
+        >
+          <img
+            src={mascotSrc}
+            alt=""
+            width={theme.brandIconSize}
+            height={theme.brandIconSize}
+            style={{ marginRight: 12 }}
+          />
           Chef GRDN
         </div>
       </div>
     </div>,
     {
-      width: 1200,
-      height: 630,
+      width: theme.width,
+      height: theme.height,
       fonts: [{ name: 'Poppins', data: fontData, weight: 600, style: 'normal' }],
       headers: {
         'Cache-Control': 'public, max-age=300, s-maxage=300, stale-while-revalidate=3600',

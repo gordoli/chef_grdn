@@ -1,0 +1,52 @@
+.section {
+  margin-top: var(--space-32);
+}
+.business {
+  padding: var(--space-16) 0;
+  border-top: 1px solid var(--border);
+  font-size: var(--text-12);
+  line-height: 1.8;
+}
+.source {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+.summary {
+  margin: var(--space-8) 0;
+  color: var(--muted-foreground);
+}
+.business details {
+  margin-top: var(--space-12);
+}
+.business summary {
+  cursor: pointer;
+}
+.hours {
+  margin-top: var(--space-12);
+  display: grid;
+  gap: var(--space-4);
+}
+.hours > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+.reviews {
+  display: grid;
+  gap: var(--space-20);
+  margin: var(--space-16) 0;
+}
+.text {
+  white-space: pre-wrap;
+  margin: var(--space-8) 0;
+}
+.reviews a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.date {
+  margin-top: var(--space-12);
+  color: var(--muted-foreground);
+  font-size: var(--text-11);
+}

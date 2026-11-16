@@ -5,12 +5,11 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   ArrowUpRight,
   BookOpen,
-  Image,
+  Images,
   Sun,
   Moon,
   LogOut,
   LogIn,
-  Leaf,
   Utensils,
   Search,
   Settings,
@@ -28,7 +27,7 @@ import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 const links = [
   { path: '/', label: 'Recipes', icon: BookOpen },
-  { path: '/gallery', label: 'Gallery', icon: Image },
+  { path: '/gallery', label: 'Gallery', icon: Images },
   { path: '/restaurants', label: 'Restaurants', icon: Utensils },
 ];
 export function Layout({ children }: { children: ReactNode }) {
@@ -170,15 +169,6 @@ export function Layout({ children }: { children: ReactNode }) {
           </header>
         )}
         <main id="main">{children}</main>
-        <footer className="site-footer">
-          <span>
-            <Leaf size={14} /> A little collection. A lot of good food.
-          </span>
-          <a href="https://www.instagram.com/chef_grdn/" target="_blank" rel="noreferrer">
-            @chef_grdn
-            <ArrowUpRight size={14} />
-          </a>
-        </footer>
         <Navigation links={links} prefix={prefix} pathname={pathname} mobile />
         {isDemo && (
           <div className="preview-banner">
@@ -197,9 +187,11 @@ export function Layout({ children }: { children: ReactNode }) {
               ? 'Favorites'
               : pathname.includes('gallery')
                 ? 'Gallery'
-                : pathname.includes('basics')
-                  ? 'Kitchen basics'
-                  : 'Recipe book'}
+                : pathname.includes('roll')
+                  ? 'Roll'
+                  : pathname.includes('basics')
+                    ? 'Kitchen basics'
+                    : 'Recipe book'}
         </span>
       </div>
     </CollectionSearchContext.Provider>

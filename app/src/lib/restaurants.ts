@@ -1,23 +1,9 @@
 import { z } from 'zod';
 
-/** Stored links are data, never arbitrary embed HTML. */
-export function publicWebsite(value: string): boolean {
-  try {
-    const url = new URL(value);
-    return (
-      url.protocol === 'https:' &&
-      !url.username &&
-      !url.password &&
-      (!url.port || url.port === '443') &&
-      url.hostname.includes('.') &&
-      !/^[\d.]+$/.test(url.hostname) &&
-      !url.hostname.includes(':') &&
-      !/(?:^|\.)(?:localhost|local|internal|test|invalid|example)$/.test(url.hostname)
-    );
-  } catch {
-    return false;
-  }
-}
+import { publicWebsite } from './urls';
+import { canonicalYelpUrl, yelpBusiness } from './restaurantYelp';
+export { publicWebsite } from './urls';
+
 const website = z
   .string()
   .trim()
@@ -98,11 +84,19 @@ export const restaurantInput = z
     companions: z.array(z.string().trim().min(1).max(100)).max(30),
     notes: z.string().trim().max(10000),
     website: website.nullable(),
+    yelp_url: z
+      .string()
+      .max(2048)
+      .refine((value) => canonicalYelpUrl(value) !== null, 'Use a Yelp business link.')
+      .nullable()
+      .default(null),
     address: optionalText(500),
     phone: optionalText(80),
     latitude: z.number().min(-90).max(90).nullable(),
     longitude: z.number().min(-180).max(180).nullable(),
     photo_urls: z.array(website).max(12),
+    thumbnail_url: website.nullable().default(null),
+    yelp_data: z.array(yelpBusiness).max(12).default([]),
     video_urls: z
       .array(
         z
@@ -150,11 +144,14 @@ export const emptyRestaurant: RestaurantInput = {
   companions: [],
   notes: '',
   website: null,
+  yelp_url: null,
   address: null,
   phone: null,
   latitude: null,
   longitude: null,
   photo_urls: [],
+  thumbnail_url: null,
+  yelp_data: [],
   video_urls: [],
 };
 export function restaurantSlug(name: string): string {

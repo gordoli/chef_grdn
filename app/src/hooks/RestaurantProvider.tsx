@@ -1,4 +1,5 @@
 'use client';
+import { isOwnerSession } from '@/lib/auth';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { z } from 'zod';
 import { useSession } from './useSession';
@@ -30,7 +31,8 @@ export function RestaurantProvider({
   const [restaurants, setRestaurants] = useState(initialRestaurants);
   const [reviews, setReviews] = useState<RestaurantReview[]>([]);
   const [error, setError] = useState('');
-  const canEdit = isDemo || profile?.role === 'owner';
+  const [demoRestored, setDemoRestored] = useState(!isDemo);
+  const canEdit = isDemo || isOwnerSession(session, profile);
   const generation = useRef(0);
   const updateRestaurants = (update: Restaurant[] | ((previous: Restaurant[]) => Restaurant[])) => {
     const next =
@@ -46,11 +48,12 @@ export function RestaurantProvider({
     ]);
     if (reviewResult.error || profileResult.error)
       throw new Error('Reviews could not be loaded. Please try again.');
+    const names = new Map(
+      (profileResult.data ?? []).map((person) => [person.id, person.display_name]),
+    );
     return (reviewResult.data ?? []).map((review) => ({
       ...review,
-      display_name:
-        profileResult.data?.find((person) => person.id === review.author_id)?.display_name ??
-        'Friend',
+      display_name: names.get(review.author_id) ?? 'Friend',
     }));
   }, [isDemo, session]);
   const refresh = useCallback(async () => {
@@ -87,6 +90,7 @@ export function RestaurantProvider({
       } catch {
         setError('The browser copy could not be restored.');
       }
+      setDemoRestored(true);
     } else {
       // The server already supplied the collection. Do not immediately download it again.
       setRestaurants(freshRestaurants() ?? cacheRestaurants(initialRestaurants));
@@ -269,7 +273,13 @@ export function RestaurantProvider({
         removeReview,
       }}
     >
-      {children}
+      {demoRestored ? (
+        children
+      ) : (
+        <div className="page-loader" role="status">
+          Opening your restaurant preview…
+        </div>
+      )}
     </RestaurantsContext.Provider>
   );
 }

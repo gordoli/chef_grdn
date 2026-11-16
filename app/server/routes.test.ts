@@ -4,13 +4,21 @@ const mocks = vi.hoisted(() => ({
   handleImport: vi.fn(),
   handleImportImage: vi.fn(),
   handleRestaurantImport: vi.fn(),
+  handleSocialImport: vi.fn(),
+  handleTikTokImport: vi.fn(),
 }));
 vi.mock('./auth', () => ({ authenticateOwner: mocks.authenticateOwner }));
 vi.mock('./import', () => ({ handleImport: mocks.handleImport }));
 vi.mock('./restaurantImport', () => ({ handleRestaurantImport: mocks.handleRestaurantImport }));
+vi.mock('./restaurantSocialImport', () => ({
+  handleSocialImport: mocks.handleSocialImport,
+  handleTikTokImport: mocks.handleTikTokImport,
+}));
 vi.mock('./image', () => ({ handleImportImage: mocks.handleImportImage }));
 import { POST as importRecipe } from '../src/app/api/import/route';
 import { POST as importRestaurant } from '../src/app/api/import-restaurant/route';
+import { POST as importYelp } from '../src/app/api/import-yelp/route';
+import { POST as importTikTok } from '../src/app/api/import-tiktok/route';
 import { POST as importImage } from '../src/app/api/import-image/route';
 beforeEach(() => {
   vi.resetAllMocks();
@@ -19,6 +27,8 @@ for (const [name, route, service] of [
   ['recipe', importRecipe, mocks.handleImport],
   ['restaurant', importRestaurant, mocks.handleRestaurantImport],
   ['image', importImage, mocks.handleImportImage],
+  ['Yelp', importYelp, mocks.handleSocialImport],
+  ['TikTok', importTikTok, mocks.handleTikTokImport],
 ] as const) {
   describe(`${name} Next.js route authorization`, () => {
     it('returns the authentication failure without fetching an upstream site', async () => {

@@ -1,0 +1,124 @@
+.restaurant-filter-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  margin-bottom: var(--space-16);
+}
+.restaurant-filter-row .restaurant-toolbar {
+  margin-bottom: 0;
+}
+.restaurant-cuisine-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  margin-bottom: var(--space-28);
+  min-width: 0;
+}
+.restaurant-cuisine-row .restaurant-toolbar {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+.restaurant-cuisine-pills {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+.restaurant-list-labels,
+.restaurant-list-card {
+  grid-template-columns: minmax(220px, 2.5fr) 1.4fr 1fr 1fr;
+  padding-right: var(--space-56);
+}
+.restaurant-list-labels > :nth-child(3) {
+  display: block;
+}
+.restaurant-list-labels > :last-child {
+  text-align: right;
+}
+.restaurant-list-item {
+  position: relative;
+}
+.restaurant-favorite {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  color: var(--muted-foreground);
+}
+.restaurant-favorite[aria-pressed='true'] {
+  color: var(--primary);
+}
+.restaurant-favorite svg {
+  width: 18px;
+  height: 18px;
+}
+.restaurant-list-status {
+  line-height: 1.6;
+}
+.restaurant-location-editor {
+  display: grid;
+  gap: var(--space-12);
+}
+.restaurant-location-editor-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  font-size: var(--text-12);
+}
+.restaurant-form fieldset.restaurant-location-fields {
+  padding: var(--space-16);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-16);
+  gap: var(--space-12);
+}
+.restaurant-location-phone {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  margin-top: var(--space-8);
+}
+@media (max-width: 900px) and (min-width: 641px) {
+  .restaurant-list-labels,
+  .restaurant-list-card {
+    grid-template-columns: minmax(250px, 2fr) 1fr 1fr 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .restaurant-filter-row {
+    margin-bottom: var(--space-16);
+  }
+  .restaurant-cuisine-row {
+    gap: var(--space-10);
+    margin-bottom: var(--space-20);
+  }
+  .restaurant-filter-row > .restaurant-status {
+    width: 100%;
+  }
+  .restaurant-filter-row .restaurant-toolbar {
+    margin-left: auto;
+  }
+  .restaurant-list-labels {
+    display: none;
+  }
+  .restaurant-list-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: var(--space-16) var(--space-48) var(--space-16) 0;
+    gap: var(--space-6) var(--space-12);
+  }
+  .restaurant-favorite {
+    right: 0;
+    top: 14px;
+    transform: none;
+  }
+  .restaurant-card-price {
+    grid-row: 3;
+    align-self: start;
+  }
+  #restaurant-search input {
+    font-size: var(--text-12);
+  }
+}
