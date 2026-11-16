@@ -1,0 +1,905 @@
+{
+  "restaurants": [
+    {
+      "slug": "gao-viet",
+      "name": "Gao Viet",
+      "cuisine": "Vietnamese",
+      "neighborhood": "Inner Sunset",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$20–60",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://gaovietkitchen.com/location-2/",
+      "address": "1900 Irving St, San Francisco, CA 94122",
+      "phone": "(415) 592-8090",
+      "latitude": 37.763568992269,
+      "longitude": -122.478267473593,
+      "photo_urls": [
+        "https://tb-static.uber.com/prod/image-proc/processed_images/e464e1a3c3294b65ccc60bb1f9729a49/30be7d11a3ed6f6183354d1933fbb6c7.jpeg"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Inner Sunset",
+          "address": "1900 Irving St, San Francisco, CA 94122",
+          "phone": "(415) 592-8090",
+          "latitude": 37.763568992269,
+          "longitude": -122.478267473593
+        }
+      ]
+    },
+    {
+      "slug": "bodega-sf",
+      "name": "Bodega SF",
+      "cuisine": "Vietnamese",
+      "neighborhood": "Tenderloin",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$30–90",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.bodegarestaurants.com/",
+      "address": "138 Mason St, San Francisco, CA 94102",
+      "phone": null,
+      "latitude": 37.784732896676,
+      "longitude": -122.40931324738,
+      "photo_urls": [
+        "https://images.squarespace-cdn.com/content/v1/66d792fdaeff3c2991c349c2/1f5ccd10-f6ec-4ed7-911a-d85b87239e65/Bodega+x+ERIN+NG+%28Apr+23%29+-+029.jpg",
+        "https://images.squarespace-cdn.com/content/v1/66d792fdaeff3c2991c349c2/434f4a39-39e4-4c7b-96d1-52848f5f7506/Bodega+x+ERIN+NG+%28Apr+23%29+-+043-Photoroom.jpg",
+        "https://images.squarespace-cdn.com/content/v1/66d792fdaeff3c2991c349c2/efcc0297-963a-4ad4-91ba-c6c656f660e5/IMG_0098.PNG"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Tenderloin",
+          "address": "138 Mason St, San Francisco, CA 94102",
+          "phone": null,
+          "latitude": 37.784732896676,
+          "longitude": -122.40931324738
+        }
+      ]
+    },
+    {
+      "slug": "basecamp-sf",
+      "name": "Basecamp SF",
+      "cuisine": "Nepali",
+      "neighborhood": "Mission",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$20–30",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://basecampsf.com/",
+      "address": "2400 Folsom St, San Francisco, CA 94110",
+      "phone": "(415) 654-5349",
+      "latitude": 37.758834644409,
+      "longitude": -122.414756936539,
+      "photo_urls": [
+        "https://basecampsf.com/wp-content/uploads/2021/09/o-12.jpg",
+        "https://basecampsf.com/wp-content/uploads/2022/01/base_camp_wall.jpg",
+        "https://basecampsf.com/wp-content/uploads/2022/01/base_camp_wall4.jpg",
+        "https://basecampsf.com/wp-content/uploads/2022/01/base_camp_wall3.jpg",
+        "https://basecampsf.com/wp-content/uploads/2022/01/base_camp_wall8.jpg",
+        "https://basecampsf.com/wp-content/uploads/2022/01/base_camp_wall5.jpg",
+        "https://basecampsf.com/wp-content/uploads/2021/09/o-14.jpg",
+        "https://basecampsf.com/wp-content/uploads/2021/09/o-13.jpg",
+        "https://basecampsf.com/wp-content/uploads/2021/05/sidearea-img.png",
+        "https://basecampsf.com/wp-content/uploads/2021/07/insta-img-1-sidebar.jpg",
+        "https://basecampsf.com/wp-content/uploads/2021/07/insta-img-2.jpg",
+        "https://basecampsf.com/wp-content/uploads/2021/07/insta-img-3.jpg"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Mission",
+          "address": "2400 Folsom St, San Francisco, CA 94110",
+          "phone": "(415) 654-5349",
+          "latitude": 37.758834644409,
+          "longitude": -122.414756936539
+        }
+      ]
+    },
+    {
+      "slug": "pakwan",
+      "name": "Pakwan",
+      "cuisine": "Pakistani / Indian",
+      "neighborhood": null,
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$20–30",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://pakwan.com/",
+      "address": null,
+      "phone": null,
+      "latitude": null,
+      "longitude": null,
+      "photo_urls": [
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJ1gKEyczf4LU_HbtrA2VH47Z-BL7R4VrpIKjr_4kqh-v7txn0jxUN0oE&s=10",
+        "https://bayarea.pw/wp-content/uploads/2025/06/ddash.webp",
+        "https://bayarea.pw/wp-content/uploads/2025/06/ueats.webp",
+        "https://pakwan.com/wp-content/uploads/2025/08/pk1.png",
+        "https://pakwan.com/wp-content/uploads/2025/09/DSCF0042-e1757398087303.jpg",
+        "https://pakwan.com/wp-content/uploads/2025/08/20250818_0746_Cocina-Profesional-Tandoor_remix_01k2yt6cpqeavs3drdjfgenc43-683x1024.png",
+        "https://pakwan.com/wp-content/uploads/2025/08/pepper_pak.png",
+        "https://pakwan.com/wp-content/uploads/2025/08/31047945_1038886192953775_6598341338968621056_n.jpg",
+        "https://pakwan.com/wp-content/uploads/2025/08/lentil-curry-1.jpg",
+        "https://pakwan.com/wp-content/uploads/2025/08/322.jpg",
+        "https://pakwan.com/wp-content/uploads/2025/08/217-scaled.jpg"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "",
+          "address": null,
+          "phone": null,
+          "latitude": null,
+          "longitude": null
+        }
+      ]
+    },
+    {
+      "slug": "amarin-thai",
+      "name": "Amarin Thai",
+      "cuisine": "Thai",
+      "neighborhood": "Lafayette",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$20–30",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://amarinlafayette.com/",
+      "address": "3555 Mt Diablo Blvd, Lafayette, CA 94549",
+      "phone": null,
+      "latitude": null,
+      "longitude": null,
+      "photo_urls": [
+        "https://img1.wsimg.com/isteam/ip/22321b46-7c3e-4de7-a81f-7d56cbd33382/blob-a823288.png"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Lafayette",
+          "address": "3555 Mt Diablo Blvd, Lafayette, CA 94549",
+          "phone": null,
+          "latitude": null,
+          "longitude": null
+        }
+      ]
+    },
+    {
+      "slug": "burma-love",
+      "name": "Burma Love",
+      "cuisine": "Burmese",
+      "neighborhood": null,
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$20–60",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.burmafoodgroup.com/burma-love.html",
+      "address": null,
+      "phone": null,
+      "latitude": null,
+      "longitude": null,
+      "photo_urls": [
+        "https://www.burmafoodgroup.com/assets/photos/love-valencia-05.jpg",
+        "https://www.burmafoodgroup.com/assets/photos/love-downtown-01.jpg",
+        "https://www.burmafoodgroup.com/assets/photos/love-valencia-01.jpg",
+        "https://www.burmafoodgroup.com/assets/photos/love-menlo-park-01.jpg",
+        "https://www.burmafoodgroup.com/assets/photos/love-chase-center-01.jpg"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "",
+          "address": null,
+          "phone": null,
+          "latitude": null,
+          "longitude": null
+        }
+      ]
+    },
+    {
+      "slug": "burma-superstar",
+      "name": "Burma Superstar",
+      "cuisine": "Burmese",
+      "neighborhood": "Inner Richmond",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$20–30",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.burmasuperstar.com/",
+      "address": "309 Clement St, San Francisco, CA 94118",
+      "phone": "+14153872147",
+      "latitude": 37.782977507754,
+      "longitude": -122.462347175458,
+      "photo_urls": [
+        "https://images.squarespace-cdn.com/content/v1/5259cde4e4b0c103e973a7b0/1741540236962-HA9ELKUM4WGGZ78GD40T/Yelp_Top100Placestoeat_2025.png",
+        "https://images.squarespace-cdn.com/content/v1/5259cde4e4b0c103e973a7b0/1570786934627-B0XG8FTZCLPQ9LTQ0XNB/tea%2Bleaf.jpg",
+        "https://images.squarespace-cdn.com/content/v1/5259cde4e4b0c103e973a7b0/1570787260164-M7YDKRN3UNP9NYLIFK8O/Taste%2Bmade%2BRainbow%2BSalad_.png",
+        "https://images.squarespace-cdn.com/content/v1/5259cde4e4b0c103e973a7b0/1383807709665-07RQL0X4B8KZE6S49D6S/carousel-pic1.jpg",
+        "https://images.squarespace-cdn.com/content/v1/5259cde4e4b0c103e973a7b0/1384624931419-EJR566Q66ZFC6OU0GX1Y/carousel-pic6.jpg"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Inner Richmond",
+          "address": "309 Clement St, San Francisco, CA 94118",
+          "phone": "+14153872147",
+          "latitude": 37.782977507754,
+          "longitude": -122.462347175458
+        }
+      ]
+    },
+    {
+      "slug": "dancing-yak",
+      "name": "Dancing Yak",
+      "cuisine": "Nepali",
+      "neighborhood": "Mission",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$30–40",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://dancingyaksf.com/",
+      "address": "280 Valencia St, San Francisco, CA 94103",
+      "phone": "(415) 525-4857",
+      "latitude": 37.768388326614,
+      "longitude": -122.422295556508,
+      "photo_urls": [
+        "https://dancingyaksf.com/wp-content/uploads/2021/08/DY_Quad1.jpg",
+        "https://dancingyaksf.com/wp-content/uploads/2021/08/DY_Quad3.jpg",
+        "https://dancingyaksf.com/wp-content/uploads/2021/08/DY_Quad2.jpg",
+        "https://dancingyaksf.com/wp-content/uploads/2021/08/DY_Quad5.jpg",
+        "https://dancingyaksf.com/wp-content/uploads/2021/08/DY_Footer-300x217.png"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Mission",
+          "address": "280 Valencia St, San Francisco, CA 94103",
+          "phone": "(415) 525-4857",
+          "latitude": 37.768388326614,
+          "longitude": -122.422295556508
+        }
+      ]
+    },
+    {
+      "slug": "sri-racha-thai",
+      "name": "Sri Racha Thai",
+      "cuisine": "Thai",
+      "neighborhood": "Inner Sunset",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$20–30",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://coverage-f5ec84c9ed81682abb61832acccb6f35.web.ordersave.com/",
+      "address": "1319 9th Ave, San Francisco, CA 94122",
+      "phone": null,
+      "latitude": 37.763655649349,
+      "longitude": -122.46635698349,
+      "photo_urls": [
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5z6Y0KxNf14w9DQn1oW3OYekR5D9AhwzVwm9WF2oAXdwy2jLQYbA6hw4&s=10"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Inner Sunset",
+          "address": "1319 9th Ave, San Francisco, CA 94122",
+          "phone": null,
+          "latitude": 37.763655649349,
+          "longitude": -122.46635698349
+        }
+      ]
+    },
+    {
+      "slug": "rose-indian",
+      "name": "Rose Indian",
+      "cuisine": "Indian",
+      "neighborhood": "Inner Sunset",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$20–30",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.roseindiancuisinesf.com/",
+      "address": "1386 9th Ave, San Francisco, CA 94122",
+      "phone": null,
+      "latitude": 37.762449357703,
+      "longitude": -122.46612758723,
+      "photo_urls": [
+        "https://tb-static.uber.com/prod/image-proc/processed_images/8796778551d8abc787f7d23758f2474f/783282f6131ef2258e5bcd87c46aa87e.jpeg"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Inner Sunset",
+          "address": "1386 9th Ave, San Francisco, CA 94122",
+          "phone": null,
+          "latitude": 37.762449357703,
+          "longitude": -122.46612758723
+        }
+      ]
+    },
+    {
+      "slug": "ramen-kameko",
+      "name": "Ramen Kameko",
+      "cuisine": "Japanese / Ramen",
+      "neighborhood": "Inner Richmond",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$11–20",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.ramenkameko.com/",
+      "address": "910 Clement St, San Francisco, CA 94118",
+      "phone": null,
+      "latitude": 37.782800532765,
+      "longitude": -122.468874556912,
+      "photo_urls": [
+        "https://website-cdn.menusifu.com/wp-content/uploads/ramenkameko.com/2025/02/2148678758.jpg",
+        "https://website-cdn.menusifu.com/wp-content/uploads/ramenkameko.com/2025/02/img-15.jpg",
+        "https://website-cdn.menusifu.com/wp-content/uploads/ramenkameko.com/2025/02/img-19.jpg",
+        "https://website-cdn.menusifu.com/wp-content/uploads/ramenkameko.com/2025/02/img-24.jpg",
+        "https://website-cdn.menusifu.com/wp-content/uploads/ramenkameko.com/2025/02/img-25.jpg",
+        "https://website-cdn.menusifu.com/wp-content/uploads/ramenkameko.com/2025/02/stars.png",
+        "https://website-cdn.menusifu.com/wp-content/uploads/ramenkameko.com/2025/02/AdobeStock_3119101551-scaled.jpg"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Inner Richmond",
+          "address": "910 Clement St, San Francisco, CA 94118",
+          "phone": null,
+          "latitude": 37.782800532765,
+          "longitude": -122.468874556912
+        }
+      ]
+    },
+    {
+      "slug": "noodle-panda",
+      "name": "Noodle Panda",
+      "cuisine": "Chinese / Noodles",
+      "neighborhood": "Parkside",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": null,
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": null,
+      "address": "1055 Taraval St, San Francisco, CA 94116",
+      "phone": null,
+      "latitude": 37.742920222332,
+      "longitude": -122.477343739305,
+      "photo_urls": [
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGPryUKq91BsWUJRumk2HGzHgD4fKtE5-7TjW_3nfkWJ6VnCQsOktu4Gk&s=10"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Parkside",
+          "address": "1055 Taraval St, San Francisco, CA 94116",
+          "phone": null,
+          "latitude": 37.742920222332,
+          "longitude": -122.477343739305
+        }
+      ]
+    },
+    {
+      "slug": "underdog-tres",
+      "name": "Underdog Tres",
+      "cuisine": "Mexican",
+      "neighborhood": "Inner Sunset",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$20–30",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://underdogstres.com/",
+      "address": "1224 9th Ave, San Francisco, CA 94122",
+      "phone": "4155668700",
+      "latitude": 37.765413135025,
+      "longitude": -122.466332540227,
+      "photo_urls": [
+        "https://underdogstres.com/wp-content/uploads/2020/11/Mexican-Street-Style-Tacos.jpg"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Inner Sunset",
+          "address": "1224 9th Ave, San Francisco, CA 94122",
+          "phone": "4155668700",
+          "latitude": 37.765413135025,
+          "longitude": -122.466332540227
+        }
+      ]
+    },
+    {
+      "slug": "bandit",
+      "name": "Bandit",
+      "cuisine": "American",
+      "neighborhood": null,
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$10–20",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.banditsf.com/",
+      "address": null,
+      "phone": null,
+      "latitude": null,
+      "longitude": null,
+      "photo_urls": [
+        "https://images.squarespace-cdn.com/content/v1/59d59f76d7bdce2cadc48f80/1510875912148-6XBGRN1IFE1RI0WXN13E/%E2%80%A21T6A0388.jpg",
+        "https://images.squarespace-cdn.com/content/v1/59d59f76d7bdce2cadc48f80/1510698162330-Q0K3NBZL94KCJ8918822/%E2%80%A21T6A0366.jpg",
+        "https://images.squarespace-cdn.com/content/v1/59d59f76d7bdce2cadc48f80/1510690281785-SC8C5S8G5WFFGVV9CZRJ/%E2%80%A21T6A0382+copy.jpg",
+        "https://images.squarespace-cdn.com/content/v1/59d59f76d7bdce2cadc48f80/1510872938385-LP75YBCA52RPXOPG8HFW/%E2%80%A21T6A0442.jpg",
+        "https://images.squarespace-cdn.com/content/v1/59d59f76d7bdce2cadc48f80/1510875331935-8OIVFRNO7UVU18AX4GC2/%E2%80%A21T6A0352.jpg"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "",
+          "address": null,
+          "phone": null,
+          "latitude": null,
+          "longitude": null
+        }
+      ]
+    },
+    {
+      "slug": "foreign-cinema",
+      "name": "Foreign Cinema",
+      "cuisine": "Californian / Mediterranean",
+      "neighborhood": "Mission",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$50–100",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://foreigncinema.com/",
+      "address": "2534 Mission St, San Francisco, CA 94110",
+      "phone": "+14156487600",
+      "latitude": 37.756458781537,
+      "longitude": -122.418918491847,
+      "photo_urls": [
+        "https://foreigncinema.com/wp-content/uploads/foreign-cinema-NRM-7465-1.jpg",
+        "https://foreigncinema.com/wp-content/uploads/foreign-cinema-NRM-right-cocktail.jpg",
+        "https://foreigncinema.com/wp-content/uploads/Foreign-Cinema-dining.jpg",
+        "https://foreigncinema.com/wp-content/uploads/modernism-west.jpeg",
+        "https://foreigncinema.com/wp-content/uploads/d6e9b46439fa52dc9440373b3a369f7c.jpg",
+        "https://foreigncinema.com/wp-content/uploads/directors-table.jpeg",
+        "https://foreigncinema.com/wp-content/uploads/6c4e59177f4823d831d758f38b322595.jpg",
+        "https://foreigncinema.com/wp-content/uploads/Wedding_venue.png",
+        "https://foreigncinema.com/wp-content/uploads/laszlo-w.jpg",
+        "https://foreigncinema.com/wp-content/uploads/Group-54.png"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Mission",
+          "address": "2534 Mission St, San Francisco, CA 94110",
+          "phone": "+14156487600",
+          "latitude": 37.756458781537,
+          "longitude": -122.418918491847
+        }
+      ]
+    },
+    {
+      "slug": "itria",
+      "name": "Itria",
+      "cuisine": "Italian",
+      "neighborhood": "Mission",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$25–50",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.itriasf.com/",
+      "address": "3266 24th St, San Francisco, CA 94110",
+      "phone": "(415) 874-9821",
+      "latitude": 37.752336837011,
+      "longitude": -122.41775337229,
+      "photo_urls": [
+        "https://images.getbento.com/accounts/b5a3fc661991f5fdc6002a41981d5ab7/media/images/49315pasta_gourmand_group-4.jpg?w=1200&fit=max&auto=compress,format&cs=origin",
+        "https://images.getbento.com/accounts/b5a3fc661991f5fdc6002a41981d5ab7/media/images/76661CRUDO_SPREAD-1.jpg?w=1200&fit=max&auto=compress,format&cs=origin",
+        "https://images.getbento.com/accounts/b5a3fc661991f5fdc6002a41981d5ab7/media/images/63206CAPPELLETTI_DI_ZUCCA_AUTUMN_SQUASH_RADICCHIO_AGED_BALSAMIC.jpg?w=1200&fit=max&auto=compress,format&cs=origin",
+        "https://images.getbento.com/accounts/b5a3fc661991f5fdc6002a41981d5ab7/media/images/97461FOCACCIA.jpg?w=1200&fit=max&auto=compress,format&cs=origin",
+        "https://images.getbento.com/accounts/b5a3fc661991f5fdc6002a41981d5ab7/media/images/95919Local_trout_pea_vinaigrette_rhubarb_cucumber.jpg?w=1200&fit=max&auto=compress,format&cs=origin",
+        "https://images.getbento.com/accounts/b5a3fc661991f5fdc6002a41981d5ab7/media/images/6304Casoncelli_herbed_ricotta_green_garlic_pesto_pistachio.jpg?w=1200&fit=max&auto=compress,format&cs=origin",
+        "https://images.getbento.com/accounts/b5a3fc661991f5fdc6002a41981d5ab7/media/images/81431Gramigna_sausage_ragu_english_peas_parmigiano_reggiano.jpg?w=1200&fit=max&auto=compress,format&cs=origin"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Mission",
+          "address": "3266 24th St, San Francisco, CA 94110",
+          "phone": "(415) 874-9821",
+          "latitude": 37.752336837011,
+          "longitude": -122.41775337229
+        }
+      ]
+    },
+    {
+      "slug": "rose-pizzeria",
+      "name": "Rose Pizzeria",
+      "cuisine": "Pizza",
+      "neighborhood": null,
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$15–30",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.rosepizzeria.com/",
+      "address": null,
+      "phone": null,
+      "latitude": null,
+      "longitude": null,
+      "photo_urls": [
+        "https://images.squarespace-cdn.com/content/v1/6a749ecb09ad866309b54e76/91136245-7566-4f77-959c-b112c8d75a3e/Rose-Pizza-01.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/6a749ecb09ad866309b54e76/94fa9ca9-aaa4-45bd-9fc0-8eb104f9bd23/Rose-Pizza-04.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/6a749ecb09ad866309b54e76/4275eb82-acee-4e74-8687-8446b64ca4e5/Illo-Pizza-1-Red.png",
+        "https://images.squarespace-cdn.com/content/v1/6a749ecb09ad866309b54e76/ae84029b-6164-456b-9cf5-198546162438/Illo-Pizza-3-Red.png",
+        "https://images.squarespace-cdn.com/content/v1/6a749ecb09ad866309b54e76/d33fbf1e-8f4a-4f8b-b283-0919307a594b/Rose-Melissa-Zink-SF-Infatuation.jpeg",
+        "https://images.squarespace-cdn.com/content/v1/6a749ecb09ad866309b54e76/8f21a143-da07-40c8-ae31-2981bdb07ee1/Illo-Pizza-2-Red.png",
+        "https://images.squarespace-cdn.com/content/v1/6a749ecb09ad866309b54e76/0beafde8-a89d-4eb2-8de1-114ee1bb8fea/Asset+4%403x.png",
+        "https://images.squarespace-cdn.com/content/v1/6a749ecb09ad866309b54e76/aa691c61-832b-442f-a795-a4410da6b596/Untitled_Artwork+%281%29.png",
+        "https://images.squarespace-cdn.com/content/v1/6a749ecb09ad866309b54e76/2e2fcf9d-815b-4709-989a-c6977a994ba3/Untitled_Artwork+%282%29.png",
+        "https://images.squarespace-cdn.com/content/v1/6a749ecb09ad866309b54e76/950a57e8-dc7b-4fff-8416-ad1cd4531b34/Asset+3%403x.png",
+        "https://images.squarespace-cdn.com/content/v1/6a749ecb09ad866309b54e76/bb96ead5-9a5d-41eb-83ba-7e5313efc3eb/Rose-Horizontal.png"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "",
+          "address": null,
+          "phone": null,
+          "latitude": null,
+          "longitude": null
+        }
+      ]
+    },
+    {
+      "slug": "dumpling-king",
+      "name": "Dumpling King",
+      "cuisine": "Chinese / Dim sum",
+      "neighborhood": "Inner Richmond",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$21–30",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://dumplingkingsf.com/",
+      "address": "336 Clement St, San Francisco, CA 94118",
+      "phone": "(415) 387-8370",
+      "latitude": 37.783072821642,
+      "longitude": -122.462772836005,
+      "photo_urls": [
+        "https://framerusercontent.com/images/jURrsXSn0lUM61uEOVVsC9tnl34.png",
+        "https://framerusercontent.com/images/WKsGX3eG3ZVg9gA3sYdYRHRcOr4.png?width=500&height=500",
+        "https://framerusercontent.com/images/ykKP1zVoS4e7GVzP2YkImrdztKc.png?width=1194&height=672",
+        "https://framerusercontent.com/images/UYzRjQdlzCnH7aXKM5R81BohSok.png?scale-down-to=2048&width=1920&height=2640",
+        "https://framerusercontent.com/images/tRWYbWgwkjNaCeWGIFKv0kWrf3Y.png?width=1920&height=1080",
+        "https://framerusercontent.com/images/Z53hBms1cxbVysiCh0u9T7LOak.png?width=1338&height=1080",
+        "https://framerusercontent.com/images/7MidNkoz0uv1d0CuaXayPYjiug.png?width=1920&height=1080",
+        "https://framerusercontent.com/images/Vl271jUr7lkThIojSmb7dFKxKt4.png?width=1920&height=1080",
+        "https://framerusercontent.com/images/Tr0KGAcXonnWiYoEhAMSJrwaXw.png?width=1920&height=1080",
+        "https://framerusercontent.com/images/8kkxCGmjrWeFNdBG3642xMwvI.png?width=1920&height=1080",
+        "https://framerusercontent.com/images/CbqJi3xDgWeVjUsATCtwwndK2Q.png?width=1920&height=1080",
+        "https://framerusercontent.com/images/CkpwLJWfS3gqrXw8lVboHQSvWA.png?width=1920&height=1080"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Inner Richmond",
+          "address": "336 Clement St, San Francisco, CA 94118",
+          "phone": "(415) 387-8370",
+          "latitude": 37.783072821642,
+          "longitude": -122.462772836005
+        }
+      ]
+    },
+    {
+      "slug": "dumpling-story",
+      "name": "Dumpling Story",
+      "cuisine": "Chinese / Dim sum",
+      "neighborhood": "Mission / Pacific Heights",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$10–40",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://coverage-14436642f7b3aecf5d34395b0b9edb28.web.ordersave.com/page/san-francisco",
+      "address": "694 Valencia St, San Francisco, CA 94110",
+      "phone": null,
+      "latitude": 37.761800101515,
+      "longitude": -122.421660146872,
+      "photo_urls": [
+        "https://lh3.googleusercontent.com/gps-cs-s/ANWiy9QBosmJRlktn0Nl7WL22WbLEZbVPCV7OksFywfojXAkpzIFSm3JW7TxI-MMoyF8X_t1UMcvtBJFfvHkFEkbvI7qJxVROOqLRsbGeWpyv6YK5E4rTl_MRVCclEzwx_tl0H5u9XwWf4IIYpXZ=s1360-w1360-h1020-rw"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Mission",
+          "address": "694 Valencia St, San Francisco, CA 94110",
+          "phone": null,
+          "latitude": 37.761800101515,
+          "longitude": -122.421660146872
+        },
+        {
+          "neighborhood": "Pacific Heights",
+          "address": "2114 Fillmore St, San Francisco, CA 94115",
+          "phone": "(415) 829-3664",
+          "latitude": 37.789090850983,
+          "longitude": -122.43380375146
+        }
+      ]
+    },
+    {
+      "slug": "dumpling-baby",
+      "name": "Dumpling Baby",
+      "cuisine": "Chinese / Dim sum",
+      "neighborhood": "Inner Richmond",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": null,
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.dumplingbabysf.com/",
+      "address": "3751 Geary Blvd, San Francisco, CA 94118",
+      "phone": "(415) 592-8232",
+      "latitude": 37.780988,
+      "longitude": -122.4598472,
+      "photo_urls": [
+        "https://www.dumplingbabysf.com/uploads/b/a2964920-cb02-11ea-a568-a345e43fcd6c/DSC02012-Edit.jpg"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Inner Richmond",
+          "address": "3751 Geary Blvd, San Francisco, CA 94118",
+          "phone": "(415) 592-8232",
+          "latitude": 37.780988,
+          "longitude": -122.4598472
+        }
+      ]
+    },
+    {
+      "slug": "good-luck-dim-sum",
+      "name": "Good Luck Dim Sum",
+      "cuisine": "Chinese / Dim sum",
+      "neighborhood": "Inner Richmond",
+      "status": "visited",
+      "is_favorite": true,
+      "price_range": "$10–20",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": null,
+      "address": "736 Clement St, San Francisco, CA 94118",
+      "phone": null,
+      "latitude": 37.782888092474,
+      "longitude": -122.466977818796,
+      "photo_urls": ["https://s3-media0.fl.yelpcdn.com/bphoto/YnZR8peusW3yKa3CscgymA/258s.jpg"],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Inner Richmond",
+          "address": "736 Clement St, San Francisco, CA 94118",
+          "phone": null,
+          "latitude": 37.782888092474,
+          "longitude": -122.466977818796
+        }
+      ]
+    },
+    {
+      "slug": "kevins-noodle-house",
+      "name": "Kevin’s Noodle House",
+      "cuisine": "Vietnamese",
+      "neighborhood": null,
+      "status": "want_to_go",
+      "is_favorite": false,
+      "price_range": "$10–20",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://kevinsnoodlehouse.com/",
+      "address": null,
+      "phone": null,
+      "latitude": null,
+      "longitude": null,
+      "photo_urls": [
+        "https://res.cloudinary.com/the-infatuation/image/upload/c_fill,w_3840,ar_4:3,g_center,f_webp/images/MZink-SF-Kevin_sNoodleHouse-Group-23_x9am3d"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "",
+          "address": null,
+          "phone": null,
+          "latitude": null,
+          "longitude": null
+        }
+      ]
+    },
+    {
+      "slug": "pang",
+      "name": "Pang",
+      "cuisine": "Chinese",
+      "neighborhood": "Inner Sunset",
+      "status": "want_to_go",
+      "is_favorite": false,
+      "price_range": "$30–40",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://pangsf.com/",
+      "address": "1309 9th Ave, San Francisco, CA 94122",
+      "phone": null,
+      "latitude": 37.76383397389,
+      "longitude": -122.466369433956,
+      "photo_urls": [
+        "https://pangsf.com/wp-content/uploads/2026/05/frame-1-2-1-e1777923901637.png",
+        "https://pangsf.com/wp-content/uploads/2026/05/new-menu-post-791x1024.png",
+        "https://pangsf.com/wp-content/uploads/2026/05/new-menu-post-1.png"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Inner Sunset",
+          "address": "1309 9th Ave, San Francisco, CA 94122",
+          "phone": null,
+          "latitude": 37.76383397389,
+          "longitude": -122.466369433956
+        }
+      ]
+    },
+    {
+      "slug": "sam-tung",
+      "name": "Sam Tung",
+      "cuisine": "Chinese",
+      "neighborhood": "Inner Sunset",
+      "status": "want_to_go",
+      "is_favorite": false,
+      "price_range": "$20–30",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.santungsf.com/",
+      "address": "1031 Irving St, San Francisco, CA 94122",
+      "phone": "(415) 242-0828",
+      "latitude": 37.7638701765,
+      "longitude": -122.468802893369,
+      "photo_urls": [
+        "https://images.squarespace-cdn.com/content/v1/618b56bbb50653019ebdecaf/1639534398538-HCQWO6HUEFUJ6AZ6COA3/DSC03708.jpg",
+        "https://images.squarespace-cdn.com/content/v1/618b56bbb50653019ebdecaf/1638341202354-8PNAP4RIHHRAX3UKMCPE/DSC00739.jpg",
+        "https://images.squarespace-cdn.com/content/v1/618b56bbb50653019ebdecaf/1642043988852-LXL19T5QJTJGQ8VPORUO/Shrimp+and+Leek+Dumplings.jpg",
+        "https://images.squarespace-cdn.com/content/v1/618b56bbb50653019ebdecaf/1642044024899-NRIS4OFREKH8NQM452H2/Pork+Dumplings.jpg",
+        "https://images.squarespace-cdn.com/content/v1/618b56bbb50653019ebdecaf/1642043866710-1AVFWQ49P9B1NBP8LXEJ/Hot+Braised+Chicken.jpg",
+        "https://images.squarespace-cdn.com/content/v1/618b56bbb50653019ebdecaf/50c5ae06-ec14-4195-86a4-3150ff54304e/Noodles+with+Peanut+Suace.jpg",
+        "https://images.squarespace-cdn.com/content/v1/618b56bbb50653019ebdecaf/8d7296f3-e3c3-46fb-9f82-3e61b86cfae1/Three+Deluxe+Spicy+Sauce.jpg",
+        "https://images.squarespace-cdn.com/content/v1/618b56bbb50653019ebdecaf/1642044673587-P08MICOY0OCPGAPOGD6J/Cold+Sliced+Beef.jpg",
+        "https://images.squarespace-cdn.com/content/v1/618b56bbb50653019ebdecaf/a2dd759e-c312-4e85-be5a-511dbf2cb288/Honey+Walnut+Prawn.jpg",
+        "https://images.squarespace-cdn.com/content/v1/618b56bbb50653019ebdecaf/1642045147636-9V48OHWD13TZ4FT0T5D3/Cherry+Pork.jpg",
+        "https://images.squarespace-cdn.com/content/v1/618b56bbb50653019ebdecaf/1642045337609-59N7YSTYF6Q0WGCJNZ3U/Broccoli+Beef.jpg",
+        "https://images.squarespace-cdn.com/content/v1/618b56bbb50653019ebdecaf/1642046992443-FWPVQXRU63YHB0SA574W/hand.jpg"
+      ],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Inner Sunset",
+          "address": "1031 Irving St, San Francisco, CA 94122",
+          "phone": "(415) 242-0828",
+          "latitude": 37.7638701765,
+          "longitude": -122.468802893369
+        }
+      ]
+    },
+    {
+      "slug": "four-kings",
+      "name": "Four Kings",
+      "cuisine": "Cantonese",
+      "neighborhood": "Chinatown",
+      "status": "want_to_go",
+      "is_favorite": false,
+      "price_range": "$40–90",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.itsfourkings.com/",
+      "address": "710 Commercial St, San Francisco, CA 94108",
+      "phone": "(415) 688-1500",
+      "latitude": 37.794051157328,
+      "longitude": -122.404933321637,
+      "photo_urls": ["https://www.itsfourkings.com/images/og.jpg"],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Chinatown",
+          "address": "710 Commercial St, San Francisco, CA 94108",
+          "phone": "(415) 688-1500",
+          "latitude": 37.794051157328,
+          "longitude": -122.404933321637
+        }
+      ]
+    },
+    {
+      "slug": "brothers",
+      "name": "Brothers",
+      "cuisine": "Korean BBQ",
+      "neighborhood": "Inner Richmond",
+      "status": "want_to_go",
+      "is_favorite": false,
+      "price_range": "$20–60",
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://brothersrestaurantsf.com/",
+      "address": "4128 Geary Blvd, San Francisco, CA 94118",
+      "phone": "(415) 387-7991",
+      "latitude": 37.781187372828,
+      "longitude": -122.463557628369,
+      "photo_urls": [],
+      "video_urls": [],
+      "locations": [
+        {
+          "neighborhood": "Inner Richmond",
+          "address": "4128 Geary Blvd, San Francisco, CA 94118",
+          "phone": "(415) 387-7991",
+          "latitude": 37.781187372828,
+          "longitude": -122.463557628369
+        }
+      ]
+    }
+  ]
+}

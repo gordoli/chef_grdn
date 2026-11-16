@@ -12,13 +12,14 @@ import {
   LogOut,
   LogIn,
   Leaf,
+  Utensils,
   Search,
   Settings,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Brand } from './Brand';
 import { KitchenToolsIcon } from './icons/KitchenToolsIcon';
-import { RecipeSearchContext } from '@/hooks/useRecipeSearch';
+import { CollectionSearchContext } from '@/hooks/useCollectionSearch';
 import { useTheme } from '@/hooks/useTheme';
 import { useRecipes } from '@/hooks/useRecipes';
 import { useSession } from '@/hooks/useSession';
@@ -27,6 +28,7 @@ import { toast } from 'sonner';
 const links = [
   { path: '/', label: 'Recipes', icon: BookOpen },
   { path: '/gallery', label: 'Gallery', icon: Image },
+  { path: '/restaurants', label: 'Restaurants', icon: Utensils },
 ];
 function Navigation({
   prefix,
@@ -48,7 +50,7 @@ function Navigation({
           const active =
             path === '/'
               ? current === '/' || current === '/favorites' || current.startsWith('/r/')
-              : current === path;
+              : current === path || current.startsWith(`${path}/`);
           return (
             <Link
               key={path}
@@ -62,7 +64,11 @@ function Navigation({
           );
         })}
       </nav>
-      <Link href={`${prefix}/new`} className="glass-control nav-add-bubble" aria-label="Add recipe">
+      <Link
+        href={current.startsWith('/restaurants') ? `${prefix}/restaurants?add=1` : `${prefix}/new`}
+        className="glass-control nav-add-bubble"
+        aria-label={current.startsWith('/restaurants') ? 'Add restaurant' : 'Add recipe'}
+      >
         <Plus strokeWidth={1.65} />
       </Link>
     </div>
@@ -80,7 +86,13 @@ export function Layout({ children }: { children: ReactNode }) {
   const searchToggle = useRef<HTMLButtonElement>(null);
   const settingsMenu = useRef<HTMLDetailsElement>(null);
   const current = pathname.slice(prefix.length) || '/';
-  const isCollection = current === '/' || current === '/favorites';
+  const isRestaurantSection = current === '/restaurants' || current.startsWith('/restaurants/');
+  const isRestaurantCollection = current === '/restaurants';
+  const isCollection = current === '/' || current === '/favorites' || isRestaurantCollection;
+  useEffect(() => {
+    setSearch('');
+    setSearchOpen(false);
+  }, [isRestaurantSection]);
   useEffect(() => {
     if (!isCollection) {
       setSearchOpen(false);
@@ -107,7 +119,7 @@ export function Layout({ children }: { children: ReactNode }) {
     };
   }, []);
   return (
-    <RecipeSearchContext.Provider
+    <CollectionSearchContext.Provider
       value={{ search, setSearch, searchOpen, setSearchOpen, searchToggle }}
     >
       <div className="app-shell">
@@ -125,13 +137,28 @@ export function Layout({ children }: { children: ReactNode }) {
               className="glass-control header-bubble recipe-search-toggle"
               variant="ghost"
               size="icon"
-              aria-label={searchOpen ? 'Close recipe search' : 'Search recipes'}
+              aria-label={
+                isRestaurantSection
+                  ? searchOpen
+                    ? 'Close restaurant search'
+                    : 'Search restaurants'
+                  : searchOpen
+                    ? 'Close recipe search'
+                    : 'Search recipes'
+              }
               aria-expanded={searchOpen}
-              aria-controls={isCollection ? 'recipe-search' : undefined}
+              aria-controls={
+                isCollection
+                  ? isRestaurantCollection
+                    ? 'restaurant-search'
+                    : 'recipe-search'
+                  : undefined
+              }
               onClick={() => {
                 setSearchOpen(!searchOpen);
                 setSearch('');
-                if (!isCollection) router.push(`${prefix}/`);
+                if (!isCollection)
+                  router.push(isRestaurantSection ? `${prefix}/restaurants` : `${prefix}/`);
               }}
             >
               <Search />
@@ -204,15 +231,17 @@ export function Layout({ children }: { children: ReactNode }) {
           </div>
         )}
         <span className="sr-only" aria-live="polite">
-          {pathname.includes('favorites')
-            ? 'Favorites'
-            : pathname.includes('gallery')
-              ? 'Gallery'
-              : pathname.includes('basics')
-                ? 'Kitchen basics'
-                : 'Recipe book'}
+          {pathname.includes('restaurants')
+            ? 'Restaurants'
+            : pathname.includes('favorites')
+              ? 'Favorites'
+              : pathname.includes('gallery')
+                ? 'Gallery'
+                : pathname.includes('basics')
+                  ? 'Kitchen basics'
+                  : 'Recipe book'}
         </span>
       </div>
-    </RecipeSearchContext.Provider>
+    </CollectionSearchContext.Provider>
   );
 }

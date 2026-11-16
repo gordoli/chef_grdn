@@ -3,17 +3,21 @@ const mocks = vi.hoisted(() => ({
   authenticateOwner: vi.fn(),
   handleImport: vi.fn(),
   handleImportImage: vi.fn(),
+  handleRestaurantImport: vi.fn(),
 }));
 vi.mock('./auth', () => ({ authenticateOwner: mocks.authenticateOwner }));
 vi.mock('./import', () => ({ handleImport: mocks.handleImport }));
+vi.mock('./restaurantImport', () => ({ handleRestaurantImport: mocks.handleRestaurantImport }));
 vi.mock('./image', () => ({ handleImportImage: mocks.handleImportImage }));
 import { POST as importRecipe } from '../src/app/api/import/route';
+import { POST as importRestaurant } from '../src/app/api/import-restaurant/route';
 import { POST as importImage } from '../src/app/api/import-image/route';
 beforeEach(() => {
   vi.resetAllMocks();
 });
 for (const [name, route, service] of [
   ['recipe', importRecipe, mocks.handleImport],
+  ['restaurant', importRestaurant, mocks.handleRestaurantImport],
   ['image', importImage, mocks.handleImportImage],
 ] as const) {
   describe(`${name} Next.js route authorization`, () => {

@@ -1,4 +1,5 @@
 // Handwritten from migrations 0001 and 0002; replace with Supabase-generated types after linking a project.
+import type { Restaurant, RestaurantInput } from './restaurants';
 import type { CookingStatus, Profile, RecipePhoto, Review } from './types';
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
@@ -40,6 +41,29 @@ type ReviewRow = Omit<Review, 'display_name' | 'photo_url'>;
 export interface Database {
   public: {
     Tables: {
+      restaurant_reviews: Table<
+        {
+          id: string;
+          restaurant_id: string;
+          author_id: string;
+          rating: number;
+          body: string;
+          visited_on: string | null;
+          created_at: string;
+          updated_at: string;
+        },
+        {
+          restaurant_id: string;
+          rating: number;
+          body: string;
+          visited_on: string | null;
+          author_id?: string;
+        }
+      >;
+      restaurants: Table<
+        Restaurant,
+        RestaurantInput & Partial<Pick<Restaurant, 'id' | 'created_at' | 'updated_at'>>
+      >;
       profiles: Table<
         ProfileRow,
         Pick<ProfileRow, 'id' | 'display_name'> & Partial<Omit<ProfileRow, 'id' | 'display_name'>>,

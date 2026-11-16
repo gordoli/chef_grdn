@@ -60,3 +60,9 @@ npm run format:check
 ```
 
 See `docs/verification.md` for the exact automated, browser and live database checks performed.
+
+## Restaurants
+
+Apply `supabase/migrations/0006_restaurants.sql` once to create the public restaurant collection and authenticated friend-review tables with owner/author RLS. It was applied to the connected project during this change. Seed the starter list with the service-role credentials in your shell: `npm run seed:restaurants`. Alternatively, for the ignored local development file, run `node --env-file=.env.local --import tsx scripts/seed-restaurants.ts`. Seeding ignores existing slugs and preserves saved notes/ratings. No new Vercel environment variables are needed. List/map views, website import, and social embeds use the existing public Supabase configuration; maps require no API key. Verify database permissions with `supabase/tests/restaurants.sql` (transactional fixtures roll back).
+
+Apply `supabase/migrations/0007_restaurant_locations.sql` after 0006 for multiple restaurant locations and the Dumpling Story merge. Both are applied to the connected project. Old Dumpling Story links remain compatible through redirects.

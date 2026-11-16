@@ -1,0 +1,127 @@
+{
+  "checked_on": "2026-11-16",
+  "basis": "Reported per-person ranges from Google-linked review listings and public price listings. These are approximate, not menu guarantees. No dollar-sign tiers were converted. Rose Pizzeria uses its Berkeley Toast listing; Pakwan, Burma Love, Bandit and Kevin’s use the cited SF branches.",
+  "prices": [
+    {
+      "slug": "gao-viet",
+      "price_range": "$20–60",
+      "source_url": "https://restaurantguru.com/Gao-Viet-Kitchen-San-Francisco"
+    },
+    {
+      "slug": "bodega-sf",
+      "price_range": "$30–90",
+      "source_url": "https://restaurantguru.com/Bodega-SF-San-Francisco"
+    },
+    {
+      "slug": "basecamp-sf",
+      "price_range": "$20–30",
+      "source_url": "https://restaurantguru.com/Base-Camp-San-Francisco"
+    },
+    {
+      "slug": "pakwan",
+      "price_range": "$20–30",
+      "source_url": "https://restaurantguru.com/Pakwan-San-Francisco-2"
+    },
+    {
+      "slug": "amarin-thai",
+      "price_range": "$20–30",
+      "source_url": "https://restaurantguru.com/Amarin-Lafayette-California"
+    },
+    {
+      "slug": "burma-love",
+      "price_range": "$20–60",
+      "source_url": "https://restaurantguru.com/Burma-Love-Restaurant-San-Francisco"
+    },
+    {
+      "slug": "burma-superstar",
+      "price_range": "$20–30",
+      "source_url": "https://restaurantguru.com/Burma-Superstar-San-Francisco"
+    },
+    {
+      "slug": "dancing-yak",
+      "price_range": "$30–40",
+      "source_url": "https://restaurantguru.com/Dancing-Yak-San-Francisco"
+    },
+    {
+      "slug": "sri-racha-thai",
+      "price_range": "$20–30",
+      "source_url": "https://restaurantguru.com/Sriracha-Thai-Cuisine-San-Francisco"
+    },
+    {
+      "slug": "rose-indian",
+      "price_range": "$20–30",
+      "source_url": "https://restaurantguru.com/Rose-Indian-Cuisine-San-Francisco"
+    },
+    {
+      "slug": "ramen-kameko",
+      "price_range": "$11–20",
+      "source_url": "https://ochef.com/restaurant/ramen-kameko-san-francisco/"
+    },
+    {
+      "slug": "underdog-tres",
+      "price_range": "$20–30",
+      "source_url": "https://restaurantguru.com/The-Taco-Shop-at-Underdogs-San-Francisco"
+    },
+    {
+      "slug": "bandit",
+      "price_range": "$10–20",
+      "source_url": "https://restaurantguru.com/Bandit-San-Francisco-2"
+    },
+    {
+      "slug": "foreign-cinema",
+      "price_range": "$50–100",
+      "source_url": "https://restaurantguru.com/Foreign-Cinema-San-Francisco"
+    },
+    {
+      "slug": "itria",
+      "price_range": "$25–50",
+      "source_url": "https://restaurantguru.com/Itria-San-Francisco"
+    },
+    {
+      "slug": "rose-pizzeria",
+      "price_range": "$15–30",
+      "source_url": "https://toast.app/r/rosetogo"
+    },
+    {
+      "slug": "dumpling-king",
+      "price_range": "$21–30",
+      "source_url": "https://ochef.com/restaurant/dumpling-king-san-francisco/"
+    },
+    {
+      "slug": "dumpling-story",
+      "price_range": "$10–40",
+      "source_url": "https://restaurantguru.com/Dumpling-Story-San-Francisco"
+    },
+    {
+      "slug": "good-luck-dim-sum",
+      "price_range": "$10–20",
+      "source_url": "https://restaurantguru.com/Good-Luck-Dim-Sum-San-Francisco"
+    },
+    {
+      "slug": "kevins-noodle-house",
+      "price_range": "$10–20",
+      "source_url": "https://restaurantguru.com/Pho-Hoa-Hiep-San-Francisco-2"
+    },
+    {
+      "slug": "pang",
+      "price_range": "$30–40",
+      "source_url": "https://novovibe.com/es/united-states/san-francisco/almuerzo-y-cena/pang"
+    },
+    {
+      "slug": "sam-tung",
+      "price_range": "$20–30",
+      "source_url": "https://restaurantguru.com/San-Tung-San-Francisco"
+    },
+    {
+      "slug": "four-kings",
+      "price_range": "$40–90",
+      "source_url": "https://restaurantguru.com/Four-Kings-San-Francisco"
+    },
+    {
+      "slug": "brothers",
+      "price_range": "$20–60",
+      "source_url": "https://restaurantguru.com/Brothers-Restaurant-San-Francisco"
+    }
+  ],
+  "unverified": ["noodle-panda", "dumpling-baby"]
+}

@@ -15,7 +15,7 @@ import {
   CircleCheck,
   CookingPot,
 } from 'lucide-react';
-import { useRecipeSearch } from '@/hooks/useRecipeSearch';
+import { useCollectionSearch } from '@/hooks/useCollectionSearch';
 import { useRecipes } from '@/hooks/useRecipes';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,7 +35,7 @@ export function Home() {
   const [favoritesFilter, setFavoritesFilter] = useState(false);
   const favoritesOnly = favoritesPage || favoritesFilter;
   const CollectionHeading = favoritesPage ? 'h2' : 'h1';
-  const { search, setSearch, searchOpen, setSearchOpen, searchToggle } = useRecipeSearch();
+  const { search, setSearch, searchOpen, setSearchOpen, searchToggle } = useCollectionSearch();
   const searchRegion = useRef<HTMLDivElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
   function closeSearch() {

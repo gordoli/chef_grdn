@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import { Providers } from '@/components/Providers';
+import 'leaflet/dist/leaflet.css';
 import '../styles.css';
 const poppins = localFont({
   src: [

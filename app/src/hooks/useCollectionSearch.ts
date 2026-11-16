@@ -8,7 +8,7 @@ import {
   type SetStateAction,
 } from 'react';
 
-type RecipeSearch = {
+type CollectionSearch = {
   search: string;
   setSearch: Dispatch<SetStateAction<string>>;
   searchOpen: boolean;
@@ -16,10 +16,10 @@ type RecipeSearch = {
   searchToggle: RefObject<HTMLButtonElement | null>;
 };
 
-export const RecipeSearchContext = createContext<RecipeSearch | null>(null);
+export const CollectionSearchContext = createContext<CollectionSearch | null>(null);
 
-export function useRecipeSearch() {
-  const context = useContext(RecipeSearchContext);
-  if (!context) throw new Error('Recipe search requires the app layout.');
+export function useCollectionSearch() {
+  const context = useContext(CollectionSearchContext);
+  if (!context) throw new Error('Collection search requires the app layout.');
   return context;
 }
