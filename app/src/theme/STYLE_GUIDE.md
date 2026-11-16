@@ -19,14 +19,16 @@ Physical geometry is an intentional exception to spacing tokens: one-pixel borde
 
 ## Motion
 
-- `--motion-fast` (160 ms): small feedback and step entry.
-- `--motion-standard` (240 ms): navigation and dismissal.
-- `--motion-panel` (320 ms): large panel entry.
+- `--motion-fast` (120 ms): small feedback and step entry.
+- `--motion-standard` (180 ms): navigation and dismissal.
+- `--motion-panel` (240 ms): large panel entry.
 - `--ease-enter` and `--ease-exit`: shared directional curves.
 - `--motion-pulse`: loading feedback only.
 - `--motion-roll-duration` (4000 ms): the requested restaurant-roll sequence; JavaScript reads this CSS value. `--motion-roll-cycle` drives the tumbling die and card shuffle, and `--motion-dice-idle` controls the gentle idle float. Reduced-motion skips the roll delay. Closing the sheet disposes its timer.
 
 Animate opacity and transforms. Keep wizard frame height and footer position stable while changing steps. The navigation selection has a server-rendered active-state fallback until its measured highlight is ready. Detail dismissal waits for the animation and reads its fallback duration from the CSS token instead of a second hardcoded timer. Restaurant panels reuse the recipe panel motion; do not animate their inner page again. Keep the underlying collection mounted, and preserve header geometry through `--size-site-header` while hiding detail-screen controls. The first restaurant hero image loads eagerly; collection thumbnails retain their existing loading policy. `gestures.ts` documents physical touch thresholds. Reduced-motion disables transitions, animations and smooth scrolling; reduced-transparency has an opaque control fallback.
+
+Detail route layouts own the shared frame outside loading boundaries. Skeletons and resolved content share that frame; do not remount it or add a second content-entry animation. `detail-panel.css` owns skeleton geometry using the same theme tokens. Hover treatments on recipe, restaurant, Roll and gallery cards require a viewport above 640px and a fine, hover-capable pointer. Keep keyboard `:focus-visible` indicators; do not use `:focus` to style a tapped card.
 
 ## Ownership and changes
 

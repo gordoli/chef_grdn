@@ -200,10 +200,12 @@
   border-radius: var(--radius-20);
   box-shadow: 0 2px 7px rgba(0, 0, 0, 0.025);
 }
-.recipe-card:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--foreground) 25%, var(--border));
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.055);
+@media (min-width: 641px) and (hover: hover) and (pointer: fine) {
+  .recipe-card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--foreground) 25%, var(--border));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.055);
+  }
 }
 .recipe-category {
   color: var(--muted-foreground);

@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { ChevronRight, Clipboard, Download, Loader2, PenLine } from 'lucide-react';
 import { useRecipes } from '@/hooks/useRecipes';
 import { useRecipeEditor } from '@/hooks/useRecipeEditor';
@@ -20,6 +20,7 @@ export function RecipeEditor({
   onOpenChange?: (open: boolean) => void;
 }) {
   const { slug } = useParams<{ slug?: string }>();
+  const pathname = usePathname();
   const { recipes, canEdit, isDemo, loading } = useRecipes();
   const router = useRouter();
   const prefix = isDemo ? '/demo' : '';
@@ -31,6 +32,8 @@ export function RecipeEditor({
     if (onOpenChange) onOpenChange(next);
     else if (!next) router.push(existing ? `${prefix}/r/${existing.slug}` : `${prefix}/`);
   };
+  // Intercepted detail navigation may retain this route as its inactive background.
+  if (!onOpenChange && slug && !pathname.endsWith('/edit')) return null;
   if (loading) return <div className="page-loader">Opening recipe editor…</div>;
   if (!canEdit)
     return (

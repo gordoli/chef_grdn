@@ -677,8 +677,10 @@
   object-fit: cover;
   transition: transform var(--motion-standard);
 }
-.gallery-tile:hover img {
-  transform: scale(1.035);
+@media (min-width: 641px) and (hover: hover) and (pointer: fine) {
+  .gallery-tile:hover img {
+    transform: scale(1.035);
+  }
 }
 .gallery-tile > span {
   position: absolute;

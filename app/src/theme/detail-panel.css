@@ -1,0 +1,36 @@
+.detail-skeleton {
+  overflow: hidden;
+}
+.detail-skeleton-photo {
+  height: var(--size-detail-hero);
+  background: var(--secondary);
+}
+.detail-skeleton-copy {
+  display: grid;
+  gap: var(--space-24);
+  padding: var(--space-24);
+}
+.detail-skeleton-title,
+.detail-skeleton-line,
+.detail-skeleton-pills > span {
+  background: var(--secondary);
+  border-radius: var(--radius-8);
+  animation: pulse var(--motion-pulse) ease infinite;
+}
+.detail-skeleton-title {
+  height: var(--space-32);
+  width: 70%;
+}
+.detail-skeleton-line {
+  height: var(--space-16);
+  width: 90%;
+}
+.detail-skeleton-pills {
+  display: flex;
+  gap: var(--space-8);
+}
+.detail-skeleton-pills > span {
+  height: var(--space-32);
+  width: var(--space-80);
+  border-radius: var(--radius-pill);
+}

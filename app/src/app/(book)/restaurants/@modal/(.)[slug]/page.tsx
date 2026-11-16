@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import { RestaurantDetailPanel } from '@/components/restaurants/RestaurantDetailPanel';
+import { RestaurantDetailContent } from '@/components/restaurants/RestaurantDetailPanel';
 import { restaurantCanonicalSlug } from '@/lib/restaurants';
 import { getPublicRestaurants } from '@/lib/publicRestaurants';
 import { restaurantMetadata } from '@/lib/restaurantSharing';
@@ -20,5 +20,5 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const canonical = restaurantCanonicalSlug(slug);
   if (canonical !== slug) permanentRedirect(`/restaurants/${canonical}`);
   if (!(await getPublicRestaurants()).some((restaurant) => restaurant.slug === slug)) notFound();
-  return <RestaurantDetailPanel slug={slug} />;
+  return <RestaurantDetailContent slug={slug} />;
 }

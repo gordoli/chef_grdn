@@ -72,10 +72,11 @@
   --radius-pill: 999px;
   --size-thumbnail: 4rem;
   --size-site-header: 5rem;
+  --size-detail-hero: 20rem;
   --size-roll-die: 3.25rem;
-  --motion-fast: 160ms;
-  --motion-standard: 240ms;
-  --motion-panel: 320ms;
+  --motion-fast: 120ms;
+  --motion-standard: 180ms;
+  --motion-panel: 240ms;
   --motion-pulse: 1400ms;
   --motion-roll-cycle: 800ms;
   --motion-roll-duration: 4000ms;

@@ -110,8 +110,10 @@
   transition: background var(--motion-fast);
   font-size: var(--text-12);
 }
-.restaurant-list-card:hover {
-  background: var(--muted);
+@media (min-width: 641px) and (hover: hover) and (pointer: fine) {
+  .restaurant-list-card:hover {
+    background: var(--muted);
+  }
 }
 .restaurant-list-name {
   display: flex;

@@ -24,6 +24,9 @@ export function RecipeCard({
     <article className={`recipe-card ${photo ? 'has-photo' : ''} ${list ? 'list-card' : ''}`}>
       <Link
         href={`${isDemo ? '/demo' : ''}/r/${recipe.slug}`}
+        prefetch
+        scroll={false}
+        data-detail-link
         className="recipe-card-link"
         aria-label={`Open ${recipe.title}`}
       >

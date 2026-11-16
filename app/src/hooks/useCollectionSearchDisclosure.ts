@@ -13,6 +13,7 @@ export function useCollectionSearchDisclosure() {
     searchInput.current?.focus({ preventScroll: true });
     const outside = (event: MouseEvent) => {
       const target = event.target as Node;
+      if (target instanceof Element && target.closest('a[data-detail-link]')) return;
       if (!searchRegion.current?.contains(target) && !searchToggle.current?.contains(target)) {
         setSearchOpen(false);
         setSearch('');

@@ -309,9 +309,11 @@
     transform var(--motion-fast);
   overflow: hidden;
 }
-.recipe-card:hover {
-  border-color: var(--ring);
-  transform: translateY(-3px);
+@media (min-width: 641px) and (hover: hover) and (pointer: fine) {
+  .recipe-card:hover {
+    border-color: var(--ring);
+    transform: translateY(-3px);
+  }
 }
 .recipe-card-link {
   display: flex;
@@ -368,9 +370,11 @@
     background var(--motion-fast),
     color var(--motion-fast);
 }
-.favorite-button:hover {
-  background: var(--secondary);
-  color: var(--foreground);
+@media (min-width: 641px) and (hover: hover) and (pointer: fine) {
+  .favorite-button:hover {
+    background: var(--secondary);
+    color: var(--foreground);
+  }
 }
 .recipe-status-control.is-made {
   color: var(--accent-foreground);

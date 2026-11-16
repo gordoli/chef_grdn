@@ -148,6 +148,8 @@ function RollSheet() {
                   <Link
                     key={pick.id}
                     href={`${prefix}/restaurants/${pick.slug}`}
+                    prefetch
+                    scroll={false}
                     className="roll-sheet-pick"
                   >
                     <RestaurantPhoto

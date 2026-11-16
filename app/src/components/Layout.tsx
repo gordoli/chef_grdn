@@ -49,12 +49,12 @@ export function Layout({ children }: { children: ReactNode }) {
     setSearchOpen(false);
   }, [isRestaurantSection]);
   useEffect(() => {
-    if (!isCollection && !isRestaurantSection) {
+    if (!isCollection && !isRestaurantSection && !current.startsWith('/r/')) {
       setSearchOpen(false);
       setSearch('');
     }
     if (settingsMenu.current) settingsMenu.current.open = false;
-  }, [pathname, isCollection, isRestaurantSection]);
+  }, [pathname, current, isCollection, isRestaurantSection]);
   useEffect(() => {
     function closeOutside(event: MouseEvent) {
       if (!settingsMenu.current?.contains(event.target as Node) && settingsMenu.current)

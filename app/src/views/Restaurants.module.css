@@ -47,8 +47,10 @@
   line-height: 1.6;
 }
 
-.card:hover {
-  background: var(--muted);
+@media (min-width: 641px) and (hover: hover) and (pointer: fine) {
+  .card:hover {
+    background: var(--muted);
+  }
 }
 
 .card h2 {

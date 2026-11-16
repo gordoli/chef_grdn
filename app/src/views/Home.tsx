@@ -32,7 +32,7 @@ import type { CookingStatus } from '@/lib/types';
 export function Home() {
   const { recipes, reviews, favorites, loading, error, refresh, isDemo, canEdit } = useRecipes();
   const pathname = usePathname();
-  const favoritesPage = pathname.endsWith('/favorites');
+  const [favoritesPage] = useState(() => pathname.endsWith('/favorites'));
   const [favoritesFilter, setFavoritesFilter] = useState(false);
   const favoritesOnly = favoritesPage || favoritesFilter;
   const CollectionHeading = favoritesPage ? 'h2' : 'h1';

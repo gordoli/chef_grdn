@@ -235,7 +235,13 @@ export function Restaurants() {
         <div className={styles.list}>
           {filtered.map((restaurant) => (
             <article key={restaurant.id} className={styles.item}>
-              <Link href={`${prefix}/restaurants/${restaurant.slug}`} className={styles.card}>
+              <Link
+                href={`${prefix}/restaurants/${restaurant.slug}`}
+                className={styles.card}
+                prefetch
+                scroll={false}
+                data-detail-link
+              >
                 <RestaurantPhoto
                   src={restaurantPhotoUrls(restaurant)[0]}
                   name=""

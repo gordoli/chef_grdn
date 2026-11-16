@@ -267,8 +267,10 @@
 .roll-sheet-pick:nth-of-type(3) {
   animation-delay: var(--motion-fast);
 }
-.roll-sheet-pick:hover {
-  border-color: var(--primary);
+@media (min-width: 641px) and (hover: hover) and (pointer: fine) {
+  .roll-sheet-pick:hover {
+    border-color: var(--primary);
+  }
 }
 .roll-sheet-pick > .restaurant-photo {
   width: var(--size-thumbnail);
