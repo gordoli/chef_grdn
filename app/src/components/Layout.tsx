@@ -5,7 +5,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   ArrowUpRight,
   BookOpen,
-  Images,
   Sun,
   Moon,
   LogOut,
@@ -27,7 +26,6 @@ import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 const links = [
   { path: '/', label: 'Recipes', icon: BookOpen },
-  { path: '/gallery', label: 'Gallery', icon: Images },
   { path: '/restaurants', label: 'Restaurants', icon: Utensils },
 ];
 export function Layout({ children }: { children: ReactNode }) {
