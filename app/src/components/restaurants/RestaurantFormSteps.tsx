@@ -8,6 +8,7 @@ import { RestaurantPhoto } from './RestaurantPhoto';
 import { RestaurantLocationsEditor } from './RestaurantLocationsEditor';
 import { publicWebsite } from '@/lib/urls';
 import styles from './RestaurantEditor.module.css';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 
 type DetailsProps = { draft: RestaurantInput; onChange: (patch: Partial<RestaurantInput>) => void };
 export function RestaurantMainDetails({
@@ -20,10 +21,10 @@ export function RestaurantMainDetails({
   );
   return (
     <>
-      <div
-        className={`cooking-status-toggle glass-control ${styles.visitToggle}`}
-        role="group"
-        aria-label="Visit status"
+      <SegmentedControl
+        className={`cooking-status-toggle ${styles.visitToggle}`}
+        value={draft.status}
+        label="Visit status"
       >
         <Button
           type="button"
@@ -44,7 +45,7 @@ export function RestaurantMainDetails({
         >
           <BookmarkPlus aria-hidden="true" />I want to go
         </Button>
-      </div>
+      </SegmentedControl>
       <label>
         Name
         <Input

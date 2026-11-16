@@ -212,7 +212,7 @@ export function restaurantNeighborhoods(
     ),
   ].join(' / ');
 }
-export type RestaurantTab = 'visited' | 'want_to_go' | 'favorites';
+export type RestaurantTab = 'visited' | 'want_to_go';
 
 /** Group dish/style labels under countries or regions without rewriting saved records. */
 export function restaurantCuisineRegions(cuisine: string): string[] {
@@ -243,8 +243,9 @@ export function restaurantCuisineRegions(cuisine: string): string[] {
 export function restaurantInTab(
   restaurant: Pick<Restaurant, 'status' | 'is_favorite'>,
   tab: RestaurantTab,
+  favoritesOnly = false,
 ): boolean {
-  return tab === 'favorites' ? restaurant.is_favorite : restaurant.status === tab;
+  return restaurant.status === tab && (!favoritesOnly || restaurant.is_favorite);
 }
 export function restaurantCanonicalSlug(slug: string): string {
   return ['dumpling-story-valencia', 'dumpling-story-fillmore', 'dumpling-story-marina'].includes(

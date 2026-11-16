@@ -119,11 +119,19 @@ describe('restaurant collection and locations', () => {
     expect(restaurantCuisineRegions('')).toEqual([]);
     expect(restaurantCuisineRegions(' Moroccan ')).toEqual(['Moroccan']);
   });
-  it('keeps favorites independent from visit status', () => {
-    expect(restaurantInTab({ status: 'want_to_go', is_favorite: true }, 'favorites')).toBe(true);
+  it('composes the Favorites filter with the selected visit status', () => {
+    expect(restaurantInTab({ status: 'want_to_go', is_favorite: true }, 'want_to_go', true)).toBe(
+      true,
+    );
     expect(restaurantInTab({ status: 'want_to_go', is_favorite: true }, 'visited')).toBe(false);
     expect(restaurantInTab({ status: 'visited', is_favorite: false }, 'visited')).toBe(true);
-    expect(restaurantInTab({ status: 'visited', is_favorite: false }, 'favorites')).toBe(false);
+    expect(restaurantInTab({ status: 'visited', is_favorite: false }, 'visited', true)).toBe(false);
+    expect(restaurantInTab({ status: 'want_to_go', is_favorite: true }, 'visited', true)).toBe(
+      false,
+    );
+    expect(restaurantInTab({ status: 'visited', is_favorite: true }, 'want_to_go', true)).toBe(
+      false,
+    );
   });
   it('combines Dumpling Story into one entry with both neighborhoods and independent locations', () => {
     const stories = demoRestaurants.filter((restaurant) =>

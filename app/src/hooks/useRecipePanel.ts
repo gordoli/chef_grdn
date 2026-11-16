@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { shouldDismissRecipe } from '@/lib/recipeSwipe';
+import { detailSwipeIntent, shouldDismissRecipe } from '@/lib/recipeSwipe';
 import { motionDurationMs } from '@/theme/motion';
-import { recipeSwipeGesture } from '@/theme/gestures';
 
 type Gesture = { id: number; x: number; y: number; started: number; dragging: boolean };
 
@@ -11,6 +10,7 @@ export function useRecipePanel(collectionPath: string, navigation: 'replace' | '
   const router = useRouter();
   const ref = useRef<HTMLDivElement>(null);
   const gesture = useRef<Gesture | null>(null);
+  const suppressClick = useRef(false);
   const navigated = useRef(false);
   const [open, setOpen] = useState(true);
   const finish = useCallback(() => {
@@ -40,18 +40,23 @@ export function useRecipePanel(collectionPath: string, navigation: 'replace' | '
   }
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
     const target = event.target as HTMLElement;
+    suppressClick.current = false;
     if (!open || !event.isPrimary) {
       resetDrag();
       return;
     }
     if (
       event.button !== 0 ||
-      target.closest('button,a,input,textarea,select,label,.photo-strip') ||
+      (target.closest(
+        'button,a,input,textarea,select,label,summary,iframe,video,[contenteditable],.photo-strip',
+      ) &&
+        !(event.pointerType === 'touch' && target.closest('.restaurant-hero-gallery'))) ||
       target.closest('[role="dialog"]') !== event.currentTarget
     )
       return;
     // Mouse dragging is limited to the empty header, preserving text selection in the recipe.
-    if (event.pointerType === 'mouse' && !target.closest('.sheet-topbar')) return;
+    if (event.pointerType === 'mouse' && !target.closest('.sheet-topbar,.restaurant-detail-topbar'))
+      return;
     gesture.current = {
       id: event.pointerId,
       x: event.clientX,
@@ -66,19 +71,14 @@ export function useRecipePanel(collectionPath: string, navigation: 'replace' | '
     const dx = event.clientX - current.x,
       dy = event.clientY - current.y;
     if (!current.dragging) {
-      if (
-        (Math.abs(dy) > recipeSwipeGesture.activationPx && Math.abs(dy) >= Math.abs(dx)) ||
-        dx < -recipeSwipeGesture.activationPx
-      ) {
+      const intent = detailSwipeIntent(dx, dy);
+      if (intent === 'scroll') {
         resetDrag();
         return;
       }
-      if (
-        dx < recipeSwipeGesture.activationPx ||
-        dx < Math.abs(dy) * recipeSwipeGesture.horizontalIntentRatio
-      )
-        return;
+      if (intent === 'pending') return;
       current.dragging = true;
+      suppressClick.current = true;
       event.currentTarget.setPointerCapture(event.pointerId);
       event.currentTarget.setAttribute('data-dragging', 'true');
     }
@@ -109,6 +109,12 @@ export function useRecipePanel(collectionPath: string, navigation: 'replace' | '
     open,
     close,
     panelProps: {
+      onClickCapture: (event: React.MouseEvent<HTMLDivElement>) => {
+        if (!suppressClick.current) return;
+        suppressClick.current = false;
+        event.preventDefault();
+        event.stopPropagation();
+      },
       onPointerDown,
       onPointerMove,
       onPointerUp,

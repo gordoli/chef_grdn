@@ -15,6 +15,7 @@ import {
 } from '@/lib/restaurants';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import { RestaurantEditor } from '@/components/restaurants/RestaurantEditor';
 import { RestaurantMap } from '@/components/restaurants/RestaurantMap';
 import { RestaurantRoll } from '@/components/restaurants/RestaurantRoll';
@@ -25,6 +26,7 @@ import { restaurantPhotoUrls } from '@/lib/restaurantYelp';
 export function Restaurants() {
   const { restaurants, error, refresh, canEdit, isDemo, setFavorite } = useRestaurants();
   const [tab, setTab] = useState<RestaurantTab>('visited');
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
   const { search, setSearch, searchOpen, setSearchOpen, searchToggle, searchRegion, searchInput } =
     useCollectionSearchDisclosure();
   const [cuisine, setCuisine] = useState('all');
@@ -54,12 +56,16 @@ export function Restaurants() {
     () => restaurants.filter((r) => restaurantInTab(r, tab)),
     [restaurants, tab],
   );
-  const cuisines = [
-    ...new Set(tabRestaurants.flatMap((r) => restaurantCuisineRegions(r.cuisine))),
-  ].sort((a, b) => a.localeCompare(b));
+  const base = useMemo(
+    () => restaurants.filter((r) => restaurantInTab(r, tab, favoritesOnly)),
+    [restaurants, tab, favoritesOnly],
+  );
+  const cuisines = [...new Set(base.flatMap((r) => restaurantCuisineRegions(r.cuisine)))].sort(
+    (a, b) => a.localeCompare(b),
+  );
   const filtered = useMemo(
     () =>
-      tabRestaurants.filter(
+      base.filter(
         (r) =>
           (cuisine === 'all' || restaurantCuisineRegions(r.cuisine).includes(cuisine)) &&
           [
@@ -75,7 +81,7 @@ export function Restaurants() {
             .toLowerCase()
             .includes(search.toLowerCase().trim()),
       ),
-    [tabRestaurants, cuisine, search],
+    [base, cuisine, search],
   );
   const favorite = async (id: string, value: boolean) => {
     setPendingFavorite(id);
@@ -120,16 +126,15 @@ export function Restaurants() {
         </div>
       </div>
       <div className="collection-control-row">
-        <div
-          className={`cooking-status-toggle glass-control ${styles.tabs}`}
-          role="group"
-          aria-label="Restaurant collection"
+        <SegmentedControl
+          className={`cooking-status-toggle ${styles.tabs}`}
+          value={tab}
+          label="Restaurant collection"
         >
           {(
             [
               { value: 'visited', label: 'Been to', icon: CircleCheck },
               { value: 'want_to_go', label: 'Want to go', icon: MapPin },
-              { value: 'favorites', label: 'Favorites', icon: Heart },
             ] as const
           ).map(({ value, label, icon: Icon }) => (
             <Button
@@ -146,20 +151,34 @@ export function Restaurants() {
               <span>{restaurants.filter((r) => restaurantInTab(r, value)).length}</span>
             </Button>
           ))}
-        </div>
+        </SegmentedControl>
       </div>
-      <div className="category-chips" role="group" aria-label="Filter restaurants by cuisine">
-        <button aria-pressed={cuisine === 'all'} onClick={() => setCuisine('all')}>
+      <div className="category-chips" role="group" aria-label="Restaurant filters">
+        <button
+          aria-pressed={cuisine === 'all' && !favoritesOnly}
+          onClick={() => {
+            setCuisine('all');
+            setFavoritesOnly(false);
+          }}
+        >
           All <span>{tabRestaurants.length}</span>
+        </button>
+        <button
+          aria-pressed={favoritesOnly}
+          onClick={() => {
+            setFavoritesOnly(!favoritesOnly);
+            setCuisine('all');
+          }}
+        >
+          <Heart size={13} aria-hidden="true" fill={favoritesOnly ? 'currentColor' : 'none'} />{' '}
+          Favorites
+          <span>{tabRestaurants.filter((r) => r.is_favorite).length}</span>
         </button>
         {cuisines.map((value) => (
           <button key={value} aria-pressed={cuisine === value} onClick={() => setCuisine(value)}>
             {value}
             <span>
-              {
-                tabRestaurants.filter((r) => restaurantCuisineRegions(r.cuisine).includes(value))
-                  .length
-              }
+              {base.filter((r) => restaurantCuisineRegions(r.cuisine).includes(value)).length}
             </span>
           </button>
         ))}
@@ -223,6 +242,7 @@ export function Restaurants() {
               onClick={() => {
                 setSearch('');
                 setCuisine('all');
+                setFavoritesOnly(false);
               }}
             >
               Clear filters

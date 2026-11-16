@@ -1,4 +1,5 @@
 'use client';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
@@ -112,10 +113,10 @@ export function Home() {
           </div>
         </div>
         <div className="collection-control-row">
-          <div
-            className="cooking-status-toggle glass-control"
-            role="group"
-            aria-label="Cooking status"
+          <SegmentedControl
+            className="cooking-status-toggle"
+            value={cookingStatus}
+            label="Cooking status"
           >
             {(
               [
@@ -139,7 +140,7 @@ export function Home() {
                 </span>
               </Button>
             ))}
-          </div>
+          </SegmentedControl>
           <div className="toolbar-actions">
             <label className="sort-control">
               <SlidersHorizontal size={16} />

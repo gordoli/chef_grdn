@@ -17,7 +17,7 @@ describe('initial navigation HTML', () => {
       expect(html).toContain('data-sliding="false"');
       expect(html).toContain('aria-current="page" class="mobile-nav-link active"');
       expect(html.match(/aria-current="page"/g)).toHaveLength(1);
-      expect(html).not.toContain('class="navigation-highlight"');
+      expect(html).not.toContain('class="selection-highlight"');
     },
   );
 });

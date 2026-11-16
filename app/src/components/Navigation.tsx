@@ -1,5 +1,5 @@
 'use client';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useSlidingIndicator } from '@/hooks/useSlidingIndicator';
 import Link from 'next/link';
 import { Plus, type LucideIcon } from 'lucide-react';
 import { navigationSection } from '@/lib/navigation';
@@ -16,43 +16,10 @@ export function Navigation({
   links: NavigationItem[];
 }) {
   const current = navigationSection(pathname, prefix);
-  const nav = useRef<HTMLElement>(null);
-  const [highlight, setHighlight] = useState<{
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  } | null>(null);
-  useLayoutEffect(() => {
-    const element = nav.current;
-    if (!element) return;
-    const measure = () => {
-      const active = element.querySelector<HTMLElement>('[aria-current="page"]');
-      if (!active || !active.offsetWidth || !active.offsetHeight) {
-        setHighlight(null);
-        return;
-      }
-      const next = {
-        x: active.offsetLeft,
-        y: active.offsetTop,
-        width: active.offsetWidth,
-        height: active.offsetHeight,
-      };
-      setHighlight((previous) =>
-        previous &&
-        Object.keys(next).every(
-          (key) => previous[key as keyof typeof next] === next[key as keyof typeof next],
-        )
-          ? previous
-          : next,
-      );
-    };
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(element);
-    for (const link of element.querySelectorAll('a')) observer.observe(link);
-    return () => observer.disconnect();
-  }, [current, links]);
+  const { ref: nav, highlight } = useSlidingIndicator<HTMLElement>(
+    current,
+    '[aria-current="page"]',
+  );
   return (
     <div className={mobile ? 'mobile-dock' : 'desktop-dock'}>
       <nav
@@ -64,7 +31,7 @@ export function Navigation({
         {highlight && (
           <span
             aria-hidden="true"
-            className="navigation-highlight"
+            className="selection-highlight"
             style={{
               width: highlight.width,
               height: highlight.height,

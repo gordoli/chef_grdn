@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 import { ArrowUpRight, Check, Dices } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -77,10 +78,10 @@ function RollSheet() {
       <div className="roll-sheet-body">
         {phase === 'choosing' ? (
           <>
-            <div
-              className="cooking-status-toggle glass-control roll-sheet-status"
-              role="group"
-              aria-label="Places to roll"
+            <SegmentedControl
+              className="cooking-status-toggle roll-sheet-status"
+              value={status}
+              label="Places to roll"
             >
               {statusOptions.map(({ value, label }) => (
                 <Button
@@ -92,7 +93,7 @@ function RollSheet() {
                   {label}
                 </Button>
               ))}
-            </div>
+            </SegmentedControl>
             <div className="roll-sheet-cuisines" role="group" aria-label="Choose cuisines">
               <Button
                 variant="outline"

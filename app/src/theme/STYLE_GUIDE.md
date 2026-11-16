@@ -41,3 +41,5 @@ Theme files own global materials and domain styles. Feature CSS modules own layo
 Before delivery run typechecking, lint (including the theme check), business/permission tests, a production build and formatting checks. Verify mobile/desktop, light/dark, keyboard focus, gallery selection persistence and the reduced-motion paths for affected flows.
 
 Add flows use `components/ui/add-sheet.tsx` and `theme/add-sheet.css` for a shared title, source choices, back control, form frame and footer. Mobile sheets slide up; desktop sheets enter from the side. Keep decorative introductions out of add/edit forms.
+
+Segmented status controls use `components/ui/segmented-control.tsx`. Its measured selection pill shares navigation material, easing and timing; keep selected text above the pill and the pressed-state fallback visible before measurement. Both detail sheets use shared touch direction/distance rules; reserve horizontal gestures for dismissal only outside native photo strips and interactive controls.

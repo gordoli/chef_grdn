@@ -124,6 +124,7 @@
 }
 
 .restaurant-detail-panel .restaurant-panel-scroll {
+  touch-action: pan-y pinch-zoom;
   flex: 1;
   min-height: 0;
   overflow-y: auto;

@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { shouldDismissRecipe } from './recipeSwipe';
+import { detailSwipeIntent, shouldDismissRecipe } from './recipeSwipe';
 
 describe('recipe swipe dismissal', () => {
+  it('reserves vertical and leftward movement for scrolling before capturing a right swipe', () => {
+    expect(detailSwipeIntent(4, 5)).toBe('pending');
+    expect(detailSwipeIntent(20, 15)).toBe('pending');
+    expect(detailSwipeIntent(20, 40)).toBe('scroll');
+    expect(detailSwipeIntent(-30, 2)).toBe('scroll');
+    expect(detailSwipeIntent(35, 5)).toBe('drag');
+  });
   it('accepts a deliberate swipe relative to screen width or a short, fast flick', () => {
     expect(shouldDismissRecipe(115, 8, 700, 390)).toBe(true);
     expect(shouldDismissRecipe(140, 10, 900, 900)).toBe(true);
