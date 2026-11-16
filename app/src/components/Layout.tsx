@@ -1,11 +1,24 @@
 'use client';
-import type { ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { ArrowUpRight, BookOpen, Image, Plus, Sun, Moon, LogOut, Leaf } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import {
+  ArrowUpRight,
+  BookOpen,
+  Image,
+  Plus,
+  Sun,
+  Moon,
+  LogOut,
+  LogIn,
+  Leaf,
+  Search,
+  Settings,
+} from 'lucide-react';
 import { Button } from './ui/button';
 import { Brand } from './Brand';
 import { KitchenToolsIcon } from './icons/KitchenToolsIcon';
+import { RecipeSearchContext } from '@/hooks/useRecipeSearch';
 import { useTheme } from '@/hooks/useTheme';
 import { useRecipes } from '@/hooks/useRecipes';
 import { useSession } from '@/hooks/useSession';
@@ -14,7 +27,6 @@ import { toast } from 'sonner';
 const links = [
   { path: '/', label: 'Recipes', icon: BookOpen },
   { path: '/gallery', label: 'Gallery', icon: Image },
-  { path: '/basics', label: 'Basics', icon: KitchenToolsIcon },
 ];
 function Navigation({
   prefix,
@@ -62,87 +74,145 @@ export function Layout({ children }: { children: ReactNode }) {
   const { profile, session } = useSession();
   const pathname = usePathname();
   const prefix = isDemo ? '/demo' : '';
+  const router = useRouter();
+  const [search, setSearch] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchToggle = useRef<HTMLButtonElement>(null);
+  const settingsMenu = useRef<HTMLDetailsElement>(null);
+  const current = pathname.slice(prefix.length) || '/';
+  const isCollection = current === '/' || current === '/favorites';
+  useEffect(() => {
+    if (!isCollection) {
+      setSearchOpen(false);
+      setSearch('');
+    }
+    if (settingsMenu.current) settingsMenu.current.open = false;
+  }, [pathname, isCollection]);
+  useEffect(() => {
+    function closeOutside(event: MouseEvent) {
+      if (!settingsMenu.current?.contains(event.target as Node) && settingsMenu.current)
+        settingsMenu.current.open = false;
+    }
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape' && settingsMenu.current?.open) {
+        settingsMenu.current.open = false;
+        settingsMenu.current.querySelector('summary')?.focus();
+      }
+    }
+    document.addEventListener('click', closeOutside);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('click', closeOutside);
+      document.removeEventListener('keydown', closeOnEscape);
+    };
+  }, []);
   return (
-    <div className="app-shell">
-      <a href="#main" className="skip-link">
-        Skip to content
-      </a>
-      <header className="site-header">
-        <Link href={`${prefix}/`} aria-label="Chef GRDN home">
-          <Brand />
-        </Link>
-        <Navigation prefix={prefix} pathname={pathname} />
-        <div className="header-actions">
-          <Button
-            className="glass-control theme-toggle"
-            variant="ghost"
-            size="icon"
-            aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-            onClick={toggleTheme}
-          >
-            {dark ? <Sun /> : <Moon />}
-          </Button>
-          {isDemo || !session ? (
-            <Link
-              className="avatar glass-control"
-              href="/sign-in"
-              aria-label="Sign in to edit recipes"
+    <RecipeSearchContext.Provider
+      value={{ search, setSearch, searchOpen, setSearchOpen, searchToggle }}
+    >
+      <div className="app-shell">
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
+        <header className="site-header">
+          <Link href={`${prefix}/`} aria-label="Chef GRDN home">
+            <Brand />
+          </Link>
+          <Navigation prefix={prefix} pathname={pathname} />
+          <div className="header-actions">
+            <Button
+              ref={searchToggle}
+              className="glass-control header-bubble recipe-search-toggle"
+              variant="ghost"
+              size="icon"
+              aria-label={searchOpen ? 'Close recipe search' : 'Search recipes'}
+              aria-expanded={searchOpen}
+              aria-controls={isCollection ? 'recipe-search' : undefined}
+              onClick={() => {
+                setSearchOpen(!searchOpen);
+                setSearch('');
+                if (!isCollection) router.push(`${prefix}/`);
+              }}
             >
-              G
+              <Search />
+            </Button>
+            <Link
+              className="glass-control header-bubble"
+              href={`${prefix}/basics`}
+              aria-label="Kitchen basics"
+              aria-current={current === '/basics' ? 'page' : undefined}
+            >
+              <KitchenToolsIcon />
             </Link>
-          ) : (
-            <details className="profile-menu">
-              <summary className="avatar glass-control" aria-label="Account menu">
-                {profile?.display_name.slice(0, 1).toUpperCase() ?? 'G'}
+            <details ref={settingsMenu} className="profile-menu">
+              <summary className="header-bubble glass-control" aria-label="Settings">
+                <Settings />
               </summary>
               <div className="account-dropdown">
-                <p>{profile?.display_name}</p>
+                {session && <p>{profile?.display_name}</p>}
                 <Button
                   variant="ghost"
-                  onClick={() =>
-                    void supabase?.auth
-                      .signOut()
-                      .catch(() => toast.error('Could not sign out. Try again.'))
-                  }
+                  aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+                  onClick={toggleTheme}
                 >
-                  <LogOut />
-                  Sign out
+                  {dark ? <Sun /> : <Moon />}
+                  {dark ? 'Light mode' : 'Dark mode'}
                 </Button>
+                {isDemo || !session ? (
+                  <Button asChild variant="ghost">
+                    <Link href="/sign-in">
+                      <LogIn />
+                      Sign in
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    onClick={() =>
+                      void supabase?.auth
+                        .signOut()
+                        .catch(() => toast.error('Could not sign out. Try again.'))
+                    }
+                  >
+                    <LogOut />
+                    Sign out
+                  </Button>
+                )}
               </div>
             </details>
-          )}
-        </div>
-      </header>
-      <main id="main">{children}</main>
-      <footer className="site-footer">
-        <span>
-          <Leaf size={14} /> A little collection. A lot of good food.
+          </div>
+        </header>
+        <main id="main">{children}</main>
+        <footer className="site-footer">
+          <span>
+            <Leaf size={14} /> A little collection. A lot of good food.
+          </span>
+          <a href="https://www.instagram.com/chef_grdn/" target="_blank" rel="noreferrer">
+            @chef_grdn
+            <ArrowUpRight size={14} />
+          </a>
+        </footer>
+        <Navigation prefix={prefix} pathname={pathname} mobile />
+        {isDemo && (
+          <div className="preview-banner">
+            <span className="preview-dot" />
+            Preview · changes stay in this browser
+            <Link href="/sign-in">
+              Sign in
+              <ArrowUpRight size={12} />
+            </Link>
+          </div>
+        )}
+        <span className="sr-only" aria-live="polite">
+          {pathname.includes('favorites')
+            ? 'Favorites'
+            : pathname.includes('gallery')
+              ? 'Gallery'
+              : pathname.includes('basics')
+                ? 'Kitchen basics'
+                : 'Recipe book'}
         </span>
-        <a href="https://www.instagram.com/chef_grdn/" target="_blank" rel="noreferrer">
-          @chef_grdn
-          <ArrowUpRight size={14} />
-        </a>
-      </footer>
-      <Navigation prefix={prefix} pathname={pathname} mobile />
-      {isDemo && (
-        <div className="preview-banner">
-          <span className="preview-dot" />
-          Preview · changes stay in this browser
-          <Link href="/sign-in">
-            Sign in
-            <ArrowUpRight size={12} />
-          </Link>
-        </div>
-      )}
-      <span className="sr-only" aria-live="polite">
-        {pathname.includes('favorites')
-          ? 'Favorites'
-          : pathname.includes('gallery')
-            ? 'Gallery'
-            : pathname.includes('basics')
-              ? 'Kitchen basics'
-              : 'Recipe book'}
-      </span>
-    </div>
+      </div>
+    </RecipeSearchContext.Provider>
   );
 }

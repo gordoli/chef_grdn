@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -15,6 +15,7 @@ import {
   CircleCheck,
   CookingPot,
 } from 'lucide-react';
+import { useRecipeSearch } from '@/hooks/useRecipeSearch';
 import { useRecipes } from '@/hooks/useRecipes';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,7 +35,26 @@ export function Home() {
   const [favoritesFilter, setFavoritesFilter] = useState(false);
   const favoritesOnly = favoritesPage || favoritesFilter;
   const CollectionHeading = favoritesPage ? 'h2' : 'h1';
-  const [search, setSearch] = useState('');
+  const { search, setSearch, searchOpen, setSearchOpen, searchToggle } = useRecipeSearch();
+  const searchRegion = useRef<HTMLDivElement>(null);
+  const searchInput = useRef<HTMLInputElement>(null);
+  function closeSearch() {
+    setSearchOpen(false);
+    setSearch('');
+  }
+  useEffect(() => {
+    if (!searchOpen) return;
+    searchInput.current?.focus({ preventScroll: true });
+    const onOutsideClick = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (!searchRegion.current?.contains(target) && !searchToggle.current?.contains(target)) {
+        setSearchOpen(false);
+        setSearch('');
+      }
+    };
+    document.addEventListener('click', onOutsideClick);
+    return () => document.removeEventListener('click', onOutsideClick);
+  }, [searchOpen, searchToggle, setSearch, setSearchOpen]);
   const [type, setType] = useState('All');
   const [cookingStatus, setCookingStatus] = useState<CookingStatus>('made');
   const [view, setView] = useState('grid');
@@ -104,48 +124,34 @@ export function Home() {
             </CollectionHeading>
           </div>
         </div>
-        <div
-          className="cooking-status-toggle glass-control"
-          role="group"
-          aria-label="Cooking status"
-        >
-          {(
-            [
-              { value: 'made', label: 'Recipes I’ve made', icon: CircleCheck },
-              { value: 'to_try', label: 'Recipes to try', icon: CookingPot },
-            ] as const
-          ).map(({ value, label, icon: Icon }) => (
-            <Button
-              key={value}
-              variant="ghost"
-              aria-pressed={cookingStatus === value}
-              onClick={() => {
-                setCookingStatus(value);
-                setType('All');
-              }}
-            >
-              <Icon size={16} aria-hidden="true" />
-              {label}
-              <span>
-                {recipes.filter((recipe) => recipeCookingStatus(recipe) === value).length}
-              </span>
-            </Button>
-          ))}
-        </div>
-        <div className="collection-toolbar">
-          <div className="search-field">
-            <Search size={18} />
-            <Input
-              aria-label="Search recipes"
-              placeholder="Find something delicious…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            {search && (
-              <button aria-label="Clear search" onClick={() => setSearch('')}>
-                <X size={16} />
-              </button>
-            )}
+        <div className="collection-control-row">
+          <div
+            className="cooking-status-toggle glass-control"
+            role="group"
+            aria-label="Cooking status"
+          >
+            {(
+              [
+                { value: 'made', label: 'Recipes I’ve made', icon: CircleCheck },
+                { value: 'to_try', label: 'Recipes to try', icon: CookingPot },
+              ] as const
+            ).map(({ value, label, icon: Icon }) => (
+              <Button
+                key={value}
+                variant="ghost"
+                aria-pressed={cookingStatus === value}
+                onClick={() => {
+                  setCookingStatus(value);
+                  setType('All');
+                }}
+              >
+                <Icon size={16} aria-hidden="true" />
+                {label}
+                <span>
+                  {recipes.filter((recipe) => recipeCookingStatus(recipe) === value).length}
+                </span>
+              </Button>
+            ))}
           </div>
           <div className="toolbar-actions">
             <label className="sort-control">
@@ -182,7 +188,39 @@ export function Home() {
             </div>
           </div>
         </div>
-        <div className="category-chips" aria-label="Recipe filters">
+        <div
+          ref={searchRegion}
+          id="recipe-search"
+          className="recipe-search-reveal"
+          data-open={searchOpen}
+          aria-hidden={!searchOpen}
+          inert={!searchOpen}
+        >
+          <div>
+            <div className="search-field">
+              <Search size={18} />
+              <Input
+                ref={searchInput}
+                aria-label="Search recipes"
+                placeholder="Search recipes…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') {
+                    closeSearch();
+                    searchToggle.current?.focus();
+                  }
+                }}
+              />
+              {search && (
+                <button aria-label="Clear search" onClick={() => setSearch('')}>
+                  <X size={16} />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="category-chips" role="group" aria-label="Recipe filters">
           <button
             onClick={() => {
               setType('All');
@@ -190,7 +228,7 @@ export function Home() {
             }}
             aria-pressed={type === 'All' && !favoritesFilter}
           >
-            Everything<span>{favoritesPage ? base.length : statusRecipes.length}</span>
+            All<span>{favoritesPage ? base.length : statusRecipes.length}</span>
           </button>
           {!favoritesPage && (
             <button

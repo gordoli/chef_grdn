@@ -9,6 +9,7 @@ import { useRouter, useParams, useSearchParams, usePathname } from 'next/navigat
 import {
   ArrowUpRight,
   Check,
+  ChevronLeft,
   Clock,
   Heart,
   Link2,
@@ -26,6 +27,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { Button } from '@/components/ui/button';
 import { Reviews } from '@/components/Reviews';
 import { useRecipes } from '@/hooks/useRecipes';
+import { useRecipePanel } from '@/hooks/useRecipePanel';
 import { formatItem, scaleItem } from '@/lib/quantity';
 import { errorMessage, safeUrl } from '@/lib/utils';
 export function RecipeDetail() {
@@ -48,6 +50,7 @@ export function RecipeDetail() {
   const [deleting, setDeleting] = useState(false);
   const [lightbox, setLightbox] = useState<string | null>(null);
   const prefix = isDemo ? '/demo' : '';
+  const panel = useRecipePanel(`${prefix}/`);
   const recipe = recipes.find((r) => r.slug === slug);
   const intro = recipe ? recipeIntro(recipe) : null;
   const base = recipe?.servings ?? 1;
@@ -85,32 +88,32 @@ export function RecipeDetail() {
   }
   return (
     <Dialog
-      open
+      open={panel.open}
       onOpenChange={(open) => {
-        if (!open) router.push(`${prefix}/`);
+        if (!open) panel.close();
       }}
     >
       <DialogContent
+        ref={panel.ref}
         className="recipe-sheet"
+        overlayClassName="recipe-overlay"
+        showCloseButton={false}
+        {...panel.panelProps}
         aria-describedby={intro ? 'recipe-description' : undefined}
       >
-        {loading ? (
-          <div className="page-loader">
-            <DialogTitle>Opening recipe…</DialogTitle>
-          </div>
-        ) : !recipe ? (
-          <div className="auth-state">
-            <DialogTitle>Recipe not found</DialogTitle>
-            <DialogDescription>This recipe may have moved.</DialogDescription>
-            <Button asChild>
-              <Link href={`${prefix}/`}>Back to collection</Link>
-            </Button>
-          </div>
-        ) : (
-          <>
-            <div className="sheet-topbar">
-              <span className="eyebrow">FROM THE COLLECTION</span>
-              <div>
+        <div className="sheet-topbar">
+          <Button
+            className="recipe-back"
+            variant="ghost"
+            size="icon"
+            aria-label="Back to recipes"
+            onClick={panel.close}
+          >
+            <ChevronLeft />
+          </Button>
+          <div>
+            {recipe && (
+              <>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -140,8 +143,24 @@ export function RecipeDetail() {
                     </Link>
                   </Button>
                 )}
-              </div>
-            </div>
+              </>
+            )}
+          </div>
+        </div>
+        {loading ? (
+          <div className="page-loader">
+            <DialogTitle>Opening recipe…</DialogTitle>
+          </div>
+        ) : !recipe ? (
+          <div className="auth-state">
+            <DialogTitle>Recipe not found</DialogTitle>
+            <DialogDescription>This recipe may have moved.</DialogDescription>
+            <Button asChild>
+              <Link href={`${prefix}/`}>Back to collection</Link>
+            </Button>
+          </div>
+        ) : (
+          <>
             <div className="sheet-scroll">
               {recipe.photos.length > 0 && (
                 <div className="photo-strip">

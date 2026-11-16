@@ -30,9 +30,13 @@ Copy recipe link includes the same revision in a `share` query parameter, while 
 
 Liquid-glass styling uses one shared `.glass-control` material for navigation and floating controls: neutral translucent fills, backdrop blur, edge highlights and inset/ambient shadows. Content surfaces stay black/white. Green is reserved for primary actions and meaningful ingredient states. Reduced-motion and reduced-transparency preferences have fallbacks.
 
+The header exposes Search, Kitchen basics, and Settings in that order. Settings contains theme and account actions; Basics is outside the main navigation. Layout owns shared recipe search state so the header can reveal and focus the collection search, including from another page. Search closes on outside clicks, its toggle, or Escape; hidden controls are inert. Category filters stay in a horizontally scrolling row.
+
+Recipe details keep Radix dialog focus and keyboard behavior while presenting a sliding page with a back chevron. `useRecipePanel` coordinates entry/exit, navigation after closing, and rightward pointer gestures; `recipeSwipe` classifies deliberate swipes. Vertical scrolling, interactive controls, photo strips, nested dialogs, and mouse text selection are excluded from dismissal. Reduced motion skips the transition.
+
 ## Intentional limits
 
-`/basics` and `/demo/basics` share a public kitchen reference with linked primary sources. Culinary steak doneness is distinguished from USDA minimum cooking temperatures. The converter uses US customary volume and avoirdupois weight; it never infers ingredient density. Favorites are a filter on Recipes; the former favorites URLs remain compatible. Mobile recipes always use the compact list presentation while desktop layout preferences remain independent.
+`/basics` and `/demo/basics` share a public kitchen reference with linked primary sources. Conversions opens first; headings stay brief and practical. Culinary steak doneness is distinguished from USDA minimum cooking temperatures. The converter uses US customary volume and avoirdupois weight; it never infers ingredient density. Favorites are a filter on Recipes; the former favorites URLs remain compatible. Mobile recipes always use the compact list presentation while desktop layout preferences remain independent.
 
 The default collection groups recipes by type: Mains, Appetizers, Soups, then the remaining categories. `lib/recipeCollection.ts` owns display names, ordering, and grouping; existing Starter/Appetizer aliases are grouped together without rewriting saved records. Search and favorites omit empty sections. Alternate sorts remain flat.
 

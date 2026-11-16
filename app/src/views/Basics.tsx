@@ -26,10 +26,10 @@ const sources = {
     'https://www.nist.gov/pml/owm/metric-si/unit-conversion/approximate-conversions-us-customary-measures-metric',
 };
 const topics = [
+  { id: 'conversions', label: 'Conversions' },
   { id: 'temps', label: 'Temps' },
   { id: 'steak', label: 'Steak' },
   { id: 'skills', label: 'Skills' },
-  { id: 'conversions', label: 'Conversions' },
 ] as const;
 type Topic = (typeof topics)[number]['id'];
 function Source({ href, children }: { href: string; children: React.ReactNode }) {
@@ -74,8 +74,7 @@ function Converter() {
     <article className="basics-card">
       <div className="basics-card-heading">
         <div>
-          <span className="eyebrow">A LITTLE KITCHEN MATH</span>
-          <h2>Make it measure up.</h2>
+          <h2>Conversions</h2>
         </div>
         <ArrowLeftRight size={22} strokeWidth={1.4} />
       </div>
@@ -149,7 +148,6 @@ function Converter() {
         </label>
       </div>
       <div className="basics-converter-result" aria-live="polite" aria-atomic="true">
-        <span>THAT’S</span>
         <output htmlFor="convert-amount convert-from convert-to">
           <strong>{formatted}</strong> {cookingUnits[to].short}
         </output>
@@ -166,7 +164,7 @@ function Converter() {
   );
 }
 export function Basics() {
-  const [topic, setTopic] = useState<Topic>('temps');
+  const [topic, setTopic] = useState<Topic>('conversions');
   const [unit, setUnit] = useState<TemperatureUnit>('F');
   const temp = (value: number) => cookingTemperature(value, unit);
   return (
@@ -174,7 +172,6 @@ export function Basics() {
       <header className="basics-heading">
         <div>
           <h1>Kitchen basics</h1>
-          <p>The little things that make you a better cook.</p>
         </div>
         <BookOpen size={26} strokeWidth={1.3} aria-hidden="true" />
       </header>
@@ -190,8 +187,7 @@ export function Basics() {
           <article className="basics-card">
             <div className="basics-card-heading">
               <div>
-                <span className="eyebrow">THE SAFE MINIMUMS</span>
-                <h2>Cook with confidence.</h2>
+                <h2>Safe cooking temperatures</h2>
               </div>
               <TemperatureSwitch unit={unit} onChange={setUnit} />
             </div>
@@ -225,7 +221,7 @@ export function Basics() {
           </article>
           <aside className="basics-card basics-note">
             <Thermometer size={28} strokeWidth={1.3} />
-            <h2>Check the center.</h2>
+            <h2>Thermometer placement</h2>
             <p>
               Use a food thermometer. Color, juices, and cooking time alone cannot confirm safety.
             </p>
@@ -243,8 +239,7 @@ export function Basics() {
           <article className="basics-card">
             <div className="basics-card-heading">
               <div>
-                <span className="eyebrow">KNOW YOUR DONENESS</span>
-                <h2>A steak, your way.</h2>
+                <h2>Steak doneness</h2>
               </div>
               <TemperatureSwitch unit={unit} onChange={setUnit} />
             </div>
@@ -290,7 +285,7 @@ export function Basics() {
           </article>
           <aside className="basics-card basics-note">
             <ArrowLeftRight size={28} strokeWidth={1.3} />
-            <h2>When to flip.</h2>
+            <h2>Flipping</h2>
             <ol className="basics-steps">
               <li>
                 <strong>Start dry.</strong>
@@ -327,8 +322,7 @@ export function Basics() {
           <article className="basics-card">
             <div className="basics-card-heading">
               <div>
-                <span className="eyebrow">ONE BIRD, FLAT OUT</span>
-                <h2>Spatchcock a chicken.</h2>
+                <h2>Spatchcocking</h2>
               </div>
               <Scissors size={24} strokeWidth={1.4} />
             </div>
@@ -370,7 +364,7 @@ export function Basics() {
           <aside className="basics-card basics-note">
             <Thermometer size={28} strokeWidth={1.3} />
             <span className="basics-big-temperature">{temp(165)}</span>
-            <h2>Check more than one spot.</h2>
+            <h2>Poultry temperature</h2>
             <p>
               Reach this minimum in the thickest breast and innermost thigh and wing, without
               touching bone.
@@ -389,8 +383,7 @@ export function Basics() {
         <section className="basics-layout" aria-label="Cooking conversions">
           <Converter />
           <aside className="basics-card basics-note">
-            <span className="eyebrow">KEEP THESE CLOSE</span>
-            <h2>The everyday equivalents.</h2>
+            <h2>Quick conversions</h2>
             <dl className="basics-equivalents">
               <div>
                 <dt>1 tablespoon</dt>
