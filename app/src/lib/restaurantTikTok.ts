@@ -22,13 +22,17 @@ export function canonicalTikTokImportUrl(value: string): string | null {
 }
 
 /** Only explicit location lines become suggestions; prose is never guessed as a business name. */
-export function tikTokCaptionDetails(caption: string): { name: string; address: string | null } {
+export function tikTokCaptionDetails(caption: string): {
+  name: string;
+  address: string | null;
+  location: string | null;
+} {
   const lines = caption
     .split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean);
   const pinned = lines.findIndex((line) => /📍|📌|^(?:restaurant|location)\s*:/i.test(line));
-  if (pinned < 0) return { name: '', address: null };
+  if (pinned < 0) return { name: '', address: null, location: null };
   const line = lines[pinned]
     .replace(/^.*?(?:📍|📌|(?:restaurant|location)\s*:)\s*/i, '')
     .split('#')[0]
@@ -42,12 +46,24 @@ export function tikTokCaptionDetails(caption: string): { name: string; address: 
       ? line.slice(0, match.index)
       : line.split(/\s+\|\s+|\s+[–—]\s+|[👀📍📌]/u)[0].split(',')[0]
   ).replace(/^[\s,|:–—-]+|[\s,|:–—-]+$/g, '');
+  const address = (match?.[0] ?? following?.[0])?.trim().slice(0, 500) || null;
+  const location =
+    address ||
+    line
+      .split(/\s+\|\s+|\s+[–—]\s+|,\s*/)
+      .slice(1)
+      .join(', ')
+      .split(/[👀📍📌]/u)[0]
+      .trim()
+      .slice(0, 200) ||
+    null;
   return {
     name:
       name && name.length <= 120 && name.split(/\s+/).length <= 12 && !/https?:|@|[.!?]$/.test(name)
         ? name
         : '',
-    address: (match?.[0] ?? following?.[0])?.trim().slice(0, 500) || null,
+    address,
+    location,
   };
 }
 export const tikTokImportResult = z.object({
@@ -59,8 +75,17 @@ export const tikTokImportResult = z.object({
   author: z.string().max(120),
   name: z.string().max(200),
   address: z.string().max(500).nullable(),
+  location: z.string().max(500).nullable().default(null),
 });
 export type TikTokImportResult = z.infer<typeof tikTokImportResult>;
+
+export function restaurantYelpSearchUrl(name: string, location?: string | null): string | null {
+  if (!name.trim()) return null;
+  const url = new URL('https://www.yelp.com/search');
+  url.searchParams.set('find_desc', name.trim());
+  if (location?.trim()) url.searchParams.set('find_loc', location.trim());
+  return url.href;
+}
 export function mergeTikTokImport(
   previous: RestaurantInput,
   imported: TikTokImportResult,

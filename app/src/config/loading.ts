@@ -8,6 +8,8 @@ export const collectionLoading = {
 } as const;
 
 export const socialImportPolicy = {
+  linkTimeoutMs: 12_000,
+  maxTikTokRedirects: 4,
   providerTimeoutMs: 20_000,
   browserTimeoutMs: 55_000,
   websiteTimeoutMs: 25_000,

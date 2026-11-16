@@ -10,6 +10,8 @@ import {
   tikTokCaptionDetails,
 } from '../src/lib/restaurantTikTok';
 import { emptyRestaurant } from '../src/lib/restaurants';
+import { restaurantYelpSearchUrl } from '../src/lib/restaurantTikTok';
+import * as tikTokResolver from './restaurantTikTok';
 const url = 'https://www.tiktok.com/@reviewer/video/7703216902205721886';
 const raw = {
   url,
@@ -25,7 +27,10 @@ const req = (body: unknown) =>
     body: JSON.stringify(body),
   });
 beforeEach(() => vi.stubEnv('BRIGHTDATA_API_KEY', 'test-only-server-secret'));
-afterEach(() => vi.unstubAllEnvs());
+afterEach(() => {
+  vi.unstubAllEnvs();
+  vi.restoreAllMocks();
+});
 describe('TikTok restaurant import', () => {
   it('accepts video and share links while rejecting other hosts and profile pages', () => {
     expect(canonicalTikTokImportUrl(url + '?tracking=1')).toBe(url);
@@ -48,10 +53,12 @@ describe('TikTok restaurant import', () => {
     expect(tikTokCaptionDetails(raw.description)).toEqual({
       name: 'Ah Ma’s Kitchen',
       address: '1115 Clement St, San Francisco, CA 94118',
+      location: '1115 Clement St, San Francisco, CA 94118',
     });
     expect(tikTokCaptionDetails('Loved the food at this restaurant! #sf')).toEqual({
       name: '',
       address: null,
+      location: null,
     });
     expect(
       tikTokCaptionDetails(
@@ -61,7 +68,47 @@ describe('TikTok restaurant import', () => {
     expect(tikTokCaptionDetails('📍Aziza, 5800 Geary Blvd, San Francisco')).toEqual({
       name: 'Aziza',
       address: '5800 Geary Blvd, San Francisco',
+      location: '5800 Geary Blvd, San Francisco',
     });
+  });
+  it('keeps a city hint separate from a street address and encodes a Yelp search', () => {
+    const details = tikTokCaptionDetails(
+      "📍 Ah Ma's Kitchen | San Francisco, CA 👀 Would you try it? #sf",
+    );
+    expect(details).toEqual({
+      name: "Ah Ma's Kitchen",
+      address: null,
+      location: 'San Francisco, CA',
+    });
+    const search = new URL(restaurantYelpSearchUrl(details.name, details.location)!);
+    expect(search.origin).toBe('https://www.yelp.com');
+    expect(search.searchParams.get('find_desc')).toBe("Ah Ma's Kitchen");
+    expect(search.searchParams.get('find_loc')).toBe('San Francisco, CA');
+    expect(restaurantYelpSearchUrl('   ', 'San Francisco')).toBeNull();
+  });
+  it('starts short-link imports with the resolved video and verifies that same video when polling', async () => {
+    vi.spyOn(tikTokResolver, 'resolveTikTokImportUrl').mockResolvedValue(url);
+    const fetcher = vi.fn().mockResolvedValueOnce(Response.json({ snapshot_id: 'sd_shared' }));
+    const started = await handleTikTokImport(
+      req({ action: 'start', url: 'https://www.tiktok.com/t/ZTPyfBqC9/' }),
+      fetcher,
+      'share-owner',
+    );
+    expect(started.status).toBe(202);
+    expect(JSON.parse(fetcher.mock.calls[0][1].body).input).toEqual([{ url }]);
+    const { ticket } = await started.json();
+    fetcher
+      .mockResolvedValueOnce(Response.json({ status: 'ready' }))
+      .mockResolvedValueOnce(
+        Response.json([{ ...raw, url: url.replace('7703216902205721886', '7703216902205721887') }]),
+      );
+    const preview = await handleTikTokImport(
+      req({ action: 'poll', ticket }),
+      fetcher,
+      'share-owner',
+    );
+    expect(preview.status).toBe(422);
+    expect((await preview.json()).error).toContain('different video');
   });
   it('preserves personal and existing business fields while adding the video', () => {
     const imported = parseTikTokImport(raw, url);

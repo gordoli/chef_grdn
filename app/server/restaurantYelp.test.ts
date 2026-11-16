@@ -5,6 +5,7 @@ import {
   readSocialCollection,
 } from './restaurantSocialImport';
 import { emptyRestaurant } from '../src/lib/restaurants';
+import { mergeTikTokImport } from '../src/lib/restaurantTikTok';
 import {
   canonicalYelpUrl,
   mergeYelpBusiness,
@@ -44,6 +45,27 @@ const req = (body: unknown) =>
 beforeEach(() => vi.stubEnv('BRIGHTDATA_API_KEY', 'test-only-server-secret'));
 afterEach(() => vi.unstubAllEnvs());
 describe('Yelp import boundaries', () => {
+  it('enriches a TikTok draft with Yelp details and photos without losing the video or personal notes', () => {
+    const video = 'https://www.tiktok.com/@yelpnorcal/video/7703216902205721886';
+    const draft = mergeTikTokImport(
+      { ...emptyRestaurant, notes: 'My notes' },
+      {
+        video_url: video,
+        caption: '📍 Test restaurant | San Francisco, CA',
+        author: 'yelpnorcal',
+        name: 'Test restaurant',
+        address: null,
+        location: 'San Francisco, CA',
+      },
+    );
+    const enriched = mergeYelpBusiness(draft, parseYelpBusiness(raw, [review], url));
+    expect(enriched.video_urls).toEqual([video]);
+    expect(enriched.notes).toBe('My notes');
+    expect(enriched.cuisine).toBe('Chinese');
+    expect(enriched.address).toBe(raw.full_address);
+    expect(enriched.rating).toBeNull();
+    expect(restaurantPhotoUrls(enriched)).toEqual([image]);
+  });
   it('keeps polling while a ready collection assembles its snapshot', async () => {
     const fetcher = vi
       .fn()

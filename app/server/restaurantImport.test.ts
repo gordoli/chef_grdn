@@ -2,7 +2,11 @@ import { describe, expect, it, vi } from 'vitest';
 const mocks = vi.hoisted(() => ({ lookup: vi.fn(), request: vi.fn() }));
 vi.mock('node:dns/promises', () => ({ lookup: mocks.lookup }));
 vi.mock('node:https', () => ({ request: mocks.request }));
-import { fetchRestaurantResource, isPublicAddress } from './restaurantFetch';
+import {
+  fetchRestaurantResource,
+  fetchRestaurantRedirect,
+  isPublicAddress,
+} from './restaurantFetch';
 import { parseRestaurantHtml, handleRestaurantImport } from './restaurantImport';
 describe('restaurant website import', () => {
   it('reads nested JSON-LD without importing public ratings as the owner’s rating', () => {
@@ -46,6 +50,9 @@ describe('restaurant website import', () => {
     await expect(fetchRestaurantResource('https://restaurant.org')).rejects.toThrow(
       'not supported',
     );
+    await expect(
+      fetchRestaurantRedirect('https://www.tiktok.com/t/ABC123/', new AbortController().signal),
+    ).rejects.toThrow('not supported');
     expect(mocks.request).not.toHaveBeenCalled();
   });
   it('blocks reserved IP ranges including mapped IPv6 and metadata endpoints', () => {

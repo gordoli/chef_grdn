@@ -9,6 +9,7 @@ import {
   tikTokCaptionDetails,
 } from '../src/lib/restaurantTikTok';
 import { RestaurantImportError } from './restaurantFetch';
+import { resolveTikTokImportUrl } from './restaurantTikTok';
 
 const BUSINESS = 'gd_lgugwl0519h1p14rwk';
 const REVIEWS = 'gd_lgzhlu9323u3k24jkv';
@@ -390,7 +391,7 @@ export async function handleSocialImport(
       return json({ error: 'Please wait a minute before trying again.' }, 429);
     quotas.set(id, { ...quota, count: quota.count + 1 });
     if (parsed.data.action === 'start') {
-      const url =
+      let url =
         source === 'yelp'
           ? canonicalYelpUrl(parsed.data.url)
           : canonicalTikTokImportUrl(parsed.data.url);
@@ -404,6 +405,7 @@ export async function handleSocialImport(
           },
           400,
         );
+      if (source === 'tiktok') url = await resolveTikTokImportUrl(url);
       const business =
         source === 'yelp'
           ? await startYelpCollection(url, 'business', fetcher)

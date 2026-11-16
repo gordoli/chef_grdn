@@ -20,6 +20,27 @@ export function isPublicAddress(address: string): boolean {
 }
 export type RestaurantResource = { bytes: Buffer; contentType: string; url: string };
 
+async function publicEndpoint(value: string, signal: AbortSignal) {
+  if (signal.aborted) throw new RestaurantImportError('The website took too long to respond.', 504);
+  if (!publicWebsite(value))
+    throw new RestaurantImportError('Use a public HTTPS restaurant website.');
+  const url = new URL(value);
+  const addresses = await Promise.race([
+    lookup(url.hostname, { all: true }),
+    new Promise<never>((_resolve, reject) => {
+      signal.addEventListener(
+        'abort',
+        () => reject(new RestaurantImportError('The website took too long to respond.', 504)),
+        { once: true },
+      );
+    }),
+  ]);
+  if (signal.aborted) throw new RestaurantImportError('The website took too long to respond.', 504);
+  if (!addresses.length || addresses.some(({ address }) => !isPublicAddress(address)))
+    throw new RestaurantImportError('That website address is not supported.');
+  return { url, pinned: addresses[0] };
+}
+
 /** Resolve every redirect and pin the validated address to the TLS request (no DNS rebinding). */
 export async function fetchRestaurantResource(
   value: string,
@@ -28,24 +49,7 @@ export async function fetchRestaurantResource(
   const signal = AbortSignal.timeout(kind === 'html' ? 12000 : 6000);
   let current = value;
   for (let redirect = 0; redirect <= 4; redirect++) {
-    if (!publicWebsite(current))
-      throw new RestaurantImportError('Use a public HTTPS restaurant website.');
-    const url = new URL(current);
-    const addresses = await Promise.race([
-      lookup(url.hostname, { all: true }),
-      new Promise<never>((_resolve, reject) => {
-        signal.addEventListener(
-          'abort',
-          () => reject(new RestaurantImportError('The website took too long to respond.', 504)),
-          { once: true },
-        );
-      }),
-    ]);
-    if (signal.aborted)
-      throw new RestaurantImportError('The website took too long to respond.', 504);
-    if (!addresses.length || addresses.some(({ address }) => !isPublicAddress(address)))
-      throw new RestaurantImportError('That website address is not supported.');
-    const pinned = addresses[0];
+    const { url, pinned } = await publicEndpoint(current, signal);
     const result = await new Promise<RestaurantResource & { redirect?: string }>(
       (resolve, reject) => {
         const req = request(
@@ -127,4 +131,34 @@ export async function fetchRestaurantResource(
     current = result.redirect;
   }
   throw new RestaurantImportError('The website redirected too many times.');
+}
+
+/** Read only redirect headers; never download a TikTok page or forward provider credentials. */
+export async function fetchRestaurantRedirect(
+  value: string,
+  signal: AbortSignal,
+): Promise<string | null> {
+  const { url, pinned } = await publicEndpoint(value, signal);
+  return new Promise((resolve, reject) => {
+    const req = request(
+      url,
+      {
+        signal,
+        method: 'HEAD',
+        family: pinned.family,
+        headers: { 'User-Agent': 'ChefGRDN/1.0 (restaurant collection)' },
+        lookup: (_hostname, _options, callback) => callback(null, pinned.address, pinned.family),
+      },
+      (response) => {
+        const location = [301, 302, 303, 307, 308].includes(response.statusCode ?? 0)
+          ? (response.headers.location ?? null)
+          : null;
+        response.on('error', reject);
+        response.destroy();
+        resolve(location);
+      },
+    );
+    req.on('error', reject);
+    req.end();
+  });
 }

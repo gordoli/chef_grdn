@@ -23,6 +23,7 @@ import { restaurantEditorTitles } from '@/lib/restaurantEditor';
 import { useRestaurantEditor } from '@/hooks/useRestaurantEditor';
 import styles from './RestaurantEditor.module.css';
 import type { Restaurant } from '@/lib/restaurants';
+import { restaurantYelpSearchUrl } from '@/lib/restaurantTikTok';
 
 export function RestaurantEditor({
   restaurant,
@@ -75,6 +76,10 @@ export function RestaurantEditor({
     importTikTok,
     submit,
   } = useRestaurantEditor(restaurant, onOpenChange);
+  const yelpSearch = restaurantYelpSearchUrl(
+    draft.name,
+    draft.locations[0]?.address || tikTokPreview?.location || draft.neighborhood,
+  );
   const clipboard = useClipboardPaste(open && (step === 'yelp' || step === 'tiktok'));
   return (
     <AddSheet
@@ -151,6 +156,13 @@ export function RestaurantEditor({
               }}
             >
               <Clipboard aria-hidden="true" /> Paste from clipboard
+            </Button>
+          )}
+          {step === 'yelp' && yelpSearch && (
+            <Button type="button" variant="ghost" asChild>
+              <a href={yelpSearch} target="_blank" rel="noreferrer">
+                <Search /> Search Yelp
+              </a>
             </Button>
           )}
           {step === 'yelp' && restaurant && draft.locations.length > 1 && (
@@ -234,6 +246,11 @@ export function RestaurantEditor({
             className={`restaurant-form add-sheet-form ${styles.wizardForm}`}
             noValidate
           >
+            {wizardStep === 'main' && tikTokPreview && (
+              <Button type="button" variant="outline" onClick={() => openImport('yelp')}>
+                <Search /> Find on Yelp
+              </Button>
+            )}
             {wizardStep === 'main' && tikTokPreview && (
               <details className={styles.importNotes}>
                 <summary>TikTok caption</summary>

@@ -62,7 +62,7 @@ export function useRestaurantEditor(
     setStep(next);
     if (next === 'details') setWizardStep(importReturnStep);
   };
-  const openImport = (next: 'source' | 'tiktok') => {
+  const openImport = (next: 'source' | 'tiktok' | 'yelp') => {
     setImportReturnStep(wizardStep);
     navigate(next);
   };
@@ -75,7 +75,7 @@ export function useRestaurantEditor(
         setImportReturnStep('main');
         navigate('source');
       }
-    } else if (step === 'source') navigate('details');
+    } else if (step === 'source' || (step === 'yelp' && tikTokPreview)) navigate('details');
     else if (step === 'import') navigate('source');
     else navigate('import');
   };
