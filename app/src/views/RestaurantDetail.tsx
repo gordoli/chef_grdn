@@ -35,7 +35,7 @@ import {
   restaurantNeighborhoods,
 } from '@/lib/restaurants';
 import { restaurantShareUrl } from '@/lib/restaurantSharing';
-export function RestaurantDetail({ slug }: { slug: string }) {
+export function RestaurantDetail({ slug, onBack }: { slug: string; onBack?: () => void }) {
   const { restaurants, canEdit, isDemo, save, remove, error, refresh } = useRestaurants();
   const restaurant = restaurants.find((r) => r.slug === slug);
   const [tab, setTab] = useState('details');
@@ -109,11 +109,17 @@ export function RestaurantDetail({ slug }: { slug: string }) {
     }
   };
   return (
-    <div className="page-width restaurant-detail-page">
+    <div className="page-width restaurant-detail-page" data-standalone={!onBack}>
       <div className="restaurant-detail-topbar">
-        <Link href={`${prefix}/restaurants`} className="restaurant-back">
-          <ArrowLeft size={17} /> Restaurants
-        </Link>
+        {onBack ? (
+          <Button type="button" variant="ghost" className="restaurant-back" onClick={onBack}>
+            <ArrowLeft size={17} /> Restaurants
+          </Button>
+        ) : (
+          <Link href={`${prefix}/restaurants`} className="restaurant-back">
+            <ArrowLeft size={17} /> Restaurants
+          </Link>
+        )}
         <div className="restaurant-actions">
           <Button
             className="glass-control"
@@ -166,7 +172,11 @@ export function RestaurantDetail({ slug }: { slug: string }) {
               onClick={() => setPhoto(index)}
               aria-label={`Open photo ${index + 1} of ${photoUrls.length}`}
             >
-              <RestaurantPhoto src={src} name={`${restaurant.name} photo ${index + 1}`} />
+              <RestaurantPhoto
+                src={src}
+                name={`${restaurant.name} photo ${index + 1}`}
+                eager={index === 0}
+              />
             </button>
           ))}
           {photoUrls.length > 3 && (

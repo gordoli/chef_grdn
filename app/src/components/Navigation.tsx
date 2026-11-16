@@ -2,6 +2,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Plus, type LucideIcon } from 'lucide-react';
+import { navigationSection } from '@/lib/navigation';
 export type NavigationItem = { path: string; label: string; icon: LucideIcon };
 export function Navigation({
   prefix,
@@ -14,7 +15,7 @@ export function Navigation({
   mobile?: boolean;
   links: NavigationItem[];
 }) {
-  const current = pathname.slice(prefix.length) || '/';
+  const current = navigationSection(pathname, prefix);
   const nav = useRef<HTMLElement>(null);
   const [highlight, setHighlight] = useState<{
     x: number;
@@ -27,7 +28,7 @@ export function Navigation({
     if (!element) return;
     const measure = () => {
       const active = element.querySelector<HTMLElement>('[aria-current="page"]');
-      if (!active || !active.offsetWidth) {
+      if (!active || !active.offsetWidth || !active.offsetHeight) {
         setHighlight(null);
         return;
       }
@@ -72,10 +73,7 @@ export function Navigation({
           />
         )}
         {links.map(({ path, label, icon: Icon }) => {
-          const active =
-            path === '/'
-              ? current === '/' || current === '/favorites' || current.startsWith('/r/')
-              : current === path || current.startsWith(`${path}/`);
+          const active = path === current;
           return (
             <Link
               key={path}

@@ -35,23 +35,16 @@
 }
 .app-shell[data-detail='true'] .restaurant-detail-page {
   padding-top: var(--space-24);
-  animation: restaurant-screen-enter var(--motion-standard) var(--ease-enter);
 }
-@keyframes restaurant-screen-enter {
-  from {
-    opacity: 0.6;
-    transform: translateX(28px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.app-shell[data-detail='true'] .site-header {
+  visibility: hidden;
+  pointer-events: none;
+}
+.app-shell[data-detail='true'] .restaurant-detail-page[data-standalone='true'] {
+  margin-top: calc(-1 * var(--size-site-header));
 }
 @media (prefers-reduced-motion: reduce) {
   .navigation-highlight {
     transition: none;
-  }
-  .app-shell[data-detail='true'] .restaurant-detail-page {
-    animation: none;
   }
 }

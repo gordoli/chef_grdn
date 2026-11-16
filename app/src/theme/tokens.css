@@ -71,6 +71,7 @@
   --radius-24: 1.5rem;
   --radius-pill: 999px;
   --size-thumbnail: 4rem;
+  --size-site-header: 5rem;
   --size-roll-die: 3.25rem;
   --motion-fast: 160ms;
   --motion-standard: 240ms;
@@ -106,6 +107,11 @@
   );
   --brand-tiktok-logo-shadow: drop-shadow(-0.6px -0.6px 0 var(--brand-tiktok-cyan))
     drop-shadow(0.6px 0.6px 0 var(--brand-tiktok-pink));
+}
+@media (max-width: 640px) {
+  :root {
+    --size-site-header: 4.25rem;
+  }
 }
 .dark {
   --background: #090909;

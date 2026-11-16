@@ -9,11 +9,13 @@ export function RestaurantPhoto({
   name,
   className = '',
   variant = 'gallery',
+  eager = false,
 }: {
   src?: string;
   name: string;
   className?: string;
   variant?: keyof typeof restaurantMedia;
+  eager?: boolean;
 }) {
   const [failedSource, setFailedSource] = useState<string>();
   const [unoptimizedSource, setUnoptimizedSource] = useState<string>();
@@ -25,14 +27,16 @@ export function RestaurantPhoto({
             src={src}
             alt={name}
             {...restaurantMedia[variant]}
-            loading="lazy"
+            loading={eager ? 'eager' : 'lazy'}
+            fetchPriority={eager ? 'high' : undefined}
             onError={() => setUnoptimizedSource(src)}
           />
         ) : (
           <img
             src={src}
             alt={name}
-            loading="lazy"
+            loading={eager ? 'eager' : 'lazy'}
+            fetchPriority={eager ? 'high' : undefined}
             decoding="async"
             referrerPolicy="no-referrer"
             onError={() => setFailedSource(src)}

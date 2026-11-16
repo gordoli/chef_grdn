@@ -6,8 +6,8 @@ import { recipeSwipeGesture } from '@/theme/gestures';
 
 type Gesture = { id: number; x: number; y: number; started: number; dragging: boolean };
 
-/** Keep the accessible recipe panel mounted until its back transition finishes. */
-export function useRecipePanel(collectionPath: string) {
+/** Keep detail panels mounted until their back transition finishes. */
+export function useRecipePanel(collectionPath: string, navigation: 'replace' | 'back' = 'replace') {
   const router = useRouter();
   const ref = useRef<HTMLDivElement>(null);
   const gesture = useRef<Gesture | null>(null);
@@ -16,8 +16,9 @@ export function useRecipePanel(collectionPath: string) {
   const finish = useCallback(() => {
     if (navigated.current) return;
     navigated.current = true;
-    router.replace(collectionPath, { scroll: false });
-  }, [router, collectionPath]);
+    if (navigation === 'back') router.back();
+    else router.replace(collectionPath, { scroll: false });
+  }, [router, collectionPath, navigation]);
   const close = useCallback(() => setOpen(false), []);
 
   useEffect(() => {

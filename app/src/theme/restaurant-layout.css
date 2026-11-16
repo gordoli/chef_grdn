@@ -122,3 +122,19 @@
     font-size: var(--text-12);
   }
 }
+
+.restaurant-detail-panel .restaurant-panel-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.restaurant-detail-panel .restaurant-detail-page {
+  width: 100%;
+  margin: 0;
+  max-width: none;
+  padding: var(--space-24);
+}
+.restaurant-detail-panel .restaurant-back {
+  padding: 0;
+}
