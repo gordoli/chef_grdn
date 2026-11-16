@@ -58,6 +58,7 @@ export function RecipeProvider({
   const [error, setError] = useState('');
   const [hasLoadedClientData, setHasLoadedClientData] = useState(false);
   const refreshVersion = useRef(0);
+  const lastRefreshAt = useRef(Date.now());
   const favoriteRequests = useRef(new Set<string>());
   const [favoritePending, setFavoritePending] = useState<string[]>([]);
   const statusRequests = useRef(new Set<string>());
@@ -85,11 +86,15 @@ export function RecipeProvider({
       await Promise.all([
         supabase.from('recipes').select('*').order('sort_order'),
         supabase.from('recipe_photos').select('*').order('position'),
-        supabase.from('reviews').select('*').order('created_at', { ascending: false }),
+        session
+          ? supabase.from('reviews').select('*').order('created_at', { ascending: false })
+          : Promise.resolve({ data: [], error: null }),
         session
           ? supabase.from('favorites').select('recipe_id')
           : Promise.resolve({ data: [], error: null }),
-        supabase.from('profiles').select('id,display_name'),
+        session
+          ? supabase.from('profiles').select('id,display_name')
+          : Promise.resolve({ data: [], error: null }),
       ]);
     for (const result of [recipeResult, photoResult, reviewResult, favoriteResult, profileResult])
       if (result.error) throw result.error;
@@ -131,6 +136,7 @@ export function RecipeProvider({
     }
     if (version !== refreshVersion.current) return;
     setReviews(loadedReviews);
+    lastRefreshAt.current = Date.now();
     setError('');
     setLoading(false);
     setHasLoadedClientData(true);
@@ -140,13 +146,31 @@ export function RecipeProvider({
   }
   useEffect(() => {
     let active = true;
-    refresh().catch((failure) => {
-      if (active) {
-        setError(errorMessage(failure));
-        setLoading(false);
+    const initialPublicRead = !isDemo && !session && initialRecipes.length > 0;
+    if (initialPublicRead) {
+      setReviews([]);
+      setError('');
+      setLoading(false);
+      setHasLoadedClientData(true);
+      try {
+        setFavorites(
+          favoriteIdsSchema.parse(JSON.parse(localStorage.getItem('grdn.favorites') ?? '[]')),
+        );
+      } catch {
+        setFavorites([]);
       }
-    });
-    const onFocus = () => void refresh().catch((failure) => setError(errorMessage(failure)));
+    }
+    if (!initialPublicRead)
+      refresh().catch((failure) => {
+        if (active) {
+          setError(errorMessage(failure));
+          setLoading(false);
+        }
+      });
+    const onFocus = () => {
+      if (Date.now() - lastRefreshAt.current >= 60_000)
+        void refresh().catch((failure) => setError(errorMessage(failure)));
+    };
     window.addEventListener('focus', onFocus);
     const timer = setInterval(onFocus, 50 * 60 * 1000);
     return () => {
@@ -155,7 +179,7 @@ export function RecipeProvider({
       window.removeEventListener('focus', onFocus);
       clearInterval(timer);
     };
-  }, [refresh]);
+  }, [refresh, isDemo, session, initialRecipes.length]);
   function persistPreview(next: Recipe[]) {
     localStorage.setItem('grdn.preview.recipes', JSON.stringify(next));
     setRecipes(next);

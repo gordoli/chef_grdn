@@ -6,7 +6,6 @@ import {
   ArrowUpRight,
   BookOpen,
   Image,
-  Plus,
   Sun,
   Moon,
   LogOut,
@@ -18,6 +17,8 @@ import {
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Brand } from './Brand';
+import { Navigation } from './Navigation';
+import { isDetailScreen } from '@/lib/navigation';
 import { KitchenToolsIcon } from './icons/KitchenToolsIcon';
 import { CollectionSearchContext } from '@/hooks/useCollectionSearch';
 import { useTheme } from '@/hooks/useTheme';
@@ -30,50 +31,6 @@ const links = [
   { path: '/gallery', label: 'Gallery', icon: Image },
   { path: '/restaurants', label: 'Restaurants', icon: Utensils },
 ];
-function Navigation({
-  prefix,
-  pathname,
-  mobile = false,
-}: {
-  prefix: string;
-  pathname: string;
-  mobile?: boolean;
-}) {
-  const current = pathname.slice(prefix.length) || '/';
-  return (
-    <div className={mobile ? 'mobile-dock' : 'desktop-dock'}>
-      <nav
-        className={`glass-control ${mobile ? 'mobile-nav' : 'desktop-nav'}`}
-        aria-label={mobile ? 'Mobile navigation' : 'Main navigation'}
-      >
-        {links.map(({ path, label, icon: Icon }) => {
-          const active =
-            path === '/'
-              ? current === '/' || current === '/favorites' || current.startsWith('/r/')
-              : current === path || current.startsWith(`${path}/`);
-          return (
-            <Link
-              key={path}
-              href={`${prefix}${path}`}
-              aria-current={active ? 'page' : undefined}
-              className={`${mobile ? 'mobile-nav-link' : 'nav-link'} ${active ? 'active' : ''}`}
-            >
-              <Icon size={mobile ? 20 : 17} />
-              <span>{label}</span>
-            </Link>
-          );
-        })}
-      </nav>
-      <Link
-        href={current.startsWith('/restaurants') ? `${prefix}/restaurants?add=1` : `${prefix}/new`}
-        className="glass-control nav-add-bubble"
-        aria-label={current.startsWith('/restaurants') ? 'Add restaurant' : 'Add recipe'}
-      >
-        <Plus strokeWidth={1.65} />
-      </Link>
-    </div>
-  );
-}
 export function Layout({ children }: { children: ReactNode }) {
   const { dark, toggleTheme } = useTheme();
   const { isDemo } = useRecipes();
@@ -86,6 +43,7 @@ export function Layout({ children }: { children: ReactNode }) {
   const searchToggle = useRef<HTMLButtonElement>(null);
   const settingsMenu = useRef<HTMLDetailsElement>(null);
   const current = pathname.slice(prefix.length) || '/';
+  const isDetail = isDetailScreen(current);
   const isRestaurantSection = current === '/restaurants' || current.startsWith('/restaurants/');
   const isRestaurantCollection = current === '/restaurants';
   const isCollection = current === '/' || current === '/favorites' || isRestaurantCollection;
@@ -122,93 +80,95 @@ export function Layout({ children }: { children: ReactNode }) {
     <CollectionSearchContext.Provider
       value={{ search, setSearch, searchOpen, setSearchOpen, searchToggle }}
     >
-      <div className="app-shell">
+      <div className="app-shell" data-detail={isDetail}>
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        <header className="site-header">
-          <Link href={`${prefix}/`} aria-label="Chef GRDN home">
-            <Brand />
-          </Link>
-          <Navigation prefix={prefix} pathname={pathname} />
-          <div className="header-actions">
-            <Button
-              ref={searchToggle}
-              className="glass-control header-bubble recipe-search-toggle"
-              variant="ghost"
-              size="icon"
-              aria-label={
-                isRestaurantSection
-                  ? searchOpen
-                    ? 'Close restaurant search'
-                    : 'Search restaurants'
-                  : searchOpen
-                    ? 'Close recipe search'
-                    : 'Search recipes'
-              }
-              aria-expanded={searchOpen}
-              aria-controls={
-                isCollection
-                  ? isRestaurantCollection
-                    ? 'restaurant-search'
-                    : 'recipe-search'
-                  : undefined
-              }
-              onClick={() => {
-                setSearchOpen(!searchOpen);
-                setSearch('');
-                if (!isCollection)
-                  router.push(isRestaurantSection ? `${prefix}/restaurants` : `${prefix}/`);
-              }}
-            >
-              <Search />
-            </Button>
-            <Link
-              className="glass-control header-bubble"
-              href={`${prefix}/basics`}
-              aria-label="Kitchen basics"
-              aria-current={current === '/basics' ? 'page' : undefined}
-            >
-              <KitchenToolsIcon />
+        {!isDetail && (
+          <header className="site-header">
+            <Link href={`${prefix}/`} aria-label="Chef GRDN home">
+              <Brand />
             </Link>
-            <details ref={settingsMenu} className="profile-menu">
-              <summary className="header-bubble glass-control" aria-label="Settings">
-                <Settings />
-              </summary>
-              <div className="account-dropdown">
-                {session && <p>{profile?.display_name}</p>}
-                <Button
-                  variant="ghost"
-                  aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-                  onClick={toggleTheme}
-                >
-                  {dark ? <Sun /> : <Moon />}
-                  {dark ? 'Light mode' : 'Dark mode'}
-                </Button>
-                {isDemo || !session ? (
-                  <Button asChild variant="ghost">
-                    <Link href="/sign-in">
-                      <LogIn />
-                      Sign in
-                    </Link>
-                  </Button>
-                ) : (
+            <Navigation links={links} prefix={prefix} pathname={pathname} />
+            <div className="header-actions">
+              <Button
+                ref={searchToggle}
+                className="glass-control header-bubble recipe-search-toggle"
+                variant="ghost"
+                size="icon"
+                aria-label={
+                  isRestaurantSection
+                    ? searchOpen
+                      ? 'Close restaurant search'
+                      : 'Search restaurants'
+                    : searchOpen
+                      ? 'Close recipe search'
+                      : 'Search recipes'
+                }
+                aria-expanded={searchOpen}
+                aria-controls={
+                  isCollection
+                    ? isRestaurantCollection
+                      ? 'restaurant-search'
+                      : 'recipe-search'
+                    : undefined
+                }
+                onClick={() => {
+                  setSearchOpen(!searchOpen);
+                  setSearch('');
+                  if (!isCollection)
+                    router.push(isRestaurantSection ? `${prefix}/restaurants` : `${prefix}/`);
+                }}
+              >
+                <Search />
+              </Button>
+              <Link
+                className="glass-control header-bubble"
+                href={`${prefix}/basics`}
+                aria-label="Kitchen basics"
+                aria-current={current === '/basics' ? 'page' : undefined}
+              >
+                <KitchenToolsIcon />
+              </Link>
+              <details ref={settingsMenu} className="profile-menu">
+                <summary className="header-bubble glass-control" aria-label="Settings">
+                  <Settings />
+                </summary>
+                <div className="account-dropdown">
+                  {session && <p>{profile?.display_name}</p>}
                   <Button
                     variant="ghost"
-                    onClick={() =>
-                      void supabase?.auth
-                        .signOut()
-                        .catch(() => toast.error('Could not sign out. Try again.'))
-                    }
+                    aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+                    onClick={toggleTheme}
                   >
-                    <LogOut />
-                    Sign out
+                    {dark ? <Sun /> : <Moon />}
+                    {dark ? 'Light mode' : 'Dark mode'}
                   </Button>
-                )}
-              </div>
-            </details>
-          </div>
-        </header>
+                  {isDemo || !session ? (
+                    <Button asChild variant="ghost">
+                      <Link href="/sign-in">
+                        <LogIn />
+                        Sign in
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      onClick={() =>
+                        void supabase?.auth
+                          .signOut()
+                          .catch(() => toast.error('Could not sign out. Try again.'))
+                      }
+                    >
+                      <LogOut />
+                      Sign out
+                    </Button>
+                  )}
+                </div>
+              </details>
+            </div>
+          </header>
+        )}
         <main id="main">{children}</main>
         <footer className="site-footer">
           <span>
@@ -219,7 +179,7 @@ export function Layout({ children }: { children: ReactNode }) {
             <ArrowUpRight size={14} />
           </a>
         </footer>
-        <Navigation prefix={prefix} pathname={pathname} mobile />
+        <Navigation links={links} prefix={prefix} pathname={pathname} mobile />
         {isDemo && (
           <div className="preview-banner">
             <span className="preview-dot" />

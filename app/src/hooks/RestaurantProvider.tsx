@@ -2,6 +2,12 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { z } from 'zod';
 import { useSession } from './useSession';
+import {
+  cacheRestaurants,
+  freshRestaurants,
+  restaurantSnapshot,
+  loadRestaurants,
+} from './restaurantCache';
 import { RestaurantsContext, type RestaurantReview } from './useRestaurants';
 import { supabase } from '@/lib/supabase';
 import {
@@ -26,48 +32,52 @@ export function RestaurantProvider({
   const [error, setError] = useState('');
   const canEdit = isDemo || profile?.role === 'owner';
   const generation = useRef(0);
-  const refresh = useCallback(async () => {
-    if (isDemo || !supabase) return;
-    const current = ++generation.current;
-    const { data, error: failure } = await supabase
-      .from('restaurants')
-      .select('*')
-      .order('created_at')
-      .order('name');
-    if (generation.current !== current) return;
-    if (failure) {
-      setError('Could not refresh restaurants. Please try again.');
-      return;
-    }
-    const parsed = z.array(restaurantRecord).safeParse(data ?? []);
-    if (!parsed.success) {
-      setError('Some restaurant details could not be loaded.');
-      return;
-    }
-    setRestaurants(parsed.data);
-    setError('');
-    if (!session) {
-      setReviews([]);
-      return;
-    }
+  const updateRestaurants = (update: Restaurant[] | ((previous: Restaurant[]) => Restaurant[])) => {
+    const next =
+      typeof update === 'function' ? update(restaurantSnapshot() ?? restaurants) : update;
+    if (!isDemo) cacheRestaurants(next);
+    setRestaurants(next);
+  };
+  const loadReviews = useCallback(async () => {
+    if (isDemo || !supabase || !session) return [];
     const [reviewResult, profileResult] = await Promise.all([
       supabase.from('restaurant_reviews').select('*').order('created_at', { ascending: false }),
       supabase.from('profiles').select('id,display_name'),
     ]);
-    if (generation.current !== current) return;
-    if (reviewResult.error || profileResult.error) {
-      setError('Reviews could not be loaded. Please try again.');
-      return;
-    }
-    setReviews(
-      (reviewResult.data ?? []).map((review) => ({
-        ...review,
-        display_name:
-          profileResult.data?.find((person) => person.id === review.author_id)?.display_name ??
-          'Friend',
-      })),
-    );
+    if (reviewResult.error || profileResult.error)
+      throw new Error('Reviews could not be loaded. Please try again.');
+    return (reviewResult.data ?? []).map((review) => ({
+      ...review,
+      display_name:
+        profileResult.data?.find((person) => person.id === review.author_id)?.display_name ??
+        'Friend',
+    }));
   }, [isDemo, session]);
+  const refresh = useCallback(async () => {
+    if (isDemo || !supabase) return;
+    const current = ++generation.current;
+    try {
+      const [records, nextReviews] = await Promise.all([
+        loadRestaurants(async () => {
+          const { data, error: failure } = await supabase!
+            .from('restaurants')
+            .select('*')
+            .order('created_at')
+            .order('name');
+          if (failure) throw new Error('Could not refresh restaurants. Please try again.');
+          return z.array(restaurantRecord).parse(data ?? []);
+        }, true),
+        loadReviews(),
+      ]);
+      if (generation.current !== current) return;
+      setRestaurants(records);
+      setReviews(nextReviews);
+      setError('');
+    } catch (failure) {
+      if (generation.current === current)
+        setError(failure instanceof Error ? failure.message : 'Could not refresh restaurants.');
+    }
+  }, [isDemo, loadReviews]);
   useEffect(() => {
     const requestGeneration = generation;
     if (isDemo) {
@@ -78,15 +88,49 @@ export function RestaurantProvider({
         setError('The browser copy could not be restored.');
       }
     } else {
-      void refresh();
+      // The server already supplied the collection. Do not immediately download it again.
+      setRestaurants(freshRestaurants() ?? cacheRestaurants(initialRestaurants));
     }
     return () => {
       requestGeneration.current++;
     };
-  }, [isDemo, refresh]);
+  }, [isDemo, initialRestaurants]);
   useEffect(() => {
-    if (!session) setReviews([]);
-  }, [session]);
+    let active = true;
+    generation.current++;
+    setReviews([]);
+    if (session && !isDemo)
+      void loadReviews()
+        .then((next) => {
+          if (active) setReviews(next);
+        })
+        .catch(() => {
+          if (active) setError('Reviews could not be loaded. Please try again.');
+        });
+    return () => {
+      active = false;
+    };
+  }, [session, isDemo, loadReviews]);
+  useEffect(() => {
+    if (isDemo) return;
+    const onFocus = () => {
+      if (!freshRestaurants()) void refresh();
+    };
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, [isDemo, refresh]);
+  const invalidatePublicCache = async () => {
+    if (isDemo || !session) return;
+    try {
+      const response = await fetch('/api/restaurants/revalidate', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      if (!response.ok) throw new Error('Cache refresh failed');
+    } catch {
+      setError('Saved. Public pages may take up to a minute to refresh.');
+    }
+  };
   const persistDemo = (next: Restaurant[]) => {
     localStorage.setItem(demoKey, JSON.stringify(next));
     setRestaurants(next);
@@ -124,9 +168,10 @@ export function RestaurantProvider({
           : 'Could not save the restaurant. Please try again.',
       );
     const result = restaurantRecord.parse(data);
-    setRestaurants((previous) =>
+    updateRestaurants((previous) =>
       id ? previous.map((r) => (r.id === id ? result : r)) : [...previous, result],
     );
+    await invalidatePublicCache();
     return result;
   };
   const setFavorite = async (id: string, value: boolean) => {
@@ -151,11 +196,12 @@ export function RestaurantProvider({
       .select('is_favorite,updated_at')
       .single();
     if (failure || !data) throw new Error('Could not change this favorite.');
-    setRestaurants((previous) =>
+    updateRestaurants((previous) =>
       previous.map((restaurant) =>
         restaurant.id === id ? { ...restaurant, ...data } : restaurant,
       ),
     );
+    await invalidatePublicCache();
   };
   const remove = async (id: string) => {
     if (!canEdit) throw new Error('Only the owner can remove restaurants.');
@@ -172,7 +218,8 @@ export function RestaurantProvider({
       .select('id')
       .single();
     if (failure || !data) throw new Error('Could not remove this restaurant.');
-    setRestaurants((previous) => previous.filter((r) => r.id !== id));
+    updateRestaurants((previous) => previous.filter((r) => r.id !== id));
+    await invalidatePublicCache();
   };
   const saveReview = async (
     restaurantId: string,

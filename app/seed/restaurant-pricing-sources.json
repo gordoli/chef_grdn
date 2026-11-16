@@ -121,7 +121,19 @@
       "slug": "brothers",
       "price_range": "$20–60",
       "source_url": "https://restaurantguru.com/Brothers-Restaurant-San-Francisco"
+    },
+    {
+      "slug": "dumpling-baby",
+      "price_range": "$20–30",
+      "source": "Owner-provided temporary estimate",
+      "checked_on": "2026-11-16"
+    },
+    {
+      "slug": "noodle-panda",
+      "price_range": "$20–30",
+      "source": "Owner-provided temporary estimate",
+      "checked_on": "2026-11-16"
     }
   ],
-  "unverified": ["noodle-panda", "dumpling-baby"]
+  "unverified": []
 }
