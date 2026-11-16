@@ -37,7 +37,8 @@
   padding-top: var(--space-24);
 }
 .app-shell[data-detail='true'] .site-header {
-  visibility: hidden;
+  /* Preserve geometry and repaint glass descendants when the panel closes. */
+  opacity: 0;
   pointer-events: none;
 }
 .app-shell[data-detail='true'] .restaurant-detail-page[data-standalone='true'] {
