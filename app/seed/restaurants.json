@@ -900,6 +900,64 @@
           "longitude": -122.463557628369
         }
       ]
+    },
+    {
+      "slug": "ah-mas-kitchen",
+      "name": "Ah Ma’s Kitchen",
+      "cuisine": "Chinese",
+      "status": "want_to_go",
+      "is_favorite": false,
+      "price_range": null,
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "Saved from TikTok for the kiln chicken and oversized milk tea.",
+      "website": "https://www.ahmaskitchensf.com/",
+      "photo_urls": [],
+      "video_urls": ["https://www.tiktok.com/@yelpnorcal/video/7703216902205721886"],
+      "locations": [
+        {
+          "neighborhood": "Inner Richmond",
+          "address": "1115 Clement St, San Francisco, CA 94118",
+          "phone": "(415) 571-8478",
+          "latitude": 37.782584114959,
+          "longitude": -122.471045557402
+        }
+      ],
+      "neighborhood": "Inner Richmond",
+      "address": "1115 Clement St, San Francisco, CA 94118",
+      "phone": "(415) 571-8478",
+      "latitude": 37.782584114959,
+      "longitude": -122.471045557402
+    },
+    {
+      "slug": "aziza",
+      "name": "Aziza",
+      "cuisine": "Moroccan",
+      "status": "want_to_go",
+      "is_favorite": false,
+      "price_range": null,
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "TikTok pick: shared dips, kefta, roasted chicken, lamb shank, and cornbread. Larger portions suited to sharing.",
+      "website": "https://www.azizasf.com/",
+      "photo_urls": [],
+      "video_urls": ["https://www.tiktok.com/@mari_h_moto/video/7704090544766569758"],
+      "locations": [
+        {
+          "neighborhood": "Outer Richmond",
+          "address": "5800 Geary Boulevard, San Francisco, CA 94121",
+          "phone": "(415) 682-4196",
+          "latitude": 37.780371624487,
+          "longitude": -122.481599865249
+        }
+      ],
+      "neighborhood": "Outer Richmond",
+      "address": "5800 Geary Boulevard, San Francisco, CA 94121",
+      "phone": "(415) 682-4196",
+      "latitude": 37.780371624487,
+      "longitude": -122.481599865249
     }
   ]
 }

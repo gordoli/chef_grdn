@@ -7,19 +7,16 @@ import { toast } from 'sonner';
 import { useSession } from '@/hooks/useSession';
 import { useCollectionSearch } from '@/hooks/useCollectionSearch';
 import { useRestaurants } from '@/hooks/useRestaurants';
-import { restaurantInTab, restaurantNeighborhoods, type RestaurantTab } from '@/lib/restaurants';
+import {
+  restaurantInTab,
+  restaurantNeighborhoods,
+  restaurantCuisineRegions,
+  type RestaurantTab,
+} from '@/lib/restaurants';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { RestaurantEditor } from '@/components/restaurants/RestaurantEditor';
 import { RestaurantMap } from '@/components/restaurants/RestaurantMap';
-import { RestaurantPhoto } from '@/components/restaurants/RestaurantPhoto';
 export function Restaurants() {
   const { restaurants, error, refresh, canEdit, isDemo, setFavorite } = useRestaurants();
   const [tab, setTab] = useState<RestaurantTab>('visited');
@@ -49,15 +46,22 @@ export function Restaurants() {
     return () => document.removeEventListener('click', outside);
   }, [searchOpen, searchToggle, setSearch, setSearchOpen]);
   const prefix = isDemo ? '/demo' : '';
+  const tabRestaurants = useMemo(
+    () => restaurants.filter((r) => restaurantInTab(r, tab)),
+    [restaurants, tab],
+  );
+  const cuisines = [
+    ...new Set(tabRestaurants.flatMap((r) => restaurantCuisineRegions(r.cuisine))),
+  ].sort((a, b) => a.localeCompare(b));
   const filtered = useMemo(
     () =>
-      restaurants.filter(
+      tabRestaurants.filter(
         (r) =>
-          restaurantInTab(r, tab) &&
-          (cuisine === 'all' || r.cuisine === cuisine) &&
+          (cuisine === 'all' || restaurantCuisineRegions(r.cuisine).includes(cuisine)) &&
           [
             r.name,
             r.cuisine,
+            ...restaurantCuisineRegions(r.cuisine),
             restaurantNeighborhoods(r),
             r.address,
             r.notes,
@@ -67,7 +71,7 @@ export function Restaurants() {
             .toLowerCase()
             .includes(search.toLowerCase().trim()),
       ),
-    [restaurants, tab, cuisine, search],
+    [tabRestaurants, cuisine, search],
   );
   const favorite = async (id: string, value: boolean) => {
     setPendingFavorite(id);
@@ -108,29 +112,39 @@ export function Restaurants() {
               key={value}
               variant="ghost"
               aria-pressed={tab === value}
-              onClick={() => setTab(value)}
+              onClick={() => {
+                setTab(value);
+                setCuisine('all');
+              }}
             >
               {label}
               <span>{restaurants.filter((r) => restaurantInTab(r, value)).length}</span>
             </Button>
           ))}
         </div>
+      </div>
+      <div className="restaurant-cuisine-row">
+        <div
+          className="category-chips restaurant-cuisine-pills"
+          role="group"
+          aria-label="Filter restaurants by cuisine"
+        >
+          <button aria-pressed={cuisine === 'all'} onClick={() => setCuisine('all')}>
+            All <span>{tabRestaurants.length}</span>
+          </button>
+          {cuisines.map((value) => (
+            <button key={value} aria-pressed={cuisine === value} onClick={() => setCuisine(value)}>
+              {value}
+              <span>
+                {
+                  tabRestaurants.filter((r) => restaurantCuisineRegions(r.cuisine).includes(value))
+                    .length
+                }
+              </span>
+            </button>
+          ))}
+        </div>
         <div className="restaurant-toolbar">
-          <Select value={cuisine} onValueChange={setCuisine}>
-            <SelectTrigger className="restaurant-cuisine-select" aria-label="Filter by cuisine">
-              <SelectValue placeholder="All cuisines" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All cuisines</SelectItem>
-              {[...new Set(restaurants.map((r) => r.cuisine).filter(Boolean))]
-                .sort()
-                .map((value) => (
-                  <SelectItem key={value} value={value}>
-                    {value}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
           <div
             className="glass-control restaurant-view-toggle"
             role="group"
@@ -239,7 +253,6 @@ export function Restaurants() {
                 className="restaurant-list-card"
               >
                 <div className="restaurant-list-name">
-                  <RestaurantPhoto src={restaurant.photo_urls[0]} name={restaurant.name} />
                   <div>
                     <strong>{restaurant.name}</strong>
                     <span className="restaurant-list-status">
@@ -247,7 +260,9 @@ export function Restaurants() {
                     </span>
                   </div>
                 </div>
-                <span className="restaurant-card-cuisine">{restaurant.cuisine || '—'}</span>
+                <span className="restaurant-card-cuisine">
+                  {restaurantCuisineRegions(restaurant.cuisine).join(' / ') || '—'}
+                </span>
                 <span className="restaurant-card-rating">
                   <Star size={14} fill={restaurant.rating !== null ? 'currentColor' : 'none'} />{' '}
                   {restaurant.rating !== null ? `${restaurant.rating.toFixed(1)} / 5` : 'Not rated'}
@@ -257,7 +272,7 @@ export function Restaurants() {
                 </span>
               </Link>
               <Button
-                className="glass-control restaurant-thumbnail-heart"
+                className="restaurant-favorite"
                 variant="ghost"
                 size="icon"
                 aria-label={`${restaurant.is_favorite ? 'Unfavorite' : 'Favorite'} ${restaurant.name}`}

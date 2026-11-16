@@ -8,20 +8,29 @@ import {
   restaurantNeighborhoods,
   restaurantInTab,
   restaurantCanonicalSlug,
+  restaurantCuisineRegions,
 } from './restaurants';
 import { restaurantMetadata, restaurantShareUrl } from './restaurantSharing';
 import { demoRestaurants } from './restaurantSeeds';
 describe('restaurant records', () => {
-  it('keeps all five requested places on the want-to-go list without invented ratings', () => {
-    expect(demoRestaurants).toHaveLength(26);
+  it('keeps requested places and TikTok additions on the want-to-go list without invented ratings', () => {
+    expect(demoRestaurants).toHaveLength(28);
     expect(demoRestaurants.filter((r) => r.status === 'want_to_go').map((r) => r.name)).toEqual([
       'Kevin’s Noodle House',
       'Pang',
       'Sam Tung',
       'Four Kings',
       'Brothers',
+      'Ah Ma’s Kitchen',
+      'Aziza',
     ]);
     expect(demoRestaurants.every((r) => r.rating === null && r.visited_on === null)).toBe(true);
+    expect(demoRestaurants.find((r) => r.slug === 'ah-mas-kitchen')?.video_urls).toEqual([
+      'https://www.tiktok.com/@yelpnorcal/video/7703216902205721886',
+    ]);
+    expect(demoRestaurants.find((r) => r.slug === 'aziza')?.video_urls).toEqual([
+      'https://www.tiktok.com/@mari_h_moto/video/7704090544766569758',
+    ]);
   });
   it('rejects impossible ratings, mixed statuses, bad dates and partial coordinates', () => {
     const base = { ...emptyRestaurant, name: 'Dinner', slug: 'dinner', status: 'visited' };
@@ -95,6 +104,21 @@ describe('restaurant videos and shares', () => {
 });
 
 describe('restaurant collection and locations', () => {
+  it('groups food styles under countries while retaining multi-region restaurants', () => {
+    expect(restaurantCuisineRegions('Chinese / Dim sum')).toEqual(['Chinese']);
+    expect(restaurantCuisineRegions('Chinese / Noodles')).toEqual(['Chinese']);
+    expect(restaurantCuisineRegions('Cantonese')).toEqual(['Chinese']);
+    expect(restaurantCuisineRegions('Japanese / Ramen')).toEqual(['Japanese']);
+    expect(restaurantCuisineRegions('Korean BBQ')).toEqual(['Korean']);
+    expect(restaurantCuisineRegions('Pizza')).toEqual(['Italian']);
+    expect(restaurantCuisineRegions('Pakistani / Indian')).toEqual(['Pakistani', 'Indian']);
+    expect(restaurantCuisineRegions('Californian / Mediterranean')).toEqual([
+      'Californian',
+      'Mediterranean',
+    ]);
+    expect(restaurantCuisineRegions('')).toEqual([]);
+    expect(restaurantCuisineRegions(' Moroccan ')).toEqual(['Moroccan']);
+  });
   it('keeps favorites independent from visit status', () => {
     expect(restaurantInTab({ status: 'want_to_go', is_favorite: true }, 'favorites')).toBe(true);
     expect(restaurantInTab({ status: 'want_to_go', is_favorite: true }, 'visited')).toBe(false);

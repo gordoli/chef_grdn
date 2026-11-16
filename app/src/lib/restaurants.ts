@@ -216,6 +216,33 @@ export function restaurantNeighborhoods(
   ].join(' / ');
 }
 export type RestaurantTab = 'visited' | 'want_to_go' | 'favorites';
+
+/** Group dish/style labels under countries or regions without rewriting saved records. */
+export function restaurantCuisineRegions(cuisine: string): string[] {
+  const aliases: Record<string, string | null> = {
+    cantonese: 'Chinese',
+    'hong kong': 'Chinese',
+    'dim sum': 'Chinese',
+    noodles: null,
+    ramen: 'Japanese',
+    pizza: 'Italian',
+    'korean bbq': 'Korean',
+    bbq: null,
+  };
+  return [
+    ...new Set(
+      cuisine.split(/\s*[/&,]\s*/).flatMap((value) => {
+        const label = value.trim().replace(/\s+/g, ' ');
+        if (!label) return [];
+        const region = Object.hasOwn(aliases, label.toLowerCase())
+          ? aliases[label.toLowerCase()]
+          : label[0].toUpperCase() + label.slice(1);
+        return region ? [region] : [];
+      }),
+    ),
+  ];
+}
+
 export function restaurantInTab(
   restaurant: Pick<Restaurant, 'status' | 'is_favorite'>,
   tab: RestaurantTab,
