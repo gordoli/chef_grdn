@@ -99,10 +99,10 @@ export function Restaurants() {
         <h1>
           Restaurants <span>{restaurants.length}</span>
         </h1>
-        <div
-          className="glass-control restaurant-view-toggle"
-          role="group"
-          aria-label="Restaurant views and suggestions"
+        <SegmentedControl
+          className="restaurant-view-toggle"
+          value={view}
+          label="Restaurant views and suggestions"
         >
           <Button
             variant="ghost"
@@ -123,7 +123,7 @@ export function Restaurants() {
             <Map />
           </Button>
           <RestaurantRoll open={rollOpen} onOpenChange={setRollOpen} />
-        </div>
+        </SegmentedControl>
       </div>
       <div className="collection-control-row">
         <SegmentedControl
