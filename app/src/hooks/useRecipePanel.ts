@@ -40,6 +40,9 @@ export function useRecipePanel(collectionPath: string, navigation: 'replace' | '
   }
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
     const target = event.target as HTMLElement;
+    const photoSwipe =
+      event.pointerType === 'touch' &&
+      target.closest('.restaurant-hero-gallery,.photo-strip > button:only-child');
     suppressClick.current = false;
     if (!open || !event.isPrimary) {
       resetDrag();
@@ -50,7 +53,7 @@ export function useRecipePanel(collectionPath: string, navigation: 'replace' | '
       (target.closest(
         'button,a,input,textarea,select,label,summary,iframe,video,[contenteditable],.photo-strip',
       ) &&
-        !(event.pointerType === 'touch' && target.closest('.restaurant-hero-gallery'))) ||
+        !photoSwipe) ||
       target.closest('[role="dialog"]') !== event.currentTarget
     )
       return;
