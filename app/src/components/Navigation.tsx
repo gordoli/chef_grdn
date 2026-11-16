@@ -91,7 +91,9 @@ export function Navigation({
         })}
       </nav>
       <Link
-        href={current.startsWith('/restaurants') ? `${prefix}/restaurants?add=1` : `${prefix}/new`}
+        href={
+          current.startsWith('/restaurants') ? `${prefix}/restaurants?add=1` : `${prefix}/?add=1`
+        }
         className="glass-control nav-add-bubble"
         aria-label={current.startsWith('/restaurants') ? 'Add restaurant' : 'Add recipe'}
       >

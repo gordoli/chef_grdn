@@ -426,106 +426,6 @@
   object-fit: contain;
   border-radius: var(--radius-12);
 }
-.editor-page {
-  max-width: 900px;
-  padding-top: var(--space-28);
-}
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-8);
-  color: var(--muted-foreground);
-  font-size: var(--text-11);
-  margin-bottom: var(--space-36);
-  min-height: 40px;
-}
-.editor-heading .eyebrow {
-  font-size: var(--text-11);
-}
-.editor-heading h1 {
-  font-size: var(--text-36);
-  letter-spacing: -1.2px;
-  margin: var(--space-12) 0;
-}
-.editor-heading p {
-  font-size: var(--text-12);
-  color: var(--muted-foreground);
-}
-.import-section {
-  margin-top: var(--space-36);
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-20);
-  overflow: hidden;
-}
-.editor-tabs {
-  display: flex;
-  gap: var(--space-28);
-  padding: 0 var(--space-24);
-  border-bottom: 1px solid var(--border);
-}
-.editor-tabs > button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-8);
-  min-height: 58px;
-  background: transparent;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  font-size: var(--text-11);
-  color: var(--muted-foreground);
-}
-.editor-tabs > button[aria-pressed='true'] {
-  border-bottom-color: var(--primary);
-  color: var(--foreground);
-}
-.import-body {
-  padding: var(--space-36) var(--space-28) var(--space-28);
-  text-align: center;
-}
-.import-icon {
-  display: grid;
-  place-items: center;
-  margin: 0 auto var(--space-16);
-  background: var(--accent);
-  color: var(--accent-foreground);
-  border-radius: 50%;
-  width: 46px;
-  height: 46px;
-}
-.import-body h2 {
-  font-size: var(--text-20);
-  letter-spacing: -0.5px;
-  margin-bottom: var(--space-10);
-}
-.import-body p {
-  font-size: var(--text-11);
-  line-height: 1.9;
-  color: var(--muted-foreground);
-  max-width: 440px;
-  margin: 0 auto var(--space-24);
-}
-.import-input {
-  display: flex;
-  align-items: center;
-  gap: var(--space-10);
-}
-.import-input input {
-  font-size: var(--text-12);
-}
-.import-input button {
-  height: 48px;
-  font-size: var(--text-11);
-}
-.import-body small {
-  display: block;
-  text-align: left;
-  font-size: var(--text-11);
-  line-height: 1.9;
-  color: var(--muted-foreground);
-  margin-top: var(--space-16);
-}
 .form-error {
   padding: var(--space-12) var(--space-16);
   background: color-mix(in srgb, var(--destructive) 9%, var(--background));
@@ -534,38 +434,6 @@
   font-size: var(--text-11);
   color: var(--destructive);
   margin: var(--space-20) 0;
-}
-.recipe-editor-form {
-  margin-top: var(--space-28);
-}
-.editor-section {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-20);
-  background: var(--card);
-  padding: var(--space-28);
-  margin-bottom: var(--space-20);
-}
-.editor-section-heading {
-  display: flex;
-  align-items: center;
-  gap: var(--space-10);
-  padding-bottom: var(--space-24);
-  border-bottom: 1px solid var(--border);
-  margin-bottom: var(--space-24);
-}
-.editor-section-heading > span {
-  font-size: var(--text-11);
-  color: var(--muted-foreground);
-  display: grid;
-  place-items: center;
-  width: 27px;
-  height: 27px;
-  border-radius: 50%;
-  background: var(--secondary);
-}
-.editor-section-heading h2 {
-  font-size: var(--text-18);
-  letter-spacing: -0.4px;
 }
 .form-grid {
   display: grid;
@@ -594,28 +462,6 @@
 }
 .field-wide {
   grid-column: 1/-1;
-}
-.editor-save {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: var(--space-12);
-  margin: var(--space-28) 0 var(--space-48);
-}
-.editor-save button,
-.editor-save a {
-  font-size: var(--text-11);
-}
-.import-success {
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
-  padding: var(--space-16) var(--space-20);
-  background: var(--accent);
-  color: var(--accent-foreground);
-  border-radius: var(--radius-12);
-  margin-bottom: var(--space-24);
-  font-size: var(--text-11);
 }
 .new-photos,
 .photo-manager {

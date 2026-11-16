@@ -37,3 +37,5 @@ Theme files own global materials and domain styles. Feature CSS modules own layo
 `src/config/loading.ts` owns operational freshness, signing and import policies. These are separate from visual tokens. Validation limits remain near their schemas. Recipe JSON and `upsert_recipe` are independent of presentation changes.
 
 Before delivery run typechecking, lint (including the theme check), business/permission tests, a production build and formatting checks. Verify mobile/desktop, light/dark, keyboard focus, gallery selection persistence and the reduced-motion paths for affected flows.
+
+Add flows use `components/ui/add-sheet.tsx` and `theme/add-sheet.css` for a shared title, source choices, back control, form frame and footer. Mobile sheets slide up; desktop sheets enter from the side. Keep decorative introductions out of add/edit forms.

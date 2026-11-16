@@ -50,7 +50,7 @@ export function useRestaurantEditor(
   const [busy, setBusy] = useState(false);
   const [importing, setImporting] = useState(false);
   const [error, setError] = useState('');
-  const [step, setStep] = useState<'source' | 'website' | 'yelp' | 'tiktok' | 'details'>(
+  const [step, setStep] = useState<'source' | 'import' | 'website' | 'yelp' | 'tiktok' | 'details'>(
     restaurant ? 'details' : 'source',
   );
   const [wizardStep, setWizardStep] = useState<RestaurantEditorStep>('main');
@@ -76,7 +76,8 @@ export function useRestaurantEditor(
         navigate('source');
       }
     } else if (step === 'source') navigate('details');
-    else navigate('source');
+    else if (step === 'import') navigate('source');
+    else navigate('import');
   };
   const set = <K extends keyof RestaurantInput>(key: K, value: RestaurantInput[K]) =>
     setDraft((previous) => ({ ...previous, [key]: value }));

@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { RecipeAddFlow } from '@/components/recipes/RecipeAddFlow';
 import {
   ArrowUpRight,
   Grid2X2,
@@ -326,7 +327,7 @@ export function Home() {
             ) : (
               canEdit && (
                 <Button asChild>
-                  <Link href={`${prefix}/new`}>
+                  <Link href={`${prefix}/?add=1`}>
                     <Plus />
                     Add a recipe
                     <ArrowUpRight />
@@ -337,6 +338,9 @@ export function Home() {
           </EmptyState>
         )}
       </section>
+      <Suspense fallback={null}>
+        <RecipeAddFlow />
+      </Suspense>
     </div>
   );
 }

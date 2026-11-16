@@ -1,4 +1,4 @@
-import { EditorRoute } from '@/components/EditorRoute';
+import { redirect } from 'next/navigation';
 export default function Page() {
-  return <EditorRoute />;
+  redirect('/demo?add=1');
 }
