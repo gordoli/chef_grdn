@@ -67,6 +67,7 @@ export const restaurantInput = z
     locations: z.array(restaurantLocation).max(12).default([]),
     status: z.enum(['visited', 'want_to_go']),
     is_favorite: z.boolean(),
+    is_takeout: z.boolean().default(false),
     price_range: z
       .string()
       .trim()
@@ -138,6 +139,7 @@ export const emptyRestaurant: RestaurantInput = {
   locations: [],
   status: 'want_to_go',
   is_favorite: false,
+  is_takeout: false,
   price_range: null,
   visited_on: null,
   rating: null,
@@ -204,15 +206,63 @@ export function restaurantLocations(
 export function restaurantNeighborhoods(
   restaurant: Parameters<typeof restaurantLocations>[0],
 ): string {
-  return [
-    ...new Set(
-      restaurantLocations(restaurant)
-        .map((location) => location.neighborhood)
-        .filter(Boolean),
-    ),
-  ].join(' / ');
+  return restaurantLocationLabels(restaurant).join(' / ');
+}
+export function restaurantLocationLabels(
+  restaurant: Parameters<typeof restaurantLocations>[0],
+): string[] {
+  const labels = new Map<string, string>();
+  for (const location of restaurantLocations(restaurant)) {
+    const label = location.neighborhood.trim().replace(/\s+/g, ' ');
+    if (label && !labels.has(label.toLowerCase())) labels.set(label.toLowerCase(), label);
+  }
+  return [...labels.values()];
 }
 export type RestaurantTab = 'visited' | 'want_to_go';
+
+export type RestaurantFilters = {
+  tab: RestaurantTab;
+  favoritesOnly?: boolean;
+  takeoutOnly?: boolean;
+  cuisine?: string;
+  location?: string | null;
+  search?: string;
+};
+
+/** The same composed filters power the list, map, and facet counts. */
+export function restaurantMatchesFilters(
+  restaurant: Restaurant,
+  filters: RestaurantFilters,
+): boolean {
+  if (!restaurantInTab(restaurant, filters.tab, filters.favoritesOnly)) return false;
+  if (filters.takeoutOnly && !restaurant.is_takeout) return false;
+  const cuisines = restaurantCuisineRegions(restaurant.cuisine);
+  if (filters.cuisine && filters.cuisine !== 'all' && !cuisines.includes(filters.cuisine))
+    return false;
+  if (
+    filters.location &&
+    !restaurantLocationLabels(restaurant).some(
+      (label) => label.toLowerCase() === filters.location?.toLowerCase(),
+    )
+  )
+    return false;
+  const query = filters.search?.trim().toLowerCase();
+  return (
+    !query ||
+    [
+      restaurant.name,
+      restaurant.cuisine,
+      ...cuisines,
+      restaurantNeighborhoods(restaurant),
+      restaurant.address,
+      restaurant.notes,
+      ...restaurant.locations.map((location) => location.address),
+    ]
+      .join(' ')
+      .toLowerCase()
+      .includes(query)
+  );
+}
 
 /** Group dish/style labels under countries or regions without rewriting saved records. */
 export function restaurantCuisineRegions(cuisine: string): string[] {

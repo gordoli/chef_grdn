@@ -9,12 +9,34 @@ import {
   restaurantInTab,
   restaurantCanonicalSlug,
   restaurantCuisineRegions,
+  restaurantLocationLabels,
+  restaurantMatchesFilters,
 } from './restaurants';
 import { restaurantMetadata, restaurantShareUrl } from './restaurantSharing';
 import { demoRestaurants } from './restaurantSeeds';
 describe('restaurant records', () => {
+  it('keeps the seven delivery favorites as visited Takeout places and the two dine-in additions as visited', () => {
+    expect(demoRestaurants.filter((r) => r.is_takeout).map((r) => r.slug)).toEqual([
+      'gai-chicken-and-rice',
+      'rt-rotisserie',
+      'll-hawaiian-barbecue',
+      'oke-poke',
+      'hawaiian-drive-inn',
+      'ohana-hawaiian-bbq',
+      'aria-korean-street-food',
+    ]);
+    expect(demoRestaurants.filter((r) => r.is_takeout).every((r) => r.status === 'visited')).toBe(
+      true,
+    );
+    for (const slug of ['banana-island', 'udon-mugizo']) {
+      expect(demoRestaurants.find((r) => r.slug === slug)).toMatchObject({
+        status: 'visited',
+        is_takeout: false,
+      });
+    }
+  });
   it('keeps requested places and TikTok additions on the want-to-go list without invented ratings', () => {
-    expect(demoRestaurants).toHaveLength(28);
+    expect(demoRestaurants).toHaveLength(37);
     expect(demoRestaurants.filter((r) => r.status === 'want_to_go').map((r) => r.name)).toEqual([
       'Kevin’s Noodle House',
       'Pang',
@@ -104,6 +126,82 @@ describe('restaurant videos and shares', () => {
 });
 
 describe('restaurant collection and locations', () => {
+  it('defaults legacy records to non-takeout and rejects non-boolean flags', () => {
+    const { is_takeout: _takeout, ...legacy } = {
+      ...emptyRestaurant,
+      slug: 'dinner',
+      name: 'Dinner',
+    };
+    expect(_takeout).toBe(false);
+    expect(restaurantInput.parse(legacy).is_takeout).toBe(false);
+    expect(restaurantInput.safeParse({ ...legacy, is_takeout: 'true' }).success).toBe(false);
+  });
+  it('composes Takeout, Favorites, cuisine, location, status and search without matching partial locations', () => {
+    const restaurant = {
+      ...demoRestaurants[0],
+      status: 'visited' as const,
+      is_takeout: true,
+      is_favorite: true,
+      cuisine: 'Japanese / Ramen',
+      locations: [
+        {
+          neighborhood: 'Inner Sunset',
+          address: '99 Irving St',
+          phone: null,
+          latitude: null,
+          longitude: null,
+        },
+        {
+          neighborhood: 'Japantown',
+          address: '1 Webster St',
+          phone: null,
+          latitude: null,
+          longitude: null,
+        },
+      ],
+    };
+    const filters = {
+      tab: 'visited' as const,
+      takeoutOnly: true,
+      favoritesOnly: true,
+      cuisine: 'Japanese',
+      location: 'Japantown',
+      search: 'webster',
+    };
+    expect(restaurantMatchesFilters(restaurant, filters)).toBe(true);
+    for (const patch of [
+      { is_takeout: false },
+      { is_favorite: false },
+      { status: 'want_to_go' as const },
+      { cuisine: 'Thai' },
+    ])
+      expect(restaurantMatchesFilters({ ...restaurant, ...patch }, filters)).toBe(false);
+    expect(restaurantMatchesFilters(restaurant, { ...filters, location: 'Sunset' })).toBe(false);
+    expect(
+      restaurantMatchesFilters(restaurant, { ...filters, search: 'not in this restaurant' }),
+    ).toBe(false);
+    expect(restaurantMatchesFilters(restaurant, { tab: 'visited', location: 'inner sunset' })).toBe(
+      true,
+    );
+  });
+  it('uses individual branch labels with trimmed, case-insensitive deduplication and legacy fallback', () => {
+    const branch = { address: null, phone: null, latitude: null, longitude: null };
+    expect(
+      restaurantLocationLabels({
+        ...emptyRestaurant,
+        locations: [
+          { ...branch, neighborhood: ' Inner  Sunset ' },
+          { ...branch, neighborhood: 'inner sunset' },
+          { ...branch, neighborhood: 'Japantown' },
+          { ...branch, neighborhood: ' ' },
+        ],
+      }),
+    ).toEqual(['Inner Sunset', 'Japantown']);
+    expect(restaurantLocationLabels({ ...emptyRestaurant, neighborhood: 'Daly City' })).toEqual([
+      'Daly City',
+    ]);
+    expect(restaurantLocationLabels(emptyRestaurant)).toEqual([]);
+  });
   it('groups food styles under countries while retaining multi-region restaurants', () => {
     expect(restaurantCuisineRegions('Chinese / Dim sum')).toEqual(['Chinese']);
     expect(restaurantCuisineRegions('Chinese / Noodles')).toEqual(['Chinese']);

@@ -1,14 +1,17 @@
--- Run after 0007 with psql -v ON_ERROR_STOP=1. All fixtures roll back.
+-- Run after all migrations with psql -v ON_ERROR_STOP=1. All fixtures roll back.
 begin;
 insert into auth.users (id, email, raw_user_meta_data) values
   ('00000000-0000-0000-0000-000000000001', 'restaurant-test-one@example.invalid', '{}'),
   ('00000000-0000-0000-0000-000000000002', 'restaurant-test-two@example.invalid', '{}');
 insert into public.restaurants (slug, name) values ('restaurant-permission-test', 'Permission test');
+do $$ begin
+  assert (select is_takeout = false from public.restaurants where slug = 'restaurant-permission-test'), 'Takeout defaults to false for existing flows';
+end $$;
 set local role anon;
 do $$ declare changed integer; begin
   assert (select count(*) = 1 from public.restaurants where slug = 'restaurant-permission-test'), 'Anonymous restaurant browsing';
   begin
-    update public.restaurants set notes = 'blocked' where slug = 'restaurant-permission-test';
+    update public.restaurants set notes = 'blocked', is_takeout = true where slug = 'restaurant-permission-test';
     get diagnostics changed = row_count;
     assert changed = 0, 'Anonymous update must fail';
   exception when insufficient_privilege then null;
@@ -32,7 +35,7 @@ do $$ declare changed integer; begin
   update public.restaurants set rating = 5, status = 'visited' where slug = 'restaurant-permission-test';
   get diagnostics changed = row_count;
   assert changed = 0, 'Friends must not alter the owner rating';
-  update public.restaurants set is_favorite = true, locations = '[{"neighborhood":"Blocked"}]' where slug = 'restaurant-permission-test';
+  update public.restaurants set is_favorite = true, is_takeout = true, locations = '[{"neighborhood":"Blocked"}]' where slug = 'restaurant-permission-test';
   get diagnostics changed = row_count;
   assert changed = 0, 'Friends cannot edit favorites or locations';
   delete from public.restaurants where slug = 'restaurant-permission-test';
@@ -78,6 +81,8 @@ do $$ declare changed integer; begin
   update public.restaurants set is_favorite = true, locations = '[{"neighborhood":"Mission","address":"1 Main St","phone":null,"latitude":37.7,"longitude":-122.4},{"neighborhood":"Pacific Heights","address":"2 Main St","phone":null,"latitude":37.8,"longitude":-122.4}]' where slug = 'restaurant-permission-test';
   assert (select is_favorite and jsonb_array_length(locations) = 2 and rating = 4.5 from public.restaurants where slug = 'restaurant-permission-test'), 'Favorites and multiple locations persist without changing the rating';
   assert (select companions = array['Alex', 'Jamie'] from public.restaurants where slug = 'restaurant-permission-test'), 'Companions persist';
+  update public.restaurants set is_takeout = true where slug = 'restaurant-permission-test';
+  assert (select is_takeout and is_favorite and status = 'visited' and rating = 4.5 from public.restaurants where slug = 'restaurant-permission-test'), 'Owner can save Takeout without changing other attributes';
   insert into public.restaurant_reviews (restaurant_id, rating, body) select id, 4.5, 'Good dinner' from public.restaurants where slug = 'restaurant-permission-test';
   begin
     update public.restaurants set status = 'want_to_go' where slug = 'restaurant-permission-test';

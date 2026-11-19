@@ -123,6 +123,14 @@ export function RestaurantMainDetails({
         />{' '}
         Favorite
       </label>
+      <label className="restaurant-checkbox">
+        <input
+          type="checkbox"
+          checked={draft.is_takeout}
+          onChange={(e) => onChange({ is_takeout: e.target.checked })}
+        />{' '}
+        Takeout
+      </label>
       {onImport && (
         <Button type="button" variant="ghost" className={styles.paste} onClick={onImport}>
           <Download aria-hidden="true" />

@@ -2,13 +2,26 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { CircleCheck, Heart, List, Map, MapPin, Search, Star, Utensils, X } from 'lucide-react';
+import {
+  CircleCheck,
+  Heart,
+  List,
+  Map,
+  MapPin,
+  Search,
+  ShoppingBag,
+  Star,
+  Utensils,
+  X,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { useSession } from '@/hooks/useSession';
 import { useCollectionSearchDisclosure } from '@/hooks/useCollectionSearchDisclosure';
 import { useRestaurants } from '@/hooks/useRestaurants';
 import {
   restaurantInTab,
+  restaurantLocationLabels,
+  restaurantMatchesFilters,
   restaurantNeighborhoods,
   restaurantCuisineRegions,
   type RestaurantTab,
@@ -27,6 +40,8 @@ export function Restaurants() {
   const { restaurants, error, refresh, canEdit, isDemo, setFavorite } = useRestaurants();
   const [tab, setTab] = useState<RestaurantTab>('visited');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [takeoutOnly, setTakeoutOnly] = useState(false);
+  const [location, setLocation] = useState<string | null>(null);
   const { search, setSearch, searchOpen, setSearchOpen, searchToggle, searchRegion, searchInput } =
     useCollectionSearchDisclosure();
   const [cuisine, setCuisine] = useState('all');
@@ -57,31 +72,19 @@ export function Restaurants() {
     [restaurants, tab],
   );
   const base = useMemo(
-    () => restaurants.filter((r) => restaurantInTab(r, tab, favoritesOnly)),
-    [restaurants, tab, favoritesOnly],
+    () =>
+      restaurants.filter((r) => restaurantMatchesFilters(r, { tab, favoritesOnly, takeoutOnly })),
+    [restaurants, tab, favoritesOnly, takeoutOnly],
   );
-  const cuisines = [...new Set(base.flatMap((r) => restaurantCuisineRegions(r.cuisine)))].sort(
-    (a, b) => a.localeCompare(b),
+  const cuisines = [
+    ...new Set(tabRestaurants.flatMap((r) => restaurantCuisineRegions(r.cuisine))),
+  ].sort((a, b) => a.localeCompare(b));
+  const locations = [...new Set(tabRestaurants.flatMap(restaurantLocationLabels))].sort((a, b) =>
+    a.localeCompare(b),
   );
   const filtered = useMemo(
-    () =>
-      base.filter(
-        (r) =>
-          (cuisine === 'all' || restaurantCuisineRegions(r.cuisine).includes(cuisine)) &&
-          [
-            r.name,
-            r.cuisine,
-            ...restaurantCuisineRegions(r.cuisine),
-            restaurantNeighborhoods(r),
-            r.address,
-            r.notes,
-            ...r.locations.map((location) => location.address),
-          ]
-            .join(' ')
-            .toLowerCase()
-            .includes(search.toLowerCase().trim()),
-      ),
-    [base, cuisine, search],
+    () => base.filter((r) => restaurantMatchesFilters(r, { tab, cuisine, location, search })),
+    [base, tab, cuisine, location, search],
   );
   const favorite = async (id: string, value: boolean) => {
     setPendingFavorite(id);
@@ -144,6 +147,7 @@ export function Restaurants() {
               onClick={() => {
                 setTab(value);
                 setCuisine('all');
+                setLocation(null);
               }}
             >
               <Icon size={16} aria-hidden="true" />
@@ -155,10 +159,12 @@ export function Restaurants() {
       </div>
       <div className="category-chips" role="group" aria-label="Restaurant filters">
         <button
-          aria-pressed={cuisine === 'all' && !favoritesOnly}
+          aria-pressed={cuisine === 'all' && !favoritesOnly && !takeoutOnly && !location}
           onClick={() => {
             setCuisine('all');
             setFavoritesOnly(false);
+            setTakeoutOnly(false);
+            setLocation(null);
           }}
         >
           All <span>{tabRestaurants.length}</span>
@@ -167,18 +173,48 @@ export function Restaurants() {
           aria-pressed={favoritesOnly}
           onClick={() => {
             setFavoritesOnly(!favoritesOnly);
-            setCuisine('all');
           }}
         >
           <Heart size={13} aria-hidden="true" fill={favoritesOnly ? 'currentColor' : 'none'} />{' '}
           Favorites
           <span>{tabRestaurants.filter((r) => r.is_favorite).length}</span>
         </button>
+        <button aria-pressed={takeoutOnly} onClick={() => setTakeoutOnly(!takeoutOnly)}>
+          <ShoppingBag size={13} aria-hidden="true" />
+          Takeout <span>{tabRestaurants.filter((r) => r.is_takeout).length}</span>
+        </button>
         {cuisines.map((value) => (
-          <button key={value} aria-pressed={cuisine === value} onClick={() => setCuisine(value)}>
+          <button
+            key={value}
+            aria-pressed={cuisine === value}
+            onClick={() => setCuisine(cuisine === value ? 'all' : value)}
+          >
             {value}
             <span>
-              {base.filter((r) => restaurantCuisineRegions(r.cuisine).includes(value)).length}
+              {
+                base.filter((r) =>
+                  restaurantMatchesFilters(r, { tab, cuisine: value, location, search }),
+                ).length
+              }
+            </span>
+          </button>
+        ))}
+        {locations.length > 0 && <span className={styles.filterDivider} aria-hidden="true" />}
+        {locations.map((value) => (
+          <button
+            key={`location-${value}`}
+            aria-label={`Location: ${value}`}
+            aria-pressed={location === value}
+            onClick={() => setLocation(location === value ? null : value)}
+          >
+            <MapPin size={13} aria-hidden="true" />
+            {value}
+            <span>
+              {
+                base.filter((r) =>
+                  restaurantMatchesFilters(r, { tab, cuisine, location: value, search }),
+                ).length
+              }
             </span>
           </button>
         ))}
@@ -243,6 +279,8 @@ export function Restaurants() {
                 setSearch('');
                 setCuisine('all');
                 setFavoritesOnly(false);
+                setTakeoutOnly(false);
+                setLocation(null);
               }}
             >
               Clear filters
@@ -250,7 +288,7 @@ export function Restaurants() {
           )}
         </div>
       ) : view === 'map' ? (
-        <RestaurantMap restaurants={filtered} prefix={prefix} />
+        <RestaurantMap restaurants={filtered} prefix={prefix} locationFilter={location} />
       ) : (
         <div className={styles.list}>
           {filtered.map((restaurant) => (
@@ -274,6 +312,12 @@ export function Restaurants() {
                     <p className={styles.neighborhood}>{restaurantNeighborhoods(restaurant)}</p>
                   )}
                   <div className={styles.metadata}>
+                    {restaurant.is_takeout && (
+                      <span className={`${styles.pill} ${styles.price}`}>
+                        <ShoppingBag size={11} aria-hidden="true" />
+                        Takeout
+                      </span>
+                    )}
                     {restaurant.cuisine && (
                       <span className={`${styles.pill} ${styles.cuisine}`}>
                         <Utensils size={11} aria-hidden="true" />

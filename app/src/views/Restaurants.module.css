@@ -12,6 +12,14 @@
   flex: 1;
 }
 
+.filterDivider {
+  align-self: center;
+  flex: 0 0 1px;
+  height: var(--space-24);
+  margin-inline: var(--space-4);
+  background: var(--border);
+}
+
 .list {
   display: grid;
   gap: var(--space-4);

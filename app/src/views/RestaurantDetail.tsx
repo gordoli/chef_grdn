@@ -13,6 +13,7 @@ import {
   Phone,
   Plus,
   Share2,
+  ShoppingBag,
   Star,
   Users,
   X,
@@ -226,6 +227,11 @@ export function RestaurantDetail({ slug, onBack }: { slug: string; onBack?: () =
         ) : (
           <span className="restaurant-status-label">
             {restaurant.status === 'visited' ? 'Been to' : 'Want to go'}
+          </span>
+        )}
+        {restaurant.is_takeout && (
+          <span className="restaurant-status-label">
+            <ShoppingBag size={16} aria-hidden="true" /> Takeout
           </span>
         )}
         {restaurant.website && (

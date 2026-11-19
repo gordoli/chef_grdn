@@ -1,18 +1,31 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Map as LeafletMap } from 'leaflet';
 import { restaurantMapsUrl, restaurantLocations, type Restaurant } from '@/lib/restaurants';
 export function RestaurantMap({
   restaurants,
   prefix,
+  locationFilter,
 }: {
   restaurants: Restaurant[];
   prefix: string;
+  locationFilter?: string | null;
 }) {
   const container = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
-  const branches = restaurants.flatMap((restaurant) =>
-    restaurantLocations(restaurant).map((location, index) => ({ restaurant, location, index })),
+  const branches = useMemo(
+    () =>
+      restaurants.flatMap((restaurant) =>
+        restaurantLocations(restaurant)
+          .map((location, index) => ({ restaurant, location, index }))
+          .filter(
+            ({ location }) =>
+              !locationFilter ||
+              location.neighborhood.trim().replace(/\s+/g, ' ').toLowerCase() ===
+                locationFilter.toLowerCase(),
+          ),
+      ),
+    [restaurants, locationFilter],
   );
   const located = branches.filter(
     ({ location }) => location.latitude !== null && location.longitude !== null,
@@ -31,41 +44,39 @@ export function RestaurantMap({
           .on('tileerror', () => setFailed(true))
           .addTo(map);
         const points: [number, number][] = [];
-        for (const restaurant of restaurants) {
-          for (const [index, location] of restaurantLocations(restaurant).entries()) {
-            if (location.latitude === null || location.longitude === null) continue;
-            const point: [number, number] = [location.latitude, location.longitude];
-            points.push(point);
-            const popup = document.createElement('div');
-            const link = document.createElement('a');
-            link.href = `${prefix}/restaurants/${restaurant.slug}#location-${index}`;
-            link.textContent = [restaurant.name, location.neighborhood].filter(Boolean).join(' · ');
-            const details = document.createElement('p');
-            details.textContent = [
-              restaurant.cuisine,
-              restaurant.price_range,
-              restaurant.rating !== null
-                ? `${restaurant.rating}/5`
-                : restaurant.status === 'want_to_go'
-                  ? 'Want to go'
-                  : 'Visited',
-            ]
-              .filter(Boolean)
-              .join(' · ');
-            popup.append(link, details);
-            L.marker(point, {
-              title: [restaurant.name, location.neighborhood].filter(Boolean).join(' · '),
-              keyboard: true,
-              icon: L.divIcon({
-                className: 'restaurant-pin-wrapper',
-                html: `<span class="restaurant-pin${restaurant.status === 'want_to_go' ? ' restaurant-pin-want' : ''}" aria-hidden="true"></span>`,
-                iconSize: [24, 32],
-                iconAnchor: [12, 32],
-              }),
-            })
-              .bindPopup(popup)
-              .addTo(map);
-          }
+        for (const { restaurant, location, index } of branches) {
+          if (location.latitude === null || location.longitude === null) continue;
+          const point: [number, number] = [location.latitude, location.longitude];
+          points.push(point);
+          const popup = document.createElement('div');
+          const link = document.createElement('a');
+          link.href = `${prefix}/restaurants/${restaurant.slug}#location-${index}`;
+          link.textContent = [restaurant.name, location.neighborhood].filter(Boolean).join(' · ');
+          const details = document.createElement('p');
+          details.textContent = [
+            restaurant.cuisine,
+            restaurant.price_range,
+            restaurant.rating !== null
+              ? `${restaurant.rating}/5`
+              : restaurant.status === 'want_to_go'
+                ? 'Want to go'
+                : 'Visited',
+          ]
+            .filter(Boolean)
+            .join(' · ');
+          popup.append(link, details);
+          L.marker(point, {
+            title: [restaurant.name, location.neighborhood].filter(Boolean).join(' · '),
+            keyboard: true,
+            icon: L.divIcon({
+              className: 'restaurant-pin-wrapper',
+              html: `<span class="restaurant-pin${restaurant.status === 'want_to_go' ? ' restaurant-pin-want' : ''}" aria-hidden="true"></span>`,
+              iconSize: [24, 32],
+              iconAnchor: [12, 32],
+            }),
+          })
+            .bindPopup(popup)
+            .addTo(map);
         }
         if (points.length)
           map.fitBounds(L.latLngBounds(points), { padding: [45, 45], maxZoom: 15 });
@@ -77,7 +88,7 @@ export function RestaurantMap({
       cancelled = true;
       map?.remove();
     };
-  }, [restaurants, prefix]);
+  }, [branches, prefix]);
   return (
     <div className="restaurant-map-wrap">
       <div ref={container} className="restaurant-map" role="region" aria-label="Restaurant map" />

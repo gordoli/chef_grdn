@@ -958,6 +958,578 @@
       "phone": "(415) 682-4196",
       "latitude": 37.780371624487,
       "longitude": -122.481599865249
+    },
+    {
+      "slug": "gai-chicken-and-rice",
+      "name": "GAI Chicken and Rice",
+      "cuisine": "Thai",
+      "neighborhood": "Castro",
+      "locations": [
+        {
+          "neighborhood": "Castro",
+          "address": "3463 16th St, San Francisco, CA 94114",
+          "phone": "(415) 535-0451",
+          "latitude": 37.764368922804,
+          "longitude": -122.430012561779
+        }
+      ],
+      "status": "visited",
+      "is_favorite": false,
+      "is_takeout": true,
+      "price_range": null,
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": null,
+      "yelp_url": "https://www.yelp.com/biz/gai-chicken-rice-san-francisco",
+      "address": "3463 16th St, San Francisco, CA 94114",
+      "phone": "(415) 535-0451",
+      "latitude": 37.764368922804,
+      "longitude": -122.430012561779,
+      "photo_urls": [
+        "https://s3-media0.fl.yelpcdn.com/bphoto/XXJAmwO4LI3immezb7gXfg/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/48r6c7y7H_Jgc_qeYkI01Q/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/eObfd2avrz2831cTPFUZJg/348s.jpg"
+      ],
+      "thumbnail_url": null,
+      "yelp_data": [
+        {
+          "url": "https://www.yelp.com/biz/gai-chicken-rice-san-francisco",
+          "business_id": "ZPsuN4ON2TWD1bhuMjyMQQ",
+          "name": "Gai Chicken Rice",
+          "fetched_at": "2026-11-19T01:25:16.605Z",
+          "address": "3463 16th St, San Francisco, CA 94114",
+          "phone": "(415) 535-0451",
+          "website": null,
+          "categories": ["Thai", "Vietnamese", "Singaporean"],
+          "hours": {
+            "Fri": "11:00 AM - 9:00 PM",
+            "Mon": "11:00 AM - 9:00 PM",
+            "Sat": "11:00 AM - 9:00 PM",
+            "Sun": "11:00 AM - 9:00 PM",
+            "Thu": "11:00 AM - 9:00 PM",
+            "Tue": "11:00 AM - 9:00 PM",
+            "Wed": "11:00 AM - 9:00 PM"
+          },
+          "price_tier": "$$",
+          "rating": 4.1,
+          "review_count": 417,
+          "latitude": null,
+          "longitude": null,
+          "description": "At Gai we serve the comforting Michelin star dish chicken and rice; the most popular in Singapore!",
+          "reviews": []
+        }
+      ],
+      "video_urls": []
+    },
+    {
+      "slug": "rt-rotisserie",
+      "name": "RT Rotisserie",
+      "cuisine": "American",
+      "neighborhood": "NoPa",
+      "locations": [
+        {
+          "neighborhood": "NoPa",
+          "address": "302 Broderick St, San Francisco, CA 94117",
+          "phone": null,
+          "latitude": 37.773004209669,
+          "longitude": -122.439032331712
+        }
+      ],
+      "status": "visited",
+      "is_favorite": false,
+      "is_takeout": true,
+      "price_range": null,
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.rtrotisserie.com/location/rt-rotisserie-nopa/",
+      "yelp_url": "https://www.yelp.com/biz/rt-rotisserie-san-francisco-2",
+      "address": "302 Broderick St, San Francisco, CA 94117",
+      "phone": "(415) 796-3699",
+      "latitude": 37.773004209669,
+      "longitude": -122.439032331712,
+      "photo_urls": ["https://s3-media0.fl.yelpcdn.com/bphoto/BOxkPfetWyqLJRetBBvPLA/348s.jpg"],
+      "thumbnail_url": null,
+      "yelp_data": [
+        {
+          "url": "https://www.yelp.com/biz/rt-rotisserie-san-francisco-2",
+          "business_id": "jRbLvmBGRuNQwsZdV_LWyA",
+          "name": "RT Rotisserie",
+          "fetched_at": "2026-11-19T01:25:16.622Z",
+          "address": "302 Broderick, San Francisco, CA 94117",
+          "phone": "(415) 796-3699",
+          "website": null,
+          "categories": ["Chicken Shop", "New American", "Sandwiches"],
+          "hours": {
+            "Fri": "11:00 AM - 9:00 PM",
+            "Mon": "11:00 AM - 9:00 PM",
+            "Sat": "11:00 AM - 9:00 PM",
+            "Sun": "11:00 AM - 9:00 PM",
+            "Thu": "11:00 AM - 9:00 PM",
+            "Tue": "11:00 AM - 9:00 PM",
+            "Wed": "11:00 AM - 9:00 PM"
+          },
+          "price_tier": "$$",
+          "rating": 4.3,
+          "review_count": 267,
+          "latitude": null,
+          "longitude": null,
+          "description": "RT Rotisserie NoPa is a neighborhood favorite and a must-try restaurant for simple, well-made comfort food. Known as a top chicken restaurant San Francisco locals return to, it serves tender rotisserie chicken, chicken sandwich, crispy umami fries, and fresh rice bowls. The roasted cauliflower is a popular side, and the chicken soup is perfect for a warm, easy meal. Available for takeaway, delivery, and catering.",
+          "reviews": []
+        }
+      ],
+      "video_urls": []
+    },
+    {
+      "slug": "ll-hawaiian-barbecue",
+      "name": "L&L Hawaiian Barbecue",
+      "cuisine": "Hawaiian",
+      "neighborhood": "Financial District",
+      "locations": [
+        {
+          "neighborhood": "Financial District",
+          "address": "312 Kearny St, San Francisco, CA 94108",
+          "phone": "(415) 956-2888",
+          "latitude": 37.790925800677,
+          "longitude": -122.403991202775
+        }
+      ],
+      "status": "visited",
+      "is_favorite": false,
+      "is_takeout": true,
+      "price_range": null,
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.hawaiianbarbecue.com/locations/san-francisco",
+      "yelp_url": "https://www.yelp.com/biz/l-and-l-hawaiian-barbecue-san-francisco-3",
+      "address": "312 Kearny St, San Francisco, CA 94108",
+      "phone": "(415) 956-2888",
+      "latitude": 37.790925800677,
+      "longitude": -122.403991202775,
+      "photo_urls": [
+        "https://s3-media0.fl.yelpcdn.com/bphoto/Z22tIomKmbeMmyLNFkYMSQ/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/RWKYiVt_g5vgIC2SBM_hTA/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/FzWKgZI4_Nhe-KBHaI-ZjQ/348s.jpg"
+      ],
+      "thumbnail_url": null,
+      "yelp_data": [
+        {
+          "url": "https://www.yelp.com/biz/l-and-l-hawaiian-barbecue-san-francisco-3",
+          "business_id": "SjTDAltcEQWmkCp_CGXGSQ",
+          "name": "L&L Hawaiian Barbecue",
+          "fetched_at": "2026-11-19T01:25:16.623Z",
+          "address": "312 Kearny St, San Francisco, CA 94108",
+          "phone": "(628) 333-8009",
+          "website": "https://www.hawaiianbarbecue.com",
+          "categories": ["Hawaiian", "Barbeque"],
+          "hours": {
+            "Fri": "10:00 AM - 7:00 PM",
+            "Mon": "10:00 AM - 7:00 PM",
+            "Sat": "11:00 AM - 6:00 PM",
+            "Sun": "Closed",
+            "Thu": "10:00 AM - 7:00 PM",
+            "Tue": "10:00 AM - 7:00 PM",
+            "Wed": "10:00 AM - 7:00 PM"
+          },
+          "price_tier": "$",
+          "rating": 3,
+          "review_count": 420,
+          "latitude": null,
+          "longitude": null,
+          "description": "L&L Hawaiian Barbecue is a fast-casual restaurant serving Hawaiʻi&#x27;s favorite comfort food. Our signature plate lunches come with two scoops of rice, one scoop of mac salad, and your choice of protein; classic and always satisfying.",
+          "reviews": []
+        }
+      ],
+      "video_urls": []
+    },
+    {
+      "slug": "oke-poke",
+      "name": "Oke Poke",
+      "cuisine": "Hawaiian",
+      "neighborhood": "SoMa",
+      "locations": [
+        {
+          "neighborhood": "SoMa",
+          "address": "60 Morris St, San Francisco, CA 94107",
+          "phone": null,
+          "latitude": 37.776982985962,
+          "longitude": -122.402728036709
+        }
+      ],
+      "status": "visited",
+      "is_favorite": false,
+      "is_takeout": true,
+      "price_range": null,
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.okepoke.com/",
+      "yelp_url": "https://www.yelp.com/biz/oke-poke-san-francisco",
+      "address": "60 Morris St, San Francisco, CA 94107",
+      "phone": null,
+      "latitude": 37.776982985962,
+      "longitude": -122.402728036709,
+      "photo_urls": [
+        "https://s3-media0.fl.yelpcdn.com/bphoto/YD0VleqSpxBJfJCenYbmPg/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/K2arwg_fM596vYCRDsD4qQ/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/5ZEhYzKslUSLxmwhwL0zsg/348s.jpg"
+      ],
+      "thumbnail_url": null,
+      "yelp_data": [
+        {
+          "url": "https://www.yelp.com/biz/oke-poke-san-francisco",
+          "business_id": "VPPfm1gyyLeGBTvPipVypA",
+          "name": "Oke Poke",
+          "fetched_at": "2026-11-19T01:25:16.625Z",
+          "address": "60 Morris St, San Francisco, CA 94107",
+          "phone": null,
+          "website": "https://www.okepoke.com",
+          "categories": ["Hawaiian", "Seafood", "Poke"],
+          "hours": {
+            "Fri": "11:00 AM - 10:00 PM",
+            "Mon": "11:00 AM - 10:00 PM",
+            "Sat": "11:00 AM - 10:00 PM",
+            "Sun": "11:00 AM - 10:00 PM",
+            "Thu": "11:00 AM - 10:00 PM",
+            "Tue": "11:00 AM - 10:00 PM",
+            "Wed": "11:00 AM - 10:00 PM"
+          },
+          "price_tier": null,
+          "rating": 4.6,
+          "review_count": 22,
+          "latitude": null,
+          "longitude": null,
+          "description": "Oke Poke uses only the freshest and ethically sourced produce and fish, paired with a wide selection of our house made sauces. You are sure to find a flavor that suits your palate.",
+          "reviews": []
+        }
+      ],
+      "video_urls": []
+    },
+    {
+      "slug": "hawaiian-drive-inn",
+      "name": "Hawaiian Drive Inn",
+      "cuisine": "Hawaiian",
+      "neighborhood": "Excelsior",
+      "locations": [
+        {
+          "neighborhood": "Excelsior",
+          "address": "4827 Mission St, San Francisco, CA 94112",
+          "phone": "(415) 586-9382",
+          "latitude": 37.721190852325,
+          "longitude": -122.43731552903
+        }
+      ],
+      "status": "visited",
+      "is_favorite": false,
+      "is_takeout": true,
+      "price_range": null,
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": null,
+      "yelp_url": "https://www.yelp.com/biz/hawaiian-drive-inn-san-francisco-3",
+      "address": "4827 Mission St, San Francisco, CA 94112",
+      "phone": "(415) 586-9382",
+      "latitude": 37.721190852325,
+      "longitude": -122.43731552903,
+      "photo_urls": [
+        "https://s3-media0.fl.yelpcdn.com/bphoto/I-0s-wheiJ0c21a1WdNzYA/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/b97u-jBBuFD3_eIhTSsZBw/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/Ln01JFiMxEsFKkx3QmOLkA/348s.jpg"
+      ],
+      "thumbnail_url": null,
+      "yelp_data": [
+        {
+          "url": "https://www.yelp.com/biz/hawaiian-drive-inn-san-francisco-3",
+          "business_id": "yEn0YT1wMC6hR7CVRX956w",
+          "name": "Hawaiian Drive Inn",
+          "fetched_at": "2026-11-19T01:25:16.624Z",
+          "address": "4827 Mission St, San Francisco, CA 94112",
+          "phone": "(415) 586-9382",
+          "website": null,
+          "categories": ["Hawaiian", "Barbeque"],
+          "hours": {
+            "Fri": "10:30 AM - 9:00 PM",
+            "Mon": "10:30 AM - 9:00 PM",
+            "Sat": "10:30 AM - 9:00 PM",
+            "Sun": "10:30 AM - 9:00 PM",
+            "Thu": "10:30 AM - 9:00 PM",
+            "Tue": "10:30 AM - 9:00 PM",
+            "Wed": "10:30 AM - 9:00 PM"
+          },
+          "price_tier": "$",
+          "rating": 4.2,
+          "review_count": 527,
+          "latitude": null,
+          "longitude": null,
+          "description": "",
+          "reviews": []
+        }
+      ],
+      "video_urls": []
+    },
+    {
+      "slug": "ohana-hawaiian-bbq",
+      "name": "Ohana Hawaiian BBQ",
+      "cuisine": "Hawaiian",
+      "neighborhood": "Daly City",
+      "locations": [
+        {
+          "neighborhood": "Daly City",
+          "address": "344 Westlake Center, Daly City, CA 94015",
+          "phone": null,
+          "latitude": 37.699518006511,
+          "longitude": -122.467423817702
+        }
+      ],
+      "status": "visited",
+      "is_favorite": false,
+      "is_takeout": true,
+      "price_range": null,
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": null,
+      "yelp_url": "https://www.yelp.com/biz/ohana-hawaiian-bbq-daly-city-2",
+      "address": "344 Westlake Center, Daly City, CA 94015",
+      "phone": "(650) 731-6058",
+      "latitude": 37.699518006511,
+      "longitude": -122.467423817702,
+      "photo_urls": [
+        "https://s3-media0.fl.yelpcdn.com/bphoto/mFsKeRoOlqP1u7aESZI_oQ/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/pVeJjtUBlugPDFbFaYJPGA/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/7EFBoGNNLdOC6uUoDc4Fkg/348s.jpg"
+      ],
+      "thumbnail_url": null,
+      "yelp_data": [
+        {
+          "url": "https://www.yelp.com/biz/ohana-hawaiian-bbq-daly-city-2",
+          "business_id": "0EMlBnN6KFxGgLiq48kQ7g",
+          "name": "Ohana Hawaiian BBQ",
+          "fetched_at": "2026-11-19T01:25:16.628Z",
+          "address": "344 Westlake Ctr, Daly City, CA 94015",
+          "phone": "(650) 731-6058",
+          "website": null,
+          "categories": ["Hawaiian", "Barbeque"],
+          "hours": {
+            "Fri": "10:00 AM - 11:00 PM",
+            "Mon": "10:00 AM - 11:00 PM",
+            "Sat": "10:00 AM - 11:00 PM",
+            "Sun": "10:00 AM - 11:00 PM",
+            "Thu": "10:00 AM - 11:00 PM",
+            "Tue": "10:00 AM - 11:00 PM",
+            "Wed": "10:00 AM - 11:00 PM"
+          },
+          "price_tier": null,
+          "rating": 3.5,
+          "review_count": 147,
+          "latitude": null,
+          "longitude": null,
+          "description": "",
+          "reviews": []
+        }
+      ],
+      "video_urls": []
+    },
+    {
+      "slug": "aria-korean-street-food",
+      "name": "Aria Korean Street Food",
+      "cuisine": "Korean",
+      "neighborhood": "Tenderloin",
+      "locations": [
+        {
+          "neighborhood": "Tenderloin",
+          "address": "932 Larkin St, San Francisco, CA 94109",
+          "phone": "(415) 292-6914",
+          "latitude": 37.786518137577,
+          "longitude": -122.418096306793
+        }
+      ],
+      "status": "visited",
+      "is_favorite": false,
+      "is_takeout": true,
+      "price_range": null,
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://ariasf.com/",
+      "yelp_url": "https://www.yelp.com/biz/aria-korean-street-food-san-francisco",
+      "address": "932 Larkin St, San Francisco, CA 94109",
+      "phone": "(415) 292-6914",
+      "latitude": 37.786518137577,
+      "longitude": -122.418096306793,
+      "photo_urls": [
+        "https://s3-media0.fl.yelpcdn.com/bphoto/1SiuvwGwcn4dNyNOyLiQXQ/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/4qOK_A4gWexjeMBpvSpkrg/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/BWaU0l4UNWh3i9mpnSXcbQ/348s.jpg"
+      ],
+      "thumbnail_url": null,
+      "yelp_data": [
+        {
+          "url": "https://www.yelp.com/biz/aria-korean-street-food-san-francisco",
+          "business_id": "KA-P3d2NcbJy5SQN-vCzPA",
+          "name": "Aria Korean Street Food",
+          "fetched_at": "2026-11-19T01:25:16.628Z",
+          "address": "932 Larkin St, San Francisco, CA 94109",
+          "phone": "(415) 292-6914",
+          "website": "https://ariasf.com",
+          "categories": ["Korean", "Chicken Shop", "Tacos"],
+          "hours": {
+            "Fri": "11:00 AM - 10:00 PM",
+            "Mon": "11:00 AM - 10:00 PM",
+            "Sat": "11:00 AM - 10:00 PM",
+            "Sun": "Closed",
+            "Thu": "11:00 AM - 10:00 PM",
+            "Tue": "11:00 AM - 10:00 PM",
+            "Wed": "11:00 AM - 10:00 PM"
+          },
+          "price_tier": "$$",
+          "rating": 3.9,
+          "review_count": 1245,
+          "latitude": null,
+          "longitude": null,
+          "description": "We make good Korean Fried Chicken.",
+          "reviews": []
+        }
+      ],
+      "video_urls": []
+    },
+    {
+      "slug": "banana-island",
+      "name": "Banana Island",
+      "cuisine": "Malaysian / Singaporean / Thai",
+      "neighborhood": "Daly City",
+      "locations": [
+        {
+          "neighborhood": "Daly City",
+          "address": "273 Lake Merced Blvd, Daly City, CA 94015",
+          "phone": "(650) 756-6868",
+          "latitude": 37.699866848417,
+          "longitude": -122.484054670898
+        }
+      ],
+      "status": "visited",
+      "is_favorite": false,
+      "is_takeout": false,
+      "price_range": null,
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.bananaislandrestaurant.us/",
+      "yelp_url": "https://www.yelp.com/biz/banana-island-daly-city",
+      "address": "273 Lake Merced Blvd, Daly City, CA 94015",
+      "phone": "(650) 756-6868",
+      "latitude": 37.699866848417,
+      "longitude": -122.484054670898,
+      "photo_urls": [
+        "https://s3-media0.fl.yelpcdn.com/bphoto/604YIvVtKSQiF8uO7ff57Q/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/zVTWiRtsvAxC2gGC1d-I9g/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/wfKEqHcbIJp1zFpZaE9WIA/348s.jpg"
+      ],
+      "thumbnail_url": null,
+      "yelp_data": [
+        {
+          "url": "https://www.yelp.com/biz/banana-island-daly-city",
+          "business_id": "X92c4ZGcHnrBMIDjVlXKnQ",
+          "name": "Banana Island",
+          "fetched_at": "2026-11-19T01:25:16.626Z",
+          "address": "273 Lake Merced Blvd, Daly City, CA 94015",
+          "phone": "(650) 756-6868",
+          "website": null,
+          "categories": ["Thai", "Singaporean", "Malaysian"],
+          "hours": {
+            "Fri": "11:30 AM - 3:00 PM",
+            "Mon": "11:30 AM - 3:00 PM",
+            "Sat": "11:30 AM - 3:00 PM",
+            "Sun": "11:30 AM - 3:00 PM",
+            "Thu": "11:30 AM - 3:00 PM",
+            "Tue": "11:30 AM - 3:00 PM",
+            "Wed": "11:30 AM - 3:00 PM"
+          },
+          "price_tier": "$$",
+          "rating": 3.5,
+          "review_count": 1849,
+          "latitude": null,
+          "longitude": null,
+          "description": "Dear Beary, thanks for your visiting and we apologize for the unpleasant experience you had.  The quality of ingredient and the quantity of dishes are two key-points which we value the most. And for the shrimp paste and the pineapple fried rice which you don&#x27;t satisfy, we will take your valuable feedback and review with our chefs. Could you tell our staff your preference for the fried rice next time? And they will try their best to up to your expectation. We value customer&#x27;s feedback, and looking forward to serve you again, please come back for another try.",
+          "reviews": []
+        }
+      ],
+      "video_urls": []
+    },
+    {
+      "slug": "udon-mugizo",
+      "name": "Udon Mugizo",
+      "cuisine": "Japanese",
+      "neighborhood": "Japantown",
+      "locations": [
+        {
+          "neighborhood": "Japantown",
+          "address": "1581 Webster St #217, San Francisco, CA 94115",
+          "phone": "(415) 931-3118",
+          "latitude": 37.785179350529,
+          "longitude": -122.431489322134
+        }
+      ],
+      "status": "visited",
+      "is_favorite": false,
+      "is_takeout": false,
+      "price_range": null,
+      "visited_on": null,
+      "rating": null,
+      "companions": [],
+      "notes": "",
+      "website": "https://www.mugizo-us.com/sanfrancisco",
+      "yelp_url": "https://www.yelp.com/biz/udon-mugizo-san-francisco-15",
+      "address": "1581 Webster St #217, San Francisco, CA 94115",
+      "phone": "(415) 931-3118",
+      "latitude": 37.785179350529,
+      "longitude": -122.431489322134,
+      "photo_urls": [
+        "https://s3-media0.fl.yelpcdn.com/bphoto/5SwMpEJzaI114Rb6eStCcA/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/9DG2CIX2nj4Joc2SuYbIHw/348s.jpg",
+        "https://s3-media0.fl.yelpcdn.com/bphoto/xCq-m6G2ZpuoqtrqGW0wrw/348s.jpg"
+      ],
+      "thumbnail_url": null,
+      "yelp_data": [
+        {
+          "url": "https://www.yelp.com/biz/udon-mugizo-san-francisco-15",
+          "business_id": "vth2jtXfVUCRJeIP680CyA",
+          "name": "Udon Mugizo",
+          "fetched_at": "2026-11-19T01:25:16.627Z",
+          "address": "1581 Webster St, Ste 217, San Francisco, CA 94115",
+          "phone": "(415) 931-3118",
+          "website": "https://www.mugizo-us.com",
+          "categories": ["Japanese", "Noodles", "Soup"],
+          "hours": {
+            "Fri": "10:30 AM - 10:00 PM",
+            "Mon": "10:30 AM - 10:00 PM",
+            "Sat": "10:30 AM - 10:00 PM",
+            "Sun": "10:30 AM - 10:00 PM",
+            "Thu": "10:30 AM - 10:00 PM",
+            "Tue": "10:30 AM - 10:00 PM",
+            "Wed": "10:30 AM - 10:00 PM"
+          },
+          "price_tier": "$$",
+          "rating": 4.4,
+          "review_count": 2886,
+          "latitude": null,
+          "longitude": null,
+          "description": "Udon Mugizo offers a wide variety of hot or cold thick-cut homemade udon noodles. Try our traditional bowls with clean flavorful soup made of finest kombu kelp stock along with 4 different kinds of premium fish flakes.",
+          "reviews": []
+        }
+      ],
+      "video_urls": []
     }
   ]
 }

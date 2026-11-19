@@ -25,7 +25,7 @@ const readPublicRestaurants = unstable_cache(
     return (data ?? []).map((row) => restaurantRecord.parse(row));
   },
   // Version the parsed row shape so a deployment cannot reuse pre-Yelp cached objects.
-  ['public-restaurant-portfolio-v4-thumbnail'],
+  ['public-restaurant-portfolio-v5-takeout'],
   { revalidate: collectionLoading.freshnessSeconds, tags: ['public-restaurant-portfolio'] },
 );
 
