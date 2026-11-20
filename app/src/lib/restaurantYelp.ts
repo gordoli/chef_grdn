@@ -16,6 +16,24 @@ export function canonicalYelpUrl(value: string): string | null {
     return null;
   }
 }
+/** Mobile share links are accepted at import time; saved records keep the full business URL. */
+export function canonicalYelpImportUrl(value: string): string | null {
+  const input = value.trim().replace(/^(?=(?:www\.)?yelp\.(?:to|com)\/)/i, 'https://');
+  const business = canonicalYelpUrl(input);
+  if (business) return business;
+  try {
+    const url = new URL(input);
+    if (
+      publicWebsite(input) &&
+      ['yelp.to', 'www.yelp.to'].includes(url.hostname) &&
+      /^\/[A-Za-z0-9_-]{3,100}\/?$/.test(url.pathname)
+    )
+      return `https://yelp.to${url.pathname}`;
+  } catch {
+    /* Keep invalid input editable. */
+  }
+  return null;
+}
 export function yelpPhotoUrl(value: string): boolean {
   try {
     const url = new URL(value);
@@ -71,6 +89,21 @@ export const yelpImportResult = z.object({
   warnings: z.array(z.string().max(300)).max(10),
 });
 export type YelpImportResult = z.infer<typeof yelpImportResult>;
+
+/** Background photos enrich only the existing source gallery, preserving the edited form. */
+export function mergeYelpReviewPhotos(
+  previous: RestaurantInput,
+  incoming: YelpBusiness,
+): RestaurantInput {
+  return {
+    ...previous,
+    yelp_data: previous.yelp_data.map((business) =>
+      business.url === incoming.url
+        ? { ...business, reviews: incoming.reviews, fetched_at: incoming.fetched_at }
+        : business,
+    ),
+  };
+}
 
 export function yelpPhotos(businesses: YelpBusiness[]): string[] {
   return [...new Set(businesses.flatMap((b) => b.reviews.flatMap((r) => r.photos)))];

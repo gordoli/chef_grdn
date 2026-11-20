@@ -47,6 +47,11 @@
   --space-80: 5rem;
   --space-96: 6rem;
   --space-128: 8rem;
+  --size-mobile-nav-height: 66px;
+  --mobile-dock-offset: max(var(--space-16), env(safe-area-inset-bottom));
+  --mobile-dock-clearance: calc(
+    var(--size-mobile-nav-height) + var(--mobile-dock-offset) + var(--space-24)
+  );
   --text-11: 0.6875rem;
   --text-12: 0.75rem;
   --text-13: 0.8125rem;

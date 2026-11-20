@@ -29,8 +29,10 @@ export function RestaurantEditor({
   restaurant,
   open,
   onOpenChange,
+  importJobId,
 }: {
   restaurant?: Restaurant;
+  importJobId?: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
@@ -75,7 +77,7 @@ export function RestaurantEditor({
     importYelp,
     importTikTok,
     submit,
-  } = useRestaurantEditor(restaurant, onOpenChange);
+  } = useRestaurantEditor(restaurant, onOpenChange, importJobId);
   const yelpSearch = restaurantYelpSearchUrl(
     draft.name,
     draft.locations[0]?.address || tikTokPreview?.location || draft.neighborhood,
@@ -120,7 +122,10 @@ export function RestaurantEditor({
           <div className={styles.field}>
             <Input
               aria-label={step === 'yelp' ? 'Yelp link' : 'TikTok link'}
-              type="url"
+              type="text"
+              inputMode="url"
+              autoCapitalize="none"
+              autoCorrect="off"
               required
               maxLength={2048}
               placeholder={
@@ -183,17 +188,31 @@ export function RestaurantEditor({
           )}
           <Button
             type="submit"
-            disabled={!(step === 'yelp' ? yelpLink : tikTokLink) || !session || isDemo || importing}
+            disabled={
+              !(step === 'yelp' ? yelpLink : tikTokLink) ||
+              !session ||
+              isDemo ||
+              importing ||
+              socialImport.job?.status === 'running'
+            }
           >
             {importing ? <LoaderCircle className="animate-spin" /> : <Download />}{' '}
             {step === 'yelp' ? 'Import details & photos' : 'Import video'}
           </Button>
-          {socialImport.progress && (
-            <p role="status">{socialImport.progress} This can take a few minutes.</p>
+          {socialImport.progress && <p role="status">{socialImport.progress}</p>}
+          {socialImport.job && (
+            <Button type="button" variant="secondary" onClick={() => onOpenChange(false)}>
+              Run in background
+            </Button>
           )}
-          {importing && (
+          {socialImport.job?.status === 'paused' && (
+            <Button type="button" variant="secondary" onClick={socialImport.resume}>
+              Resume import
+            </Button>
+          )}
+          {socialImport.job && (
             <Button type="button" variant="secondary" onClick={socialImport.cancel}>
-              Cancel import
+              Dismiss import
             </Button>
           )}
         </form>
@@ -241,6 +260,22 @@ export function RestaurantEditor({
             titles={formSteps.map((item) => restaurantEditorTitles[item])}
             index={formIndex}
           />
+          {socialImport.job?.status !== 'ready' && socialImport.job && (
+            <div className={styles.importNotes}>
+              <p role="status">{socialImport.progress}</p>
+              <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+                Run in background
+              </Button>
+              {socialImport.job.status === 'paused' && (
+                <Button type="button" variant="ghost" onClick={socialImport.resume}>
+                  Resume import
+                </Button>
+              )}
+              <Button type="button" variant="ghost" onClick={socialImport.cancel}>
+                Skip photos
+              </Button>
+            </div>
+          )}
           <form
             onSubmit={(event) => void submit(event)}
             className={`restaurant-form add-sheet-form ${styles.wizardForm}`}

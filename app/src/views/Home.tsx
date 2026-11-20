@@ -94,7 +94,7 @@ export function Home() {
   const groups =
     sort === 'collection' ? groupRecipesByType(filtered) : [{ type: null, recipes: filtered }];
   return (
-    <div className="home-page page-width">
+    <div className="collection-page home-page page-width">
       {favoritesPage && (
         <section className="collection-hero">
           <span className="eyebrow">THE ONES I COME BACK TO</span>

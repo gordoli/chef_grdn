@@ -9,6 +9,7 @@ import { mergeTikTokImport } from '../src/lib/restaurantTikTok';
 import {
   canonicalYelpUrl,
   mergeYelpBusiness,
+  mergeYelpReviewPhotos,
   restaurantPhotoUrls,
 } from '../src/lib/restaurantYelp';
 const url = 'https://www.yelp.com/biz/test-restaurant-san-francisco';
@@ -148,6 +149,25 @@ describe('Yelp import boundaries', () => {
       parseYelpBusiness({ ...raw, url: 'https://www.yelp.com/biz/another-place' }, [], url),
     ).toThrow('No matching');
   });
+  it('adds background photos without changing edits made after the early preview', () => {
+    const early = parseYelpBusiness(raw, [], url);
+    const edited = {
+      ...mergeYelpBusiness(emptyRestaurant, early),
+      name: 'Edited name',
+      address: 'Edited address',
+      website: 'https://edited.example',
+      thumbnail_url: image,
+    };
+    const finished = mergeYelpReviewPhotos(edited, parseYelpBusiness(raw, [review], url));
+    expect({ ...finished, yelp_data: [] }).toEqual({ ...edited, yelp_data: [] });
+    expect(finished.yelp_data[0].reviews[0].photos).toEqual([image]);
+    expect(
+      mergeYelpReviewPhotos(edited, {
+        ...early,
+        url: 'https://www.yelp.com/biz/another-restaurant',
+      }),
+    ).toEqual(edited);
+  });
   it('deduplicates repeated imports and updates only the selected location', () => {
     const b = parseYelpBusiness(raw, [review], url);
     const previous = {
@@ -262,9 +282,66 @@ describe('Yelp import boundaries', () => {
       'pending-owner',
     );
     expect(response.status).toBe(202);
+    expect(await response.json()).toEqual({ status: 'running', stage: 'photos' });
     expect(
       fetcher.mock.calls.slice(2).every(([endpoint]) => String(endpoint).includes('/progress/')),
     ).toBe(true);
     expect(fetcher).toHaveBeenCalledTimes(4);
+  });
+  it('keeps the details stage until business data is ready, even if photos finish first', async () => {
+    const fetcher = vi
+      .fn()
+      .mockResolvedValueOnce(Response.json({ snapshot_id: 'sd_business' }))
+      .mockResolvedValueOnce(Response.json({ snapshot_id: 'sd_reviews' }));
+    const { ticket } = await (
+      await handleSocialImport(req({ action: 'start', url }), fetcher, 'details-pending-owner')
+    ).json();
+    fetcher
+      .mockResolvedValueOnce(Response.json({ status: 'running' }))
+      .mockResolvedValueOnce(Response.json({ status: 'ready' }));
+    const response = await handleSocialImport(
+      req({ action: 'poll', ticket }),
+      fetcher,
+      'details-pending-owner',
+    );
+    expect(response.status).toBe(202);
+    expect(await response.json()).toEqual({ status: 'running', stage: 'details' });
+    expect(fetcher).toHaveBeenCalledTimes(4);
+  });
+});
+
+describe('progressive Yelp previews', () => {
+  it('returns details before photos when requested, then avoids downloading them again while waiting', async () => {
+    const fetcher = vi
+      .fn()
+      .mockResolvedValueOnce(Response.json({ snapshot_id: 'sd_business' }))
+      .mockResolvedValueOnce(Response.json({ snapshot_id: 'sd_reviews' }));
+    const { ticket } = await (
+      await handleSocialImport(req({ action: 'start', url }), fetcher, 'early-preview-owner')
+    ).json();
+    fetcher
+      .mockResolvedValueOnce(Response.json({ status: 'ready' }))
+      .mockResolvedValueOnce(Response.json({ status: 'running' }))
+      .mockResolvedValueOnce(Response.json([raw]));
+    const preview = await handleSocialImport(
+      req({ action: 'poll', ticket, preview: true }),
+      fetcher,
+      'early-preview-owner',
+    );
+    expect(preview.status).toBe(202);
+    expect(await preview.json()).toMatchObject({
+      stage: 'photos',
+      preview: { business: { name: raw.name, reviews: [] } },
+    });
+    fetcher
+      .mockResolvedValueOnce(Response.json({ status: 'ready' }))
+      .mockResolvedValueOnce(Response.json({ status: 'running' }));
+    const waiting = await handleSocialImport(
+      req({ action: 'poll', ticket, preview: false }),
+      fetcher,
+      'early-preview-owner',
+    );
+    expect(await waiting.json()).toEqual({ status: 'running', stage: 'photos' });
+    expect(fetcher).toHaveBeenCalledTimes(7);
   });
 });

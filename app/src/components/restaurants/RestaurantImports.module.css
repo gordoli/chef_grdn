@@ -1,0 +1,31 @@
+.jobs {
+  display: grid;
+  gap: var(--space-8);
+  margin-bottom: var(--space-20);
+}
+.job {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-12);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-16);
+  background: var(--muted);
+}
+.job > svg {
+  flex-shrink: 0;
+  width: var(--space-16);
+  height: var(--space-16);
+}
+.text {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.text strong {
+  font-size: var(--text-12);
+}
+.text p {
+  color: var(--muted-foreground);
+  font-size: var(--text-11);
+}

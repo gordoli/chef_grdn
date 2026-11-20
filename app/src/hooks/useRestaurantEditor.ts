@@ -1,12 +1,12 @@
 'use client';
 import { socialImportPolicy } from '@/config/loading';
-import { useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useRestaurants } from './useRestaurants';
 import { useSession } from './useSession';
 import { useRestaurantSocialImport } from './useRestaurantSocialImport';
-import { mergeYelpBusiness } from '@/lib/restaurantYelp';
+import { mergeYelpBusiness, mergeYelpReviewPhotos } from '@/lib/restaurantYelp';
 import { mergeTikTokImport, type TikTokImportResult } from '@/lib/restaurantTikTok';
 import {
   restaurantEditorFieldStep,
@@ -26,17 +26,22 @@ import {
 export function useRestaurantEditor(
   restaurant: Restaurant | undefined,
   onOpenChange: (open: boolean) => void,
+  importJobId?: string,
 ) {
   const { save, isDemo } = useRestaurants();
   const { session } = useSession();
   const router = useRouter();
-  const socialImport = useRestaurantSocialImport();
+  const socialImport = useRestaurantSocialImport(importJobId);
   const [yelpLink, setYelpLink] = useState(
-    restaurant?.yelp_url ?? restaurant?.yelp_data[0]?.url ?? '',
+    restaurant?.yelp_url ??
+      restaurant?.yelp_data[0]?.url ??
+      (socialImport.job?.source === 'yelp' ? socialImport.job.url : ''),
   );
-  const [tikTokLink, setTikTokLink] = useState('');
+  const [tikTokLink, setTikTokLink] = useState(
+    socialImport.job?.source === 'tiktok' ? socialImport.job.url : '',
+  );
   const [tikTokPreview, setTikTokPreview] = useState<TikTokImportResult | null>(null);
-  const [locationIndex, setLocationIndex] = useState(0);
+  const [locationIndex, setLocationIndex] = useState(socialImport.job?.location_index ?? 0);
   const [importWarnings, setImportWarnings] = useState<string[]>([]);
   const [excludedPhotos, setExcludedPhotos] = useState<string[]>([]);
   const [draft, setDraft] = useState<RestaurantInput>({
@@ -51,7 +56,13 @@ export function useRestaurantEditor(
   const [importing, setImporting] = useState(false);
   const [error, setError] = useState('');
   const [step, setStep] = useState<'source' | 'import' | 'website' | 'yelp' | 'tiktok' | 'details'>(
-    restaurant ? 'details' : 'source',
+    restaurant
+      ? 'details'
+      : socialImport.job?.source === 'yelp'
+        ? 'yelp'
+        : socialImport.job?.source === 'tiktok'
+          ? 'tiktok'
+          : 'source',
   );
   const [wizardStep, setWizardStep] = useState<RestaurantEditorStep>('main');
   const [importReturnStep, setImportReturnStep] = useState<RestaurantEditorStep>('main');
@@ -118,24 +129,45 @@ export function useRestaurantEditor(
       setImporting(false);
     }
   };
+  const appliedImport = useRef<{ id: string; complete: boolean } | null>(null);
+  const job = socialImport.job;
+  useEffect(() => {
+    if (!job) return;
+    if (job.source === 'yelp') {
+      const result = job.result ?? job.preview;
+      if (!result) return;
+      if (appliedImport.current?.id !== job.id) {
+        setDraft((previous) => mergeYelpBusiness(previous, result.business, locationIndex));
+        setImportWarnings(result.warnings);
+        setWizardStep('main');
+        setStep('details');
+        appliedImport.current = { id: job.id, complete: !!job.result };
+      } else if (job.result && !appliedImport.current.complete) {
+        setDraft((previous) => mergeYelpReviewPhotos(previous, job.result!.business));
+        setImportWarnings(job.result.warnings);
+        appliedImport.current.complete = true;
+      }
+    } else if (job.result && appliedImport.current?.id !== job.id) {
+      const result = job.result;
+      setDraft((previous) =>
+        importReturnStep === 'links' ? previous : mergeTikTokImport(previous, result),
+      );
+      setVideos((previous) =>
+        [...new Set([...previous.split('\n').filter(Boolean), result.video_url])].join('\n'),
+      );
+      setTikTokPreview(result);
+      setWizardStep(importReturnStep);
+      setStep('details');
+      appliedImport.current = { id: job.id, complete: true };
+    }
+  }, [job, locationIndex, importReturnStep]);
   const importYelp = async () => {
     setImporting(true);
     setError('');
     try {
-      const result = await socialImport.runYelp(yelpLink);
-      setDraft((previous) => mergeYelpBusiness(previous, result.business, locationIndex));
-      setImportWarnings(result.warnings);
-      setWizardStep('main');
-      setStep('details');
-      toast.success('Yelp details imported. Fill anything missing before saving.');
+      await socialImport.startYelp(yelpLink, { restaurantId: restaurant?.id, locationIndex });
     } catch (failure) {
-      setError(
-        failure instanceof Error && failure.name === 'AbortError'
-          ? 'Import canceled.'
-          : failure instanceof Error
-            ? failure.message
-            : 'Yelp import failed.',
-      );
+      setError(failure instanceof Error ? failure.message : 'Yelp import failed.');
     } finally {
       setImporting(false);
     }
@@ -172,8 +204,13 @@ export function useRestaurantEditor(
         return;
       }
       if (!input.success) throw new Error(input.error.issues[0].message);
+      if (socialImport.job?.status === 'running')
+        throw new Error(
+          'Photos are still loading. Keep this import in the background or skip photos.',
+        );
       setBusy(true);
       const saved = await save(input.data, restaurant?.id);
+      socialImport.consume();
       onOpenChange(false);
       toast.success('Restaurant saved');
       router.push(`${isDemo ? '/demo' : ''}/restaurants/${saved.slug}`);
@@ -188,25 +225,9 @@ export function useRestaurantEditor(
     setImporting(true);
     setError('');
     try {
-      const result = await socialImport.runTikTok(tikTokLink);
-      setDraft((previous) =>
-        importReturnStep === 'links' ? previous : mergeTikTokImport(previous, result),
-      );
-      setVideos((previous) =>
-        [...new Set([...previous.split('\n').filter(Boolean), result.video_url])].join('\n'),
-      );
-      setTikTokPreview(result);
-      setWizardStep(importReturnStep);
-      setStep('details');
-      toast.success('Video imported. Fill anything missing before saving.');
+      await socialImport.startTikTok(tikTokLink, { restaurantId: restaurant?.id });
     } catch (failure) {
-      setError(
-        failure instanceof Error && failure.name === 'AbortError'
-          ? 'Import canceled.'
-          : failure instanceof Error
-            ? failure.message
-            : 'TikTok import failed.',
-      );
+      setError(failure instanceof Error ? failure.message : 'TikTok import failed.');
     } finally {
       setImporting(false);
     }

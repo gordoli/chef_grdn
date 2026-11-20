@@ -10,6 +10,8 @@ import {
 } from '../src/lib/restaurantTikTok';
 import { RestaurantImportError } from './restaurantFetch';
 import { resolveTikTokImportUrl } from './restaurantTikTok';
+import { resolveYelpImportUrl } from './restaurantYelpRedirect';
+import { canonicalYelpImportUrl } from '../src/lib/restaurantYelp';
 
 const BUSINESS = 'gd_lgugwl0519h1p14rwk';
 const REVIEWS = 'gd_lgzhlu9323u3k24jkv';
@@ -372,7 +374,11 @@ export async function handleSocialImport(
     const parsed = z
       .discriminatedUnion('action', [
         z.object({ action: z.literal('start'), url: z.string().max(2048) }),
-        z.object({ action: z.literal('poll'), ticket: z.string().max(4096) }),
+        z.object({
+          action: z.literal('poll'),
+          ticket: z.string().max(4096),
+          preview: z.boolean().default(false),
+        }),
       ])
       .safeParse(input);
     if (!parsed.success) return json({ error: 'Send a valid restaurant import request.' }, 400);
@@ -393,19 +399,20 @@ export async function handleSocialImport(
     if (parsed.data.action === 'start') {
       let url =
         source === 'yelp'
-          ? canonicalYelpUrl(parsed.data.url)
+          ? canonicalYelpImportUrl(parsed.data.url)
           : canonicalTikTokImportUrl(parsed.data.url);
       if (!url)
         return json(
           {
             error:
               source === 'yelp'
-                ? 'Paste a full Yelp business link, like yelp.com/biz/restaurant-name.'
+                ? 'Paste a Yelp business or share link.'
                 : 'Paste a TikTok video link.',
           },
           400,
         );
       if (source === 'tiktok') url = await resolveTikTokImportUrl(url);
+      else url = await resolveYelpImportUrl(url);
       const business =
         source === 'yelp'
           ? await startYelpCollection(url, 'business', fetcher)
@@ -442,7 +449,7 @@ export async function handleSocialImport(
       return json(parseTikTokImport(businesses[0], current.url));
     }
     let warning = current.warning;
-    // Poll cheap progress endpoints together. Download neither payload until both jobs are done.
+    // Check progress together; an early detail preview is downloaded only when requested.
     const [businessStatus, reviewStatus] = await Promise.allSettled([
       collectionReady(current.business, fetcher),
       current.reviews ? collectionReady(current.reviews, fetcher) : Promise.resolve(true),
@@ -450,8 +457,25 @@ export async function handleSocialImport(
     if (businessStatus.status === 'rejected') throw businessStatus.reason;
     if (reviewStatus.status === 'rejected')
       warning = 'Reviews could not be loaded. You can add photos manually.';
+    if (
+      businessStatus.value &&
+      reviewStatus.status === 'fulfilled' &&
+      !reviewStatus.value &&
+      parsed.data.preview
+    ) {
+      const businesses = await collectionSnapshot(current.business, 1, fetcher);
+      if (businesses)
+        return json(
+          {
+            status: 'running',
+            stage: 'photos',
+            preview: { business: parseYelpBusiness(businesses[0], [], current.url), warnings: [] },
+          },
+          202,
+        );
+    }
     if (!businessStatus.value || (reviewStatus.status === 'fulfilled' && !reviewStatus.value))
-      return json({ status: 'running' }, 202);
+      return json({ status: 'running', stage: businessStatus.value ? 'photos' : 'details' }, 202);
     const [businesses, reviews] = await Promise.all([
       collectionSnapshot(current.business, 1, fetcher),
       current.reviews && reviewStatus.status === 'fulfilled'
@@ -461,7 +485,8 @@ export async function handleSocialImport(
           })
         : Promise.resolve([]),
     ]);
-    if (!businesses || reviews === null) return json({ status: 'running' }, 202);
+    if (!businesses || reviews === null)
+      return json({ status: 'running', stage: businesses ? 'photos' : 'details' }, 202);
     const business = parseYelpBusiness(businesses[0], reviews, current.url);
     const warnings = [
       warning,

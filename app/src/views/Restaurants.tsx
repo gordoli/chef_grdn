@@ -29,6 +29,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SegmentedControl } from '@/components/ui/segmented-control';
+import { useRestaurantImports } from '@/hooks/RestaurantImportProvider';
+import { RestaurantImports } from '@/components/restaurants/RestaurantImports';
 import { RestaurantEditor } from '@/components/restaurants/RestaurantEditor';
 import { RestaurantMap } from '@/components/restaurants/RestaurantMap';
 import { RestaurantRoll } from '@/components/restaurants/RestaurantRoll';
@@ -47,6 +49,9 @@ export function Restaurants() {
   const [cuisine, setCuisine] = useState('all');
   const [view, setView] = useState('list');
   const [adding, setAdding] = useState(false);
+  const [importJobId, setImportJobId] = useState<string>();
+  const { jobs: importJobs } = useRestaurantImports();
+  const importRestaurantId = importJobs.find((job) => job.id === importJobId)?.restaurant_id;
   const [rollOpen, setRollOpen] = useState(false);
   const [pendingFavorite, setPendingFavorite] = useState<string | null>(null);
   const params = useSearchParams();
@@ -62,6 +67,7 @@ export function Restaurants() {
   }, [params, prefix, router]);
   useEffect(() => {
     if (params.get('add') !== '1' || !canEdit) return;
+    setImportJobId(undefined);
     setAdding(true);
     const query = new URLSearchParams(params.toString());
     query.delete('add');
@@ -97,7 +103,7 @@ export function Restaurants() {
     }
   };
   return (
-    <div className={`page-width ${styles.page}`}>
+    <div className={`collection-page page-width ${styles.page}`}>
       <div className="section-heading">
         <h1>
           Restaurants <span>{restaurants.length}</span>
@@ -128,6 +134,14 @@ export function Restaurants() {
           <RestaurantRoll open={rollOpen} onOpenChange={setRollOpen} />
         </SegmentedControl>
       </div>
+      {canEdit && !isDemo && (
+        <RestaurantImports
+          onReview={(id) => {
+            setImportJobId(id);
+            setAdding(true);
+          }}
+        />
+      )}
       <div className="collection-control-row">
         <SegmentedControl
           className={`cooking-status-toggle ${styles.tabs}`}
@@ -372,7 +386,15 @@ export function Restaurants() {
           ))}
         </div>
       )}
-      {adding && <RestaurantEditor open={adding} onOpenChange={setAdding} />}
+      {adding && (
+        <RestaurantEditor
+          key={importJobId ?? 'new'}
+          open={adding}
+          onOpenChange={setAdding}
+          importJobId={importJobId}
+          restaurant={restaurants.find((restaurant) => restaurant.id === importRestaurantId)}
+        />
+      )}
     </div>
   );
 }
